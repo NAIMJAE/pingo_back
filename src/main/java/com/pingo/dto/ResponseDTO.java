@@ -3,6 +3,8 @@ package com.pingo.dto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+// 공통 Response DTO
+
 @Getter
 @RequiredArgsConstructor(staticName = "of")
 public class ResponseDTO<T> {

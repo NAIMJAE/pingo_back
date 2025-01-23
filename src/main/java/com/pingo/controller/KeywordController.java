@@ -1,6 +1,6 @@
 package com.pingo.controller;
 
-import com.pingo.service.TestService;
+import com.pingo.service.keywordServices.KeywordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-public class TestController {
+public class KeywordController {
 
-    private final TestService testService;
+    final private KeywordService keywordService;
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test() {
-        return testService.selectTest();
+    @GetMapping("/keyword")
+    public ResponseEntity<?> selectKeyword() {
+        return keywordService.selectKeywordListForCategory();
     }
 }

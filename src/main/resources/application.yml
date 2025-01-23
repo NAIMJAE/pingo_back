@@ -3,9 +3,9 @@ spring:
     name: pingo_back
 
   datasource:
-    url: jdbc:oracle:thin:@localhost:1521/XE
-    username: C##PINGO
-    password: Asd1234!
+    url: jdbc:oracle:thin:@54.180.162.143:1521/XE
+    username: pingo
+    password: Qwer1234
     driver-class-name: oracle.jdbc.OracleDriver
 
 
