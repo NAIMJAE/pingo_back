@@ -9,7 +9,7 @@ package com.pingo.exception;
 public enum ExceptionCode {
 
     // USER
-    INVALID_TEST(404, "TEST_001", "유효하지 않은 값입니다."),
+    DUPLICATE_USER_NO(409, "USER_NO_DUPLICATE", "유저 번호가 이미 존재합니다."),
     
     ;
 
