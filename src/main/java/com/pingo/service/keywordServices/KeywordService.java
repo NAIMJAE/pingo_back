@@ -20,7 +20,7 @@ public class KeywordService {
 
     final private KeywordMapper keywordMapper;
 
-    // 2차 키워드 카테고리까지 조회 for Keyword_Page
+    // [1] 2차 키워드 카테고리까지 조회 for Keyword_Page
     public ResponseEntity<?> selectKeywordListFor2ndCategory() {
         List<Keyword> keywordList = keywordMapper.selectKeywordListFor2ndCategory();
 
@@ -29,7 +29,7 @@ public class KeywordService {
         return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", keywordGroup));
     }
 
-    // KeywordList 를 Map<String, KeywordGroup> 구조로 변경
+    // [1-1] KeywordList 를 Map<String, KeywordGroup> 구조로 변경
     private Map<String, KeywordGroup> transformKeywordListToGroupMap(List<Keyword> keywordList) {
         Map<String, KeywordGroup> keywordGroup = new HashMap<>();
         for (Keyword item : keywordList) {

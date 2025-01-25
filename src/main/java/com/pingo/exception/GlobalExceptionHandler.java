@@ -1,5 +1,6 @@
 package com.pingo.exception;
 
+import com.pingo.dto.ResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+    public ResponseEntity<?> handleBusinessException(BusinessException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
             ex.getStatus(),
             ex.getCode(),
@@ -40,6 +41,6 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity
                 .status(ex.getStatus())
-                .body(errorResponse);
+                .body(ResponseDTO.of("2","실패",errorResponse));
     }
 }
