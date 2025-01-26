@@ -2,6 +2,12 @@ spring:
   application:
     name: pingo_back
 
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: false
+
   datasource:
     url: jdbc:oracle:thin:@54.180.162.143:1521/XE
     username: pingo
@@ -17,8 +23,15 @@ server:
 logging:
   level:
     root: INFO
+    com.pingo.mapper: DEBUG
+
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
 mybatis:
   mapper-locations: classpath:mappers/**/*.xml
+
+# 파일 업로드 설정
+file:
+  upload:
+    path: uploads/

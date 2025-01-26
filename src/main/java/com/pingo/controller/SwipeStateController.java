@@ -15,8 +15,12 @@ public class SwipeStateController {
     final private SwipeStateService swipeStateService;
 
     @GetMapping("/swipeState")
-    public ResponseEntity bbbb() {
-        swipeStateService.selectSwipeUserList();
-        return null;
+    public ResponseEntity<?> swipeState() {
+
+        String userNo = "US12345678";
+
+
+        return swipeStateService.selectSwipeUserList(userNo);
+
     }
 }

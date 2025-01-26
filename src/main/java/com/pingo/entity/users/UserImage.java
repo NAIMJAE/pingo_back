@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserImage {
-    private Integer imageNo;
+    private String imageNo;
     private String imageUrl;
     private String imageProfile;
     private String userNo;

@@ -4,44 +4,22 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pingo.mapper.SwipeStateMapper">
-<resultMap id="UserSwipeDetailsMap" type="com.pingo.entity.swipeState.UserSwipeDetails">
-    <association property="user" javaType="com.pingo.entity.users.Users">
-        <id column="userNo" property="userNo"/>
-        <result column="userId" property="userId"/>
-        <result column="userPw" property="userPw"/>
-        <result column="userName" property="userName"/>
-        <result column="userNick" property="userNick"/>
-        <result column="userGender" property="userGender"/>
-        <result column="userState" property="userState"/>
-        <result column="userrDate" property="userrDate"/>
-    </association>
-    <association property="userImage" javaType="com.pingo.entity.users.UserImage">
-        <id column="imageNo" property="imageNo"/>
-        <result column="imageUrl" property="imageUrl"/>
-        <result column="imageProfile" property="imageProfile"/>
-        <result column="userNo" property="userNo"/>
-    </association>
-    <association property="swipe" javaType="com.pingo.entity.swipe.Swipe">
-        <id column="swipeNo" property="swipeNo"/>
-        <result column="toUserNo" property="toUserNo"/>
-        <result column="fromUserNo" property="fromUserNo"/>
-        <result column="swipeType" property="swipeType"/>
-        <result column="swipeTime" property="swipeTime"/>
-        <result column="swipeState" property="swipeState"/>
-    </association>
-</resultMap>
 
-<select id="getUserSwipeDetails" resultMap="UserSwipeDetailsMap">
-    SELECT
-    s."swipeNo", s."toUserNo", s."fromUserNo", s."swipeType", s."swipeTime", s."swipeState",
-    u."userNo", u."userId", u."userPw", u."userName", u."userNick", u."userGender", u."userState", u."userrDate",
-    i."imageNo", i."imageUrl", i."imageProfile", i."userNo"
-    FROM "swipe" s
-    JOIN "users" u ON s."toUserNo" = u."userNo"
-    JOIN "userImage" i ON u."userNo" = i."userNo"
-    WHERE s."fromUserNo" = #{fromUserNo}
-    AND s."swipeState" = #{swipeState}
-    AND i."imageProfile" = #{imageProfile}
-</select>
+    <select id="getUserSwipeDetails" resultType="com.pingo.entity.swipeState.UserSwipeDetails" parameterType="map" flushCache="true">
+        SELECT
+        u."userNo", u."userName", u."userNick", u."userGender", s."swipeNo", i."imageUrl"
+        FROM "users" u
+        <if test='standardColumn == "toUserNo"'>
+            JOIN "swipe" s ON u."userNo" = s."fromUserNo"
+        </if>
+        <if test='standardColumn != "toUserNo"'>
+            JOIN "swipe" s ON u."userNo" = s."toUserNo"
+        </if>
+        JOIN "userImage" i ON u."userNo" = i."userNo"
+        WHERE s."${standardColumn}" = #{standardUserNo}
+        AND u."userState" = 1
+        AND s."swipeState" = #{swipeState}
+        AND i."imageProfile" = #{imageProfile}
+    </select>
 
 </mapper>
