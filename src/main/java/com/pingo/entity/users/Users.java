@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -22,7 +22,7 @@ public class Users {
     private String userNick;
     private String userGender;
     private String userState;
-    private LocalDate userrDate;
+    private LocalDateTime userrDate;
 
     // userNo 생성 로직 (중복 호출시 예외 처리)
     public String createUserNo() {
