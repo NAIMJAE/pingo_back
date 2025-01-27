@@ -2,7 +2,6 @@ package com.pingo.service.signService;
 
 import com.pingo.entity.users.SignIn;
 import com.pingo.mapper.SignMapper;
-import com.pingo.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class SignService {
 
     private final SignMapper signMapper;
-    private final JwtTokenProvider jwtTokenProvider;
+    //private final JwtTokenProvider jwtTokenProvider;
 
     public ResponseEntity<?> signInService(String userId, String userPw) {
         log.info("userId : " + userId);
@@ -34,9 +33,10 @@ public class SignService {
         }
 
         // 3. JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(user.getUserId(), user.getUserNo());
+        //String token = jwtTokenProvider.createToken(user.getUserId(), user.getUserNo());
 
-        return ResponseEntity.ok().body(token);
+        //return ResponseEntity.ok().body(token);
+        return null;
     }
 
     private boolean validationPw(String userPw, String inputPw) {
