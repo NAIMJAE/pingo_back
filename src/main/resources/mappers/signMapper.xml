@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pingo.mapper.SignMapper">
+    <!-- 사용자 정보 조회 -->
+    <select id="findUserById" parameterType="string" resultType="com.pingo.entity.users.SignIn">
+        SELECT userNo, userId, userPw
+        FROM users
+        WHERE userId = #{userId}
+    </select>
+</mapper>
