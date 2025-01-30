@@ -44,4 +44,14 @@ public class KeywordService {
         return keywordGroup;
     }
 
+    //
+    private void matchBasedOnKeywords() {
+        // String userNo, String keywordNo
+
+        // 내가 선택한 키워드
+
+        // 내 주변에 있는 사람들의 키워드
+
+        // 비교
+    }
 }

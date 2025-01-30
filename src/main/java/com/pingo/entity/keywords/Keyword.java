@@ -14,4 +14,5 @@ public class Keyword {
     private String kwName;
     private String kwParentId;
     private String kwMessage;
+    private String kwLevel;
 }
