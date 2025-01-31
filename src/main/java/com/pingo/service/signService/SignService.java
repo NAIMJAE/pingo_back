@@ -21,9 +21,9 @@ public class SignService {
     private final SignMapper signMapper;
     //private final JwtTokenProvider jwtTokenProvider;
 
-    public ResponseEntity<?> signInService(String userId, String userPw) {
-        log.info("userId : " + userId);
-        log.info("userPw : " + userPw);
+/*    public ResponseEntity<?> signInService(String userId, String userPw) {
+        log.info("userId : {}", userId);
+        log.info("userPw : {}", userPw);
 
         // 1. DB에서 사용자 정보 조회
         SignIn user = signMapper.findUserById(userId);
@@ -38,12 +38,9 @@ public class SignService {
             return ResponseEntity.badRequest().body("Invalid password");
         }
 
-        // 3. JWT 토큰 생성
-        //String token = jwtTokenProvider.createToken(user.getUserId(), user.getUserNo());
-
-        //return ResponseEntity.ok().body(token);
-        return null;
-    }
+        // 로그인 성공시 응답
+        return ResponseEntity.ok().body("로그인 성공");
+    }*/
 
     private boolean validationPw(String userPw, String inputPw) {
         // 1. 입력한 비밀번호 암호화
