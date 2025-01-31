@@ -1,5 +1,6 @@
 package com.pingo.controller;
 
+import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.UserSignUp;
 import com.pingo.service.signService.SignService;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,13 @@ public class SignController {
     public ResponseEntity<?> signup(@RequestPart("userSignUp") String userSignUp, @RequestPart("image") MultipartFile profileImage) {
         log.info("userSignUp : " + userSignUp);
         log.info("profileImage : " + profileImage.getOriginalFilename());
-        return null;
+
+        try {
+            Thread.sleep(3000);
+        }catch (Exception e) {
+            log.info(e.getMessage());
+        }
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", true));
     }
 }
