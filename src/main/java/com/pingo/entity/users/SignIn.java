@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignIn {
-    private Long userNo;
+    private String userNo;
     private String userId;
     private String userPw;
 }

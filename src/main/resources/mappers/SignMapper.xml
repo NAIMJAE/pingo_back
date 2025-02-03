@@ -5,8 +5,8 @@
 
 <mapper namespace="com.pingo.mapper.SignMapper">
     <!-- 사용자 정보 조회 -->
-    <select id="findUserById" parameterType="string" resultType="com.pingo.entity.users.SignIn">
-        SELECT "userNo", "userId", "userPw"
+    <select id="findByUserIdForSignIn" parameterType="string" resultType="com.pingo.entity.users.Users">
+        SELECT *
         FROM "users"
         WHERE "userId" = #{userId}
     </select>

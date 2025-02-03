@@ -35,3 +35,7 @@ mybatis:
 file:
   upload:
     path: uploads/
+
+jwt:
+  issuer: animetalesshop@gmail.com
+  secret: IXFv859htG2PL5Bta8r0QHwvIhRh7x5m

@@ -1,6 +1,6 @@
-/*
 package com.pingo.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +16,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // HttpSecurity 안에서 쓸 수 있는 속성 10분 안에 모두 찾아보고 설정할 것
         http
                 .csrf(csrf -> csrf.disable())
                 // CSRF 보호 기능 비활성화 (REST API에서는 일반적으로 CSRF를 사용하지 않음)
@@ -25,12 +26,21 @@ public class SecurityConfig {
                 // 세션을 사용하지 않도록 설정 (JWT 기반 인증을 사용하기 때문에 필요)
                 // STATELESS 모드에서는 로그인 시 세션을 생성하지 않음
 
-                .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/auth/**").permitAll()
-                                // "/api/auth/**" 경로로 들어오는 요청은 인증 없이 접근 가능하도록 설정 (로그인, 회원가입 등)
+                //.httpBasic(withDefaults())    // HTTP Basic 인증 설정(JWT에서는 보통 사용 X)
 
-                                .anyRequest().authenticated()
-                        // 그 외의 모든 요청은 인증된 사용자만 접근 가능
+                // 로그아웃 설정
+//                .logout(logout -> logout
+//                        .logoutUrl("/auth/logout") // 로그아웃 URL 지정
+//                        .logoutSuccessHandler((request, response, authentication) -> {
+//                            response.setStatus(HttpServletResponse.SC_OK);
+//                        })
+//                )
+
+                .authorizeHttpRequests(auth -> auth
+                        // "/api/auth/**" 경로로 들어오는 요청은 인증 없이 접근 가능하도록 설정 (로그인, 회원가입 등)
+                                .requestMatchers("/permit/**").permitAll()
+
+                                .anyRequest().authenticated()   // 그 외의 모든 요청은 인증된 사용자만 접근 가능
                 );
 
         return http.build();
@@ -50,4 +60,3 @@ public class SecurityConfig {
         // Spring Security에서 로그인 시 사용자의 아이디와 비밀번호를 검증하는 역할을 함
     }
 }
-*/

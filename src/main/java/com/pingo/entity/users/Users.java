@@ -2,16 +2,14 @@ package com.pingo.entity.users;
 
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Users {
@@ -22,6 +20,7 @@ public class Users {
     private String userNick;
     private String userGender;
     private String userState;
+    private String userRole;
     private LocalDateTime userrDate;
 
     // userNo 생성 로직 (중복 호출시 예외 처리)

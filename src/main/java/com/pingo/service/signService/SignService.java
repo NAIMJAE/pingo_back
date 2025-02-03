@@ -3,15 +3,24 @@ package com.pingo.service.signService;
 import com.pingo.dto.ResponseDTO;
 import com.pingo.entity.keywords.Keyword;
 import com.pingo.entity.users.SignIn;
+import com.pingo.entity.users.Users;
 import com.pingo.mapper.KeywordMapper;
 import com.pingo.mapper.SignMapper;
+import com.pingo.security.MyUserDetails;
+import com.pingo.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,28 +28,49 @@ import java.util.List;
 public class SignService {
 
     private final SignMapper signMapper;
-    //private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
-/*    public ResponseEntity<?> signInService(String userId, String userPw) {
+    public ResponseEntity<?> signInProcess(String userId, String userPw) {
         log.info("userId : {}", userId);
         log.info("userPw : {}", userPw);
 
-        // 1. DB에서 사용자 정보 조회
-        SignIn user = signMapper.findUserById(userId);
-        if (user == null) {
-            log.error("아이디가 존재하지 않습니다.");
-            return ResponseEntity.badRequest().body("Invalid userId");
-        }
+        try {
+            log.info("signInProcess.........11");
 
-        // 2. 비밀번호 검증
-        if (!validationPw(user.getUserPw(), userPw)) {
-            log.error("비밀번호가 일치하지 않습니다.");
-            return ResponseEntity.badRequest().body("Invalid password");
-        }
+            // 인증용 객체 생성
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, userPw);
+            log.info("signInProcess.........22");
+            // DB 조회
+            // AuthenticationManager -> AuthenticationProvider(s) -> UserDetailsService -> DB 조회까지 이 한줄로 해결
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            log.info("signInProcess.........33");
+            // 인증된 사용자 정보 가져오기
+            MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+            log.info("signInProcess.........44");
+            Users users = userDetails.getUsers();
+            log.info("signInProcess.........55");
 
-        // 로그인 성공시 응답
-        return ResponseEntity.ok().body("로그인 성공");
-    }*/
+            // 토큰 발급
+            String accessToken = jwtProvider.createToken(users, 1);
+            String refreshToken = jwtProvider.createToken(users, 7);
+            log.info("signInProcess.........66");
+
+            Map<String, Object> userMap = new HashMap<>();
+
+            userMap.put("userNo", users.getUserNo());
+            userMap.put("userRole", users.getUserRole());
+            userMap.put("accessToken", accessToken);
+            userMap.put("refreshToken", refreshToken);
+            log.info("signInProcess.........77");
+
+            return ResponseEntity.ok().body(userMap);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 
     private boolean validationPw(String userPw, String inputPw) {
         // 1. 입력한 비밀번호 암호화
