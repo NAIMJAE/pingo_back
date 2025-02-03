@@ -1,5 +1,6 @@
 package com.pingo.config;
 
+import com.pingo.service.WebSocketChatHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.WebSocketHandler;
@@ -13,10 +14,13 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
     private final WebSocketHandler webSocketHandler;
+    private final WebSocketChatHandler webSocketChatHandler;
+
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler, "/핑고").setAllowedOrigins("*");
+        registry.addHandler(webSocketChatHandler, "/chatSocket/{type}/{userId}").setAllowedOrigins("*");
+        registry.addHandler(webSocketHandler, "/mainSocket/{userId}").setAllowedOrigins("*");
         // 테스트를 위해 와일드카드로 모든 도메인을 열어줌. ("*")에는 웹소캣 cors 정책으로 인해 허용 도메인을 지정해주어야한다.
     }
 }
