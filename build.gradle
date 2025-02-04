@@ -35,6 +35,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+
 	// security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -47,6 +48,8 @@ dependencies {
 	// Jackson
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
 
+	// Redis 설정 (준혁)
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 }
 
