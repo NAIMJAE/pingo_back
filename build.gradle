@@ -44,6 +44,10 @@ dependencies {
 	// servlet
 	implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
+	// Jackson
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
+
+
 }
 
 tasks.named('test') {

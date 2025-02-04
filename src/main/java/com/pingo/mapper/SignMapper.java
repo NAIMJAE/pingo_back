@@ -2,6 +2,7 @@ package com.pingo.mapper;
 
 import com.pingo.entity.keywords.Keyword;
 import com.pingo.entity.users.SignIn;
+import com.pingo.entity.users.UserInfo;
 import com.pingo.entity.users.Users;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,4 +21,13 @@ public interface SignMapper {
 
     // 회원가입시 키워드 선택을 위한 3차 키워드 조회
     List<Keyword> select3ndKeyword();
+
+    // 회원가입 유저테이블 추가
+    void insertUserForSignUp(Users validatedUsers);
+
+    // 회원가입 유저정보테이블 추가
+    void insertUserInfoForSignUp(UserInfo validatedUserInfo);
+    
+    // 회원가입 이미지 추가
+    
 }
