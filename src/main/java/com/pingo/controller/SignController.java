@@ -1,6 +1,8 @@
 package com.pingo.controller;
 
 import com.pingo.dto.ResponseDTO;
+import com.pingo.exception.BusinessException;
+import com.pingo.exception.ExceptionCode;
 import com.pingo.service.signService.SignService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +27,9 @@ public class SignController {
         return signService.signInProcess(userInfo.get("userId"), userInfo.get("userPw"));
     }
 
-    @PostMapping("/auto/signin")
+    @GetMapping("/permit/test")
     public ResponseEntity<?> autoLogin() {
-        log.info("g2");
-
-        return null;
+        return signService.test();
     }
 
     // 회원가입시 아이디 중복 검증
