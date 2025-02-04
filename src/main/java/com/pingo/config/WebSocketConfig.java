@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
 @EnableWebSocket
@@ -18,13 +19,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/sub"); // 서버가 클라이언트로 메세지를 보낼때 사용할 경로 지정 , 클라이언트가 /sub 구독하면, 서버에서 해당 클라이언트에게 메시지를 보내줄 수 있음. / 유저가 메세지 받기
-        config.setApplicationDestinationPrefixes("/pub"); // 클라이언트가 서버로 메세지를 보낼 때 사용할 경로 지정 , 클라이언트가 메세지를 보낼 때 !
+        config.enableSimpleBroker("/sub"); // @SendTo 서버가 클라이언트로 메세지를 보낼때 사용할 경로 지정 , 클라이언트가 /sub 구독하면, 서버에서 해당 클라이언트에게 메시지를 보내줄 수 있음. / 유저가 메세지 받기
+        config.setApplicationDestinationPrefixes("/pub"); // @MessageMapping 클라이언트가 서버로 메세지를 보낼 때 사용할 경로 지정 , 클라이언트가 메세지를 보낼 때 !
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-stomp").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").setHandshakeHandler(new DefaultHandshakeHandler());
         // 테스트를 위해 와일드카드로 모든 도메인을 열어줌. ("*")에는 웹소캣 cors 정책으로 인해 허용 도메인을 지정해주어야한다.
     }
 
