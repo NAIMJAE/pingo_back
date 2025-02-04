@@ -3,29 +3,35 @@ package com.pingo.config;
 import com.pingo.service.WebSocketChatHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
 @EnableWebSocket
 @RequiredArgsConstructor
-public class WebSocketConfig implements WebSocketConfigurer {
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final WebSocketHandler webSocketHandler;
     private final WebSocketChatHandler webSocketChatHandler;
 
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketChatHandler, "/chatSocket/{type}/{userId}").setAllowedOrigins("*");
-        registry.addHandler(webSocketHandler, "/mainSocket/{userId}").setAllowedOrigins("*");
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/sub"); // @SendTo 서버가 클라이언트로 메세지를 보낼때 사용할 경로 지정 , 클라이언트가 /sub 구독하면, 서버에서 해당 클라이언트에게 메시지를 보내줄 수 있음. / 유저가 메세지 받기
+        config.setApplicationDestinationPrefixes("/pub"); // @MessageMapping 클라이언트가 서버로 메세지를 보낼 때 사용할 경로 지정 , 클라이언트가 메세지를 보낼 때 !
+    }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").setHandshakeHandler(new DefaultHandshakeHandler());
         // 테스트를 위해 와일드카드로 모든 도메인을 열어줌. ("*")에는 웹소캣 cors 정책으로 인해 허용 도메인을 지정해주어야한다.
     }
+
 }
 
-
+// STOMP는 핸들러를 직접 사용하지 않고 메시지를 @MessageMapping으로 처리하는 컨트롤러로 보낸다. 즉 세션은 생성이 되지만 직접 핸들러에서 다루지않고 STOMP가 관리하는 방식
 // 핸들러에서 세션이 만들어 졌다 = 서버에서 발급해주는 것인데
 
 // 요청이 들어오면 webSocketHandler 로 전달된다.
