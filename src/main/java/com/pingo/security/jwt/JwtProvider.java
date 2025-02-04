@@ -18,14 +18,13 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-@Slf4j
-@Getter
-@Component
 // JWT는 크게 헤더, 내용, 서명으로 나뉨
 // Header 에는 데이터 타입과 해쉬 알고리즘이 들어감
 // Payload(내용) 에 들어갈 정보들을 claim 이라고 부른다
 // Signature(서명) 헤더의 인코딩값과 내용의 인코딩값을 합친 후 주어진 비밀키로 해쉬(암호화해서 나온 결과값) 하여 생성한다
+@Slf4j
+@Getter
+@Component
 public class JwtProvider {
     private String issuer;  // 토큰 발급자
     private SecretKey secretKey;    // 암호화 사용할 때 쓰는 키

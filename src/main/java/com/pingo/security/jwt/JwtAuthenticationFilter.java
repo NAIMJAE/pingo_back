@@ -33,12 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = uri.substring(i);
 
         // 토큰 추출
-        String header = request.getHeader(AUTH_HEADER);
-        String token = null;
-
-        if (header != null && header.startsWith(TOKEN_PREFIX)) {
-            token = header.substring(TOKEN_PREFIX.length());
-        }
+        String token = request.getHeader(AUTH_HEADER);
+        log.info("token : " + token);
         log.info("doFilterInternal.........22");
 
         // 토큰 검사
@@ -47,6 +43,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 jwtProvider.validateToken(token);
                 log.info("doFilterInternal.........33");
+
+                // 자동 로그인 체크 (특정 URL 요청일 때만 수행)
+                if (path.equals("/auto-signin")) {
+                    log.info("자동 로그인 체크 요청 감지...");
+
+                    Claims claims = jwtProvider.getClaims(token);
+                    String userNo = (String) claims.get("userNo");
+                    String userRole = (String) claims.get("userRole");
+
+                    // JSON 응답 설정
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+
+                    // JSON 데이터 생성
+                    String jsonResponse = "{ \"data\": { \"message\": \"자동 로그인 성공\", \"userNo\": \"" + userNo + "\", \"userRole\": \"" + userRole + "\" } }";
+
+                    response.getWriter().write(jsonResponse);
+                    return;
+                }
 
                 // refresh 요청일 경우(새로운 access token 발급 요청)
                 if (path.equals("/refresh")) {
