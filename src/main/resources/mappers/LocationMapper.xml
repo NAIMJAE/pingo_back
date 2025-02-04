@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pingo.mapper.LocationMapper">
+
+    <!-- 유저 위치 저장 (있으면 UPDATE, 없으면 INSERT) -->
+    <update id="updateUserLocation">
+        MERGE INTO "user_locations" ul
+        USING (
+        SELECT #{userNo} AS "userNo", #{latitude} AS "latitude", #{longitude} AS "longitude" FROM dual
+        ) dummy
+        ON (ul."userNo" = dummy."userNo")
+        WHEN MATCHED THEN
+            UPDATE SET ul."latitude" = dummy."latitude", ul."longitude" = dummy."longitude"
+        WHEN NOT MATCHED THEN
+            INSERT ("userNo", "latitude", "longitude")
+            VALUES (dummy."userNo", dummy."latitude", dummy."longitude")
+    </update>
+
+    <!-- 반경 내 유저 검색 (Haversine 공식 사용) -->
+    <select id="getNearbyUsers" resultType="String">
+        <![CDATA[
+        SELECT "userNo"
+        FROM "user_locations"
+        WHERE (6371 * ACOS(COS(RADIANS(#{latitude})) * COS(RADIANS("latitude")) *
+        COS(RADIANS("longitude") - RADIANS(#{longitude})) + SIN(RADIANS(#{latitude})) * SIN(RADIANS("latitude")))) <= #{radiusKm}
+        ]]>
+    </select>
+
+</mapper>
