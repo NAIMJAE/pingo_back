@@ -5,8 +5,8 @@
 
 <mapper namespace="com.pingo.mapper.SignMapper">
     <!-- 사용자 정보 조회 -->
-    <select id="findUserById" parameterType="string" resultType="com.pingo.entity.users.SignIn">
-        SELECT "userNo", "userId", "userPw"
+    <select id="findByUserIdForSignIn" parameterType="string" resultType="com.pingo.entity.users.Users">
+        SELECT *
         FROM "users"
         WHERE "userId" = #{userId}
     </select>
@@ -16,8 +16,23 @@
         SELECT COUNT(*) FROM "users" WHERE "userId" = #{inputId}
     </select>
 
-    <!-- 아이디 중복 체크 -->
+    <!-- 성향 3차 키워드 조회 -->
     <select id="select3ndKeyword" resultType="com.pingo.entity.keywords.Keyword" useCache="false">
         SELECT * FROM "keyword" WHERE "kwLevel" = 3 ORDER BY "kwName" ASC
     </select>
+
+    <insert id="insertUserForSignUp" parameterType="com.pingo.entity.users.Users">
+
+        INSERT INTO "users" ("userNo", "userId", "userPw", "userName", "userNick", "userGender", "userState", "userrDate", "userRole")
+        VALUES (#{userNo}, #{userId}, #{userPw}, #{userName}, #{userNick}, #{userGender}, #{userState}, #{userrDate}, #{userRole})
+
+    </insert>
+
+    <insert id="insertUserInfoForSignUp" parameterType="com.pingo.entity.users.UserInfo">
+
+        INSERT INTO "userInfo" ("userNo", "userBirth", "userHeight", "userAddress", "user1stJob", "user2ndJob", "userReligion", "userDrinking", "userSmoking", "userBloodType")
+        VALUES (#{userNo}, #{userBirth}, #{userHeight}, #{userAddress}, #{user1stJob}, #{user2ndJob}, #{userReligion},
+        #{userDrinking}, #{userSmoking}, #{userBloodType})
+
+    </insert>
 </mapper>

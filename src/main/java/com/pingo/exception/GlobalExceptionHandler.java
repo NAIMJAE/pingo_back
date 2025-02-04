@@ -33,6 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<?> handleBusinessException(BusinessException ex) {
+        log.info("ㅎ2");
         ErrorResponse errorResponse = new ErrorResponse(
             ex.getStatus(),
             ex.getCode(),

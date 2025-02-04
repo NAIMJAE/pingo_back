@@ -1,17 +1,35 @@
 package com.pingo.service.signService;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pingo.dto.ResponseDTO;
 import com.pingo.entity.keywords.Keyword;
 import com.pingo.entity.users.SignIn;
+import com.pingo.entity.users.UserInfo;
+import com.pingo.entity.users.UserSignUp;
+import com.pingo.entity.users.Users;
+import com.pingo.exception.BusinessException;
+import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.KeywordMapper;
 import com.pingo.mapper.SignMapper;
+import com.pingo.security.MyUserDetails;
+import com.pingo.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,43 +37,50 @@ import java.util.List;
 public class SignService {
 
     private final SignMapper signMapper;
-    //private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<?> signInService(String userId, String userPw) {
-        log.info("userId : " + userId);
-        log.info("userPw : " + userPw);
+    // 로그인 프로세스
+    public ResponseEntity<?> signInProcess(String userId, String userPw) {
+        log.info("userId : {}", userId);
+        log.info("userPw : {}", userPw);
 
-        // 1. DB에서 사용자 정보 조회
-        SignIn user = signMapper.findUserById(userId);
-        if (user == null) {
-            log.error("아이디가 존재하지 않습니다.");
-            return ResponseEntity.badRequest().body("Invalid userId");
+        try {
+            log.info("signInProcess.........11");
+
+            // 인증용 객체 생성
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, userPw);
+            log.info("signInProcess.........22");
+            // DB 조회
+            // AuthenticationManager -> AuthenticationProvider(s) -> UserDetailsService -> DB 조회까지 이 한줄로 해결
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            log.info("signInProcess.........33");
+            // 인증된 사용자 정보 가져오기
+            MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+            log.info("signInProcess.........44");
+            Users users = userDetails.getUsers();
+            log.info("signInProcess.........55");
+
+            // 토큰 발급
+            String accessToken = jwtProvider.createToken(users, 1);
+            String refreshToken = jwtProvider.createToken(users, 7);
+            log.info("signInProcess.........66");
+
+            Map<String, Object> userMap = new HashMap<>();
+
+            userMap.put("userNo", users.getUserNo());
+            userMap.put("userRole", users.getUserRole());
+            userMap.put("accessToken", accessToken);
+            userMap.put("refreshToken", refreshToken);
+            log.info("signInProcess.........77");
+
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공",userMap));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
         }
-
-        // 2. 비밀번호 검증
-        if (!validationPw(user.getUserPw(), userPw)) {
-            log.error("비밀번호가 일치하지 않습니다.");
-            return ResponseEntity.badRequest().body("Invalid password");
-        }
-
-        // 3. JWT 토큰 생성
-        //String token = jwtTokenProvider.createToken(user.getUserId(), user.getUserNo());
-
-        //return ResponseEntity.ok().body(token);
-        return null;
-    }
-
-    private boolean validationPw(String userPw, String inputPw) {
-        // 1. 입력한 비밀번호 암호화
-        String encryptedPw = encryptPassword(inputPw);
-
-        // 2. 암호화된 비밀번호와 DB의 비밀번호 비교
-        return encryptedPw.equals(userPw);
-    }
-
-    private String encryptPassword(String password) {
-        // 비밀번호 암호화 로직 (예: BCrypt, SHA256 등 사용 가능)
-        return password; // 테스트용으로 암호화 없이 반환. 실제 구현 시 암호화 적용 필요.
     }
 
     // 회원가입시 아이디 중복 검사
@@ -77,5 +102,68 @@ public class SignService {
             return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", keywordList));
         }
     }
-    
+
+    // 회원가입
+    @Transactional
+    public ResponseEntity<?> signUpProcess(String userSignUp, MultipartFile profileImage) {
+
+        try {
+            // 0. userSignUp이 String이니까 이걸 객체로 변환하기 (제이슨 변환기)
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            UserSignUp userSignUpData = objectMapper.readValue(userSignUp, UserSignUp.class);
+
+
+            // 1-1. user 값 검증
+            Users validatedUsers = userSignUpData.getUsers().validatedSignUpUserData();
+            int duplicateIdCount = signMapper.selectUserIdForValidateId(validatedUsers.getUserId());
+            if (duplicateIdCount > 0) {
+                throw new BusinessException(ExceptionCode.DUPLICATE_USER_NO);
+            }
+
+            // 1-2. 저장하기 전에 비밀번호 암호화 하기
+//            Users users = userSignUpData.getUsers();
+//            String userPw = users.getUserPw();
+//            passwordEncoder.encode(userPw);
+            String encodedPw = passwordEncoder.encode(validatedUsers.getUserPw());
+            validatedUsers.setEncodingPw(encodedPw);
+            log.info("검증 다된 users : " + validatedUsers);
+
+            // 1-3. users 테이블에 정보 넣기
+            signMapper.insertUserForSignUp(validatedUsers);
+
+            // 2-2. userInfo 값 검증
+            UserInfo validatedUserInfo = userSignUpData.getUserInfo().validatedSignUpUserInfoData();
+            validatedUserInfo.insertUserNo(validatedUsers.getUserNo());
+            log.info("유저 상세 정보 : " + validatedUserInfo);
+
+            // 2-2. userInfo 테이블에 정보 넣기
+            signMapper.insertUserInfoForSignUp(validatedUserInfo);
+
+
+            // 3-1. 이미지 서버에 저장하기
+
+
+
+            // 3-2. 이미지 디비에 저장하기
+
+
+
+            ///////////////////////
+            // 4. 유저 키워드 저장하기
+
+
+            // 5. 위치정보 저장하기
+
+        }catch (Exception e) {
+            // 나중에 에러 설정해두기
+            log.info(e.getMessage());
+        }
+
+
+
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));   // HTTP 통신 객체를 생성
+    }
+
 }

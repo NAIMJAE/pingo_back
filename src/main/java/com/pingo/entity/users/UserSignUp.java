@@ -9,8 +9,9 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignIn {
-    private String userNo;
-    private String userId;
-    private String userPw;
+public class UserSignUp {
+    private Users users;
+    private UserInfo userInfo;
+    private String userMyKeyword;
+    private String userFavoriteKeyword;
 }
