@@ -16,7 +16,10 @@ public enum ExceptionCode {
     INVALID_USER_NICK(409, "INVALID_USER_NICK", "유저 닉네임이 유효하지 않습니다."),
     INVALID_USER_GENDER(409, "INVALID_USER_GENDER", "유저 성별이 유효하지 않습니다."),
     INVALID_USER_BIRTH(409, "INVALID_USER_BIRTH", "유저 생년월일이 유효하지 않습니다."),
+    // SWIPE
+    DUPLICATE_SWIPE_NO(409, "SWIPE_NO_DUPLICATE", "스와이프 번호가 이미 존재합니다."),
     ;
+
 
     private final int status;
     private final String code;
