@@ -18,6 +18,7 @@ public class KeywordController {
     // 2차 키워드 카테고리까지 조회 for Keyword_Page
     @GetMapping("/keyword") //keywordList?
     public ResponseEntity<?> selectKeywordListFor2ndCategory() {
+        log.info("keykeykey");
         return keywordService.selectKeywordListFor2ndCategory();
     }
 

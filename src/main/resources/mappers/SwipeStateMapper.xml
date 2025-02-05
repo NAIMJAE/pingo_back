@@ -17,7 +17,7 @@
         </if>
         JOIN "userImage" i ON u."userNo" = i."userNo"
         WHERE s."${standardColumn}" = #{standardUserNo}
-        AND u."userState" = 1
+        AND u."userState" = "OK"
         AND s."swipeState" = #{swipeState}
         AND i."imageProfile" = #{imageProfile}
     </select>
