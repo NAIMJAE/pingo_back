@@ -22,7 +22,6 @@ public class KeywordController {
     }
 
     // keyword page에서 키워드 선택
-    // 나랑 내가 선택한 키워드랑
     @GetMapping("/recommend")
     public ResponseEntity<?> recommendBasedOnKeywords(@RequestParam("userNo") String userNo, @RequestParam("sKwId") String sKwId) {
 

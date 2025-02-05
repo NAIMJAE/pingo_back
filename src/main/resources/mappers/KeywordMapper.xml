@@ -13,4 +13,22 @@
         ORDER BY "kwId" ASC
     </select>
 
+    <select id="selectChildKeyword" parameterType="map" resultType="string">
+        SELECT "kwId" FROM "keyword"
+        WHERE "kwParentId" = #{kwParentId}
+    </select>
+
+    <select id="selectUserKeyword" parameterType="map" resultType="com.pingo.entity.users.UserKeyword">
+        SELECT * FROM "userKeyword"
+        WHERE "userNo" = #{userNo}
+    </select>
+
+    <select id="selectMultiUserKeyword" parameterType="map" resultType="com.pingo.entity.users.UserKeyword">
+        SELECT * FROM "userKeyword"
+        WHERE "userNo" IN
+        <foreach collection="userNos" item="userNo" open="(" separator="," close=")">
+            #{userNo}
+        </foreach>
+    </select>
+
 </mapper>
