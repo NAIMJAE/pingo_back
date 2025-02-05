@@ -166,4 +166,7 @@ public class SignService {
         return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));   // HTTP 통신 객체를 생성
     }
 
+    public ResponseEntity<?> test() {
+        throw new BusinessException(ExceptionCode.INVALID_USER_NAME);
+    }
 }

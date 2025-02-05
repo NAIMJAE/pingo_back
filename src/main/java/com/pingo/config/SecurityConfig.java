@@ -1,6 +1,9 @@
 package com.pingo.config;
 
+import com.pingo.security.jwt.JwtAuthenticationFilter;
+import com.pingo.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,9 +13,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+@RequiredArgsConstructor
 @Configuration // Spring Security 설정 파일임을 나타내는 어노테이션
 public class SecurityConfig {
+    private final JwtProvider jwtProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -21,6 +26,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 // CSRF 보호 기능 비활성화 (REST API에서는 일반적으로 CSRF를 사용하지 않음)
                 // Flutter와 같은 프론트엔드에서 요청을 보낼 때 CSRF 토큰이 없기 때문에 비활성화해야 함
+
+                // 토큰 검사 필터 등록
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 세션을 사용하지 않도록 설정 (JWT 기반 인증을 사용하기 때문에 필요)
@@ -39,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // "/api/auth/**" 경로로 들어오는 요청은 인증 없이 접근 가능하도록 설정 (로그인, 회원가입 등)
                                 .requestMatchers("/permit/**").permitAll()
+                                .requestMatchers("/auto-signin").authenticated() // 자동 로그인은 인증된 사용자만 접근 가능
 
                                 .anyRequest().authenticated()   // 그 외의 모든 요청은 인증된 사용자만 접근 가능
                 );
