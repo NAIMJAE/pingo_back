@@ -1,12 +1,10 @@
 package com.pingo.mapper;
 
 import com.pingo.entity.keywords.Keyword;
-import com.pingo.entity.users.SignIn;
 import com.pingo.entity.users.UserInfo;
 import com.pingo.entity.users.Users;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +25,7 @@ public interface SignMapper {
 
     // 회원가입 유저정보테이블 추가
     void insertUserInfoForSignUp(UserInfo validatedUserInfo);
-    
+
     // 회원가입 이미지 추가
-    
+    void saveProfileImage(@Param("imageNo") String imageNo, @Param("imageUrl") String imageUrl, @Param("imageProfile") String bool, @Param("userNo") String userNo);
 }
