@@ -26,15 +26,5 @@ public class SwipeRequest {
                 '}';
     }
 
-    // from, to 유저 둘다 처음 스와이프 엔티티
-//    public Swipe toInsertEntity(SwipeRequest swipeRequest) {
-//        return Swipe.builder()
-//                .swipeNo(swipe.createSwipeNo())
-//                .toUserNo(swipeRequest.getToUserNo())
-//                .fromUserNo(swipeRequest.getFromUserNo())
-//                .swipeType(swipeRequest.getSwipeType())
-//                .swipeTime(LocalDateTime.now())
-//                .build();
-//    }
 
 }

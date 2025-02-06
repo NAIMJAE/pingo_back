@@ -5,6 +5,13 @@
 
 <mapper namespace="com.pingo.mapper.LocationMapper">
 
+    <!-- 기존 사용자 위치 조회 -->
+    <select id="getUserLocation" resultType="com.pingo.entity.users.Userlocation">
+        SELECT "userNo", "latitude", "longitude"
+        FROM "user_locations"
+        WHERE "userNo" = #{userNo}
+    </select>
+
     <!-- 유저 위치 저장 (있으면 UPDATE, 없으면 INSERT) -->
     <update id="updateUserLocation">
         MERGE INTO "user_locations" ul
