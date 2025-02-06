@@ -13,6 +13,8 @@ import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.SignMapper;
 import com.pingo.security.MyUserDetails;
 import com.pingo.security.jwt.JwtProvider;
+import com.pingo.service.mainService.LocationService;
+import com.pingo.util.RedisTestService;
 import com.pingo.service.userService.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +42,15 @@ public class SignService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private final LocationService locationService;
+    private final RedisTestService redisTestService;
     private final ImageService imageService;
 
-    // 로그인 프로세스
-    public ResponseEntity<?> signInProcess(String userId, String userPw) {
+
+
+    // 로그인 프로세스 @Transactional 추가 및 위치정보 업데이트 로직 추가 (준혁)
+    @Transactional
+    public ResponseEntity<?> signInProcess(String userId, String userPw, double latitude, double longitude) {
         log.info("userId : {}", userId);
         log.info("userPw : {}", userPw);
 
@@ -75,6 +82,12 @@ public class SignService {
             userMap.put("accessToken", accessToken);
             userMap.put("refreshToken", refreshToken);
             log.info("signInProcess.........77");
+
+            log.info("레디스 테스트 시작 ...");
+            redisTestService.testRedisConnection();
+
+            // 위치 정보 저장 추가
+            locationService.updateUserLocation(users.getUserNo(), latitude, longitude);
 
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",userMap));
         } catch (Exception e) {

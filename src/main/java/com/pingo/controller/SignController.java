@@ -22,9 +22,14 @@ public class SignController {
     @PostMapping("/permit/signin")
     public ResponseEntity<?> login(@RequestBody Map<String, String> userInfo) {
         log.info("Login attempt - userId: {}", userInfo.get("userId"));
+        log.info("데이터 구조좀 볼까? " + userInfo.toString());
+
+        // 위치 정보 추가
+        double latitude = Double.parseDouble(userInfo.get("latitude"));
+        double longitude = Double.parseDouble(userInfo.get("longitude"));
 
         // 로그인 서비스 호출 후 응답 받아오기
-        return signService.signInProcess(userInfo.get("userId"), userInfo.get("userPw"));
+        return signService.signInProcess(userInfo.get("userId"), userInfo.get("userPw"),latitude,longitude);
     }
 
     @GetMapping("/permit/test")

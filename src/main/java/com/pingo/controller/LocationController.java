@@ -3,6 +3,7 @@ package com.pingo.controller;
 import com.pingo.dto.location.LocationRequest;
 import com.pingo.service.mainService.LocationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class LocationController {
@@ -21,6 +23,9 @@ public class LocationController {
     // 위치 업데이트 API
     @PostMapping("/location/update")
     public ResponseEntity<String> updateUserLocation(@RequestBody LocationRequest request) {
+
+        log.info("위치 업데이트 입성(자동 로그인)");
+        log.info(request.toString());
         locationService.updateUserLocation(request.getUserNo(), request.getLatitude(), request.getLongitude());
         return ResponseEntity.ok("위치 정보가 저장되었습니다.");
     }
