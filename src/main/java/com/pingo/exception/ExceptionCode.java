@@ -29,6 +29,10 @@ public enum ExceptionCode {
     MISSING_LOCATION_INFO(400, "LOCATION_INFO_MISSING", "위치 정보가 제공되지 않았습니다."),
     LOCATION_UPDATE_FAILED(500, "LOCATION_UPDATE_FAILED", "위치 업데이트 중 오류 발생"), // Redis 또는 DB 저장 오류
 
+    // FILE
+    FILE_UPLOAD_FAIL(422, "FILE_UPLOAD_FAIL", "파일 업로드에 실패했습니다."),
+    DUPLICATE_IMAGE_NO(409, "DUPLICATE_IMAGE_NO", "중복된 이미지입니다."),
+    INVALID_FILE_TYPE(415, "INVALID_FILE_TYPE", "지원하지 않는 파일 형식입니다."),
     ;
 
 

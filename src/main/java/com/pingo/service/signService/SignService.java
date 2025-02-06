@@ -4,18 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pingo.dto.ResponseDTO;
 import com.pingo.entity.keywords.Keyword;
-import com.pingo.entity.users.SignIn;
+import com.pingo.entity.users.UserImage;
 import com.pingo.entity.users.UserInfo;
 import com.pingo.entity.users.UserSignUp;
 import com.pingo.entity.users.Users;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
-import com.pingo.mapper.KeywordMapper;
 import com.pingo.mapper.SignMapper;
 import com.pingo.security.MyUserDetails;
 import com.pingo.security.jwt.JwtProvider;
 import com.pingo.service.mainService.LocationService;
 import com.pingo.util.RedisTestService;
+import com.pingo.service.userService.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,10 +28,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,6 +44,7 @@ public class SignService {
     private final PasswordEncoder passwordEncoder;
     private final LocationService locationService;
     private final RedisTestService redisTestService;
+    private final ImageService imageService;
 
 
 
@@ -135,9 +136,9 @@ public class SignService {
             }
 
             // 1-2. 저장하기 전에 비밀번호 암호화 하기
-//            Users users = userSignUpData.getUsers();
-//            String userPw = users.getUserPw();
-//            passwordEncoder.encode(userPw);
+            // Users users = userSignUpData.getUsers();
+            // String userPw = users.getUserPw();
+            // passwordEncoder.encode(userPw);
             String encodedPw = passwordEncoder.encode(validatedUsers.getUserPw());
             validatedUsers.setEncodingPw(encodedPw);
             log.info("검증 다된 users : " + validatedUsers);
@@ -153,32 +154,37 @@ public class SignService {
             // 2-2. userInfo 테이블에 정보 넣기
             signMapper.insertUserInfoForSignUp(validatedUserInfo);
 
-
             // 3-1. 이미지 서버에 저장하기
+            UserImage userImage = new UserImage();
+            userImage.makeImageNo();
 
+            String imageNo = userImage.getImageNo();
 
+            String userImagePath = "users" + File.separator + validatedUsers.getUserNo();
+            String imageUrl = imageService.imageUpload(profileImage, userImagePath, imageNo);
 
             // 3-2. 이미지 디비에 저장하기
+            // UserImage 테이블에 필요한 정보 가지고 이미지 정보 저장시키기
+            // 위에 만들어둔 UserImage 객체 사용하면 되겠찌?
+            signMapper.saveProfileImage(imageNo, imageUrl, "T", validatedUsers.getUserNo());
 
-
-
-            ///////////////////////
+            ///////////4,5 번은 안해도 됨////////////
             // 4. 유저 키워드 저장하기
 
 
             // 5. 위치정보 저장하기
 
+
+            // 1 ~ 5 다 성공하면 ok 반환
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));   // HTTP 통신 객체를 생성
+
         }catch (Exception e) {
-            // 나중에 에러 설정해두기
-            log.info(e.getMessage());
+            // 일단 생일 에러로 해놨는데 알맞은 에러 만들어서 넣기 (포괄적인 에러코드)
+            throw new BusinessException(ExceptionCode.INVALID_USER_BIRTH);
         }
-
-
-
-
-        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));   // HTTP 통신 객체를 생성
     }
 
+    // 이거 테스트용이라 지우지 말기
     public ResponseEntity<?> test() {
         throw new BusinessException(ExceptionCode.INVALID_USER_NAME);
     }
