@@ -46,16 +46,12 @@ public class KeywordService {
 
     // [2] Keyword Page에서 선택한 키워드에 알맞은 다른 사용자 추천 및 이상형 % 계산
     public ResponseEntity<?> recommendBasedOnKeywords(String userNo, String sKwId) {
-        // 임시 데이터
-        userNo = "US43214321";
-        sKwId = "kg12"; // 외향
-
         // 1) 나의 키워드 정보 조회
         UserKeyword myKeyword = keywordMapper.selectUserKeyword(userNo);
 
         // 2) 내 주변 사람 목록 조회
         //
-        List<String> userNoList = List.of("US12345678", "US12341234");
+        List<String> userNoList = List.of("US12345678", "US12341234", "US99999901", "US99999902");
 
         // 3) 내 주변 사람들의 키워드 조회
         Map<String, Object> userNos = new HashMap<>();
