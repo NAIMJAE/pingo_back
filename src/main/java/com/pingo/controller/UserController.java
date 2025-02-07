@@ -16,12 +16,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/info")
-    public ResponseEntity<?> getUserInfo(@RequestParam("userNo") String userNo) {
+    @GetMapping("/permit/mypageinfo")
+    public ResponseEntity<?> getMyPageInfo(@RequestParam("userNo") String userNo) {
 
-
-
-        return userService.aaaaa(userNo);
+        return userService.getUserInfo(userNo);
     }
 
 }
