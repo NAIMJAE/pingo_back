@@ -7,33 +7,24 @@
 
     <!-- 기존 사용자 위치 조회 -->
     <select id="getUserLocation" resultType="com.pingo.entity.users.Userlocation">
-        SELECT "userNo", "latitude", "longitude"
-        FROM "user_locations"
-        WHERE "userNo" = #{userNo}
+        SELECT USERNO, latitude, longitude
+        FROM user_locations
+        WHERE USERNO = #{userNo}
     </select>
 
     <!-- 유저 위치 저장 (있으면 UPDATE, 없으면 INSERT) -->
     <update id="updateUserLocation">
-        MERGE INTO "user_locations" ul
+        MERGE INTO user_locations ul
         USING (
-        SELECT #{userNo} AS "userNo", #{latitude} AS "latitude", #{longitude} AS "longitude" FROM dual
+        SELECT #{userNo} AS userNo, #{latitude} AS latitude, #{longitude} AS longitude FROM dual
         ) dummy
-        ON (ul."userNo" = dummy."userNo")
+        ON (ul.userNo = dummy.userNo)
         WHEN MATCHED THEN
-            UPDATE SET ul."latitude" = dummy."latitude", ul."longitude" = dummy."longitude"
+        UPDATE SET ul.latitude = dummy.latitude, ul.longitude = dummy.longitude
         WHEN NOT MATCHED THEN
-            INSERT ("userNo", "latitude", "longitude")
-            VALUES (dummy."userNo", dummy."latitude", dummy."longitude")
+        INSERT (userNo, latitude, longitude)
+        VALUES (dummy.userNo, dummy.latitude, dummy.longitude)
     </update>
 
-    <!-- 반경 내 유저 검색 (Haversine 공식 사용) -->
-    <select id="getNearbyUsers" resultType="String">
-        <![CDATA[
-        SELECT "userNo"
-        FROM "user_locations"
-        WHERE (6371 * ACOS(COS(RADIANS(#{latitude})) * COS(RADIANS("latitude")) *
-        COS(RADIANS("longitude") - RADIANS(#{longitude})) + SIN(RADIANS(#{latitude})) * SIN(RADIANS("latitude")))) <= #{radiusKm}
-        ]]>
-    </select>
 
 </mapper>
