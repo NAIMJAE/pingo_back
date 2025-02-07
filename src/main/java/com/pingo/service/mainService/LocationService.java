@@ -1,5 +1,6 @@
 package com.pingo.service.mainService;
 
+import com.pingo.dto.profile.MainProfileResponseDTO;
 import com.pingo.entity.users.Userlocation;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -95,8 +97,24 @@ public class LocationService {
 
 
     // 반경 내 유저 검색
-    public List<String> getNearbyUsers(double latitude, double longitude, double radiusKm) {
-        return locationMapper.getNearbyUsers(latitude, longitude, radiusKm);
-    }
+    public List<MainProfileResponseDTO> getNearbyUsers(String userNo, int distanceKm) {
+        log.info("🔍 getNearbyUsers 호출 - userNo: {}, distanceKm: {}", userNo, distanceKm);
 
+        List<MainProfileResponseDTO> users = locationMapper.findNearbyUsers(userNo, distanceKm);
+        log.info("🔍 검색된 유저 수: {}", users.size());
+
+        users.forEach(user -> {
+            // 나이정보 set
+//            user.setAge(user.calculateAge(user.getUserBirth()));
+            log.info("👤 유저 정보 - userNo: {}, userName: {}, images: {}, age: {}, status:{}",
+                    user.getUserNo(), user.getUserName(), user.getImages() , user.getAge(), user.getStatus());
+
+            // ✅ images를 List<String>으로 변환하여 로그 출력
+            List<String> imageList = user.getImagesAsList();
+            log.info("🖼️ 변환된 이미지 리스트 - userNo: {}, images: {}", user.getUserNo(), imageList);
+        });
+
+        log.info("✅ 최종 유저 목록 반환 완료");
+        return users;
+    }
 }

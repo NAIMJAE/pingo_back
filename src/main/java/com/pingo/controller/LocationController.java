@@ -2,6 +2,7 @@ package com.pingo.controller;
 
 import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.location.LocationRequest;
+import com.pingo.dto.profile.MainProfileResponseDTO;
 import com.pingo.service.mainService.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +33,11 @@ public class LocationController {
     }
 
     // 반경 내 유저 검색 API
-    @GetMapping("/location/nearby")
-    public List<String> getNearbyUsers(@RequestParam double latitude,
-                                       @RequestParam double longitude,
-                                       @RequestParam double radiusKm) {
-        return locationService.getNearbyUsers(latitude, longitude, radiusKm);
+    @GetMapping("/permit/nearby")
+    public List<MainProfileResponseDTO> getNearbyUsers(
+            @RequestParam String userNo,
+            @RequestParam int distanceKm
+    ) {
+        return locationService.getNearbyUsers(userNo, distanceKm);
     }
 }
