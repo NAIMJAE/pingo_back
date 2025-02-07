@@ -16,11 +16,12 @@ public enum ExceptionCode {
     INVALID_USER_NICK(409, "INVALID_USER_NICK", "유저 닉네임이 유효하지 않습니다."),
     INVALID_USER_GENDER(409, "INVALID_USER_GENDER", "유저 성별이 유효하지 않습니다."),
     INVALID_USER_BIRTH(409, "INVALID_USER_BIRTH", "유저 생년월일이 유효하지 않습니다."),
+    SIGN_UP_FAIL(400, "SIGN_UP_FAIL", "회원가입에 실패했습니다"),
 
     // FILE
     FILE_UPLOAD_FAIL(422, "FILE_UPLOAD_FAIL", "파일 업로드에 실패했습니다."),
     DUPLICATE_IMAGE_NO(409, "DUPLICATE_IMAGE_NO", "중복된 이미지입니다."),
-    INVALID_FILE_TYPE(415, "INVALID_FILE_TYPE", "지원하지 않는 파일 형식입니다."),
+
     ;
 
     private final int status;
