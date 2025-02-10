@@ -1,5 +1,6 @@
 package com.pingo.mapper;
 
+import com.pingo.dto.profile.MainProfileResponseDTO;
 import com.pingo.entity.users.Userlocation;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,8 +20,7 @@ public interface LocationMapper {
                             @Param("longitude") double longitude);
 
     // 반경 내 유저 검색
-    List<String> getNearbyUsers(@Param("latitude") double latitude,
-                                @Param("longitude") double longitude,
-                                @Param("radiusKm") double radiusKm);
+    List<MainProfileResponseDTO> findNearbyUsers(@Param("userNo") String userNo,
+                                                 @Param("distanceKm") int distanceKm);
 
 }
