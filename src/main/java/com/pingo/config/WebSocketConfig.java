@@ -18,8 +18,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/sub"); // @SendTo 서버가 클라이언트로 메세지를 보낼때 사용할 경로 지정 , 클라이언트가 /sub 구독하면, 서버에서 해당 클라이언트에게 메시지를 보내줄 수 있음. / 유저가 메세지 받기
+    public void configureMessageBroker(MessageBrokerRegistry config) { // 구독
+        config.enableSimpleBroker("/topic"); // @SendTo 서버가 클라이언트로 메세지를 보낼때 사용할 경로 지정 , 클라이언트가 /sub 구독하면, 서버에서 해당 클라이언트에게 메시지를 보내줄 수 있음. / 유저가 메세지 받기
         config.setApplicationDestinationPrefixes("/pub"); // @MessageMapping 클라이언트가 서버로 메세지를 보낼 때 사용할 경로 지정 , 클라이언트가 메세지를 보낼 때 !
     }
 

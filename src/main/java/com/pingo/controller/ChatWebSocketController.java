@@ -29,12 +29,12 @@ public class ChatWebSocketController {
     @MessageMapping("/{chatNo}") // pub 클라이언트 -> 서버로 메시지 전송 / WebsocketConfig prefixes에서 pub 적용한 것 삭제
     public void chatMessage(@DestinationVariable String chatNo, @Payload MessageResponseDTO messageResponseDTO) {
         log.info("Chat Message: " + messageResponseDTO);
-        messagingTemplate.convertAndSend("/sub/" + chatNo, messageResponseDTO);
+        messagingTemplate.convertAndSend("/topic/msg" + chatNo, messageResponseDTO);
     }
-}
 
-// 1. 둘 다 몽고 : 속도 때문에
-// 2. 오라클 + 몽고 : 데이터 유실 때문에
-// 오라클 : 채팅리스트 , 몽고 : 채팅메세지
-// 둘다 몽고 : 채팅리스트 채팅메세지
+//    // 특정유저 알람
+//    public void notificationForOne(@Payload MessageResponseDTO messageResponseDTO , @Payload String userNo) {
+//        messagingTemplate.convertAndSend("/topic/one" + userNo, messageResponseDTO);
+//    }
+}
 
