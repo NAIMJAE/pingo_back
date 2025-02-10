@@ -18,7 +18,6 @@ public class UserSwipeDetails {
     private String userName;
     private String userNick;
     private String userGender;
-
     private String imageUrl;
     private String swipeNo;
 }

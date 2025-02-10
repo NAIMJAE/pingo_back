@@ -18,11 +18,24 @@ public enum ExceptionCode {
     INVALID_USER_BIRTH(409, "INVALID_USER_BIRTH", "유저 생년월일이 유효하지 않습니다."),
     SIGN_UP_FAIL(400, "SIGN_UP_FAIL", "회원가입에 실패했습니다"),
 
+    // SWIPE
+    DUPLICATE_SWIPE_NO(409, "SWIPE_NO_DUPLICATE", "스와이프 번호가 이미 존재합니다."),
+    INVALID_SWIPE_REQUEST(400, "INVALID_SWIPE_REQUEST", "잘못된 스와이프 요청 데이터입니다."),
+    MISSING_SWIPE_TYPE(400, "SWIPE_TYPE_MISSING", "스와이프 타입이 제공되지 않았습니다."),
+    SWIPE_SAVE_FAILED(500, "SWIPE_SAVE_FAILED", "스와이프 저장 중 오류 발생"),
+    MISSING_TARGET_USER_NO(400, "TARGET_USER_NO_MISSING", "스와이프 대상 사용자 번호가 제공되지 않았습니다."),
+
+    // LOCATION
+    MISSING_USER_NO(400, "USER_NO_MISSING", "사용자 번호가 제공되지 않았습니다."),
+    MISSING_LOCATION_INFO(400, "LOCATION_INFO_MISSING", "위치 정보가 제공되지 않았습니다."),
+    LOCATION_UPDATE_FAILED(500, "LOCATION_UPDATE_FAILED", "위치 업데이트 중 오류 발생"), // Redis 또는 DB 저장 오류
+
     // FILE
     FILE_UPLOAD_FAIL(422, "FILE_UPLOAD_FAIL", "파일 업로드에 실패했습니다."),
     DUPLICATE_IMAGE_NO(409, "DUPLICATE_IMAGE_NO", "중복된 이미지입니다."),
 
     ;
+
 
     private final int status;
     private final String code;

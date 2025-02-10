@@ -16,7 +16,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/permit/mypageinfo")
+    @GetMapping("/mypageinfo")
     public ResponseEntity<?> getMyPageInfo(@RequestParam("userNo") String userNo) {
 
         return userService.getUserInfo(userNo);

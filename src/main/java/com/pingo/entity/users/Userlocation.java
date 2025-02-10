@@ -16,5 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Userlocation {
     private String userNo;
-
+    private double latitude;
+    private double longitude;
+    private LocalDateTime last_updated;
 }

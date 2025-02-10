@@ -26,7 +26,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("doFilterInternal.........11");
         // 요청 주소에서 마지막 문자열 추출
         String uri = request.getRequestURI();
         int i = uri.lastIndexOf("/");
@@ -34,19 +33,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰 추출
         String token = request.getHeader(AUTH_HEADER);
-        log.info("token : " + token);
-        log.info("doFilterInternal.........22");
+        log.info("doFilterInternal...token : " + token);
 
         // 토큰 검사
         if (token != null) {
 
             try {
                 jwtProvider.validateToken(token);
-                log.info("doFilterInternal.........33");
 
                 // 자동 로그인 체크 (특정 URL 요청일 때만 수행)
                 if (path.equals("/auto-signin")) {
-                    log.info("자동 로그인 체크 요청 감지...");
+                    log.info("doFilterInternal...자동 로그인 체크 감지");
 
                     Claims claims = jwtProvider.getClaims(token);
                     String userNo = (String) claims.get("userNo");
@@ -59,14 +56,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     // JSON 데이터 생성
                     String jsonResponse = "{ \"data\": { \"message\": \"자동 로그인 성공\", \"userNo\": \"" + userNo + "\", \"userRole\": \"" + userRole + "\" } }";
-
                     response.getWriter().write(jsonResponse);
                     return;
                 }
 
                 // refresh 요청일 경우(새로운 access token 발급 요청)
                 if (path.equals("/refresh")) {
-                    log.info("doFilterInternal.........44");
+                    log.info("doFilterInternal...리프레쉬 토큰 감지");
 
                     Claims claims = jwtProvider.getClaims(token);
                     String userNo = (String) claims.get("userNo");
@@ -88,15 +84,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 e.sendResponseError(response);
                 return;
             }
-            log.info("doFilterInternal.........55");
-
             // 시큐리티 인증 처리
             Authentication authentication = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("doFilterInternal.........66");
+            log.info("doFilterInternal...시큐리티 처리 완료");
 
         }
-        log.info("doFilterInternal.........77");
+        log.info("doFilterInternal...JWT토큰 인증 완료");
 
         // 다음 필터 이동
         filterChain.doFilter(request, response);

@@ -1,14 +1,20 @@
 package com.pingo.service.mainService;
 
+import com.pingo.entity.users.Userlocation;
+import com.pingo.exception.BusinessException;
+import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.LocationMapper;
 import com.pingo.util.GeoUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class LocationService {
@@ -16,30 +22,74 @@ public class LocationService {
     private final LocationMapper locationMapper;
     private final StringRedisTemplate stringRedisTemplate;
 
+
     // 유저 위치 저장
-    public void updateUserLocation(String userNo, double latitude, double longitude) {
-        Point newPoint = new Point(longitude, latitude);
-
-        // 1. Redis에 위치 저장
-        stringRedisTemplate.opsForGeo().add("geo:user_locations", newPoint, userNo);
-
-        // 2. 기존 위치 가져오기
-        List<Point> existingPoints = stringRedisTemplate.opsForGeo().position("geo:user_locations", userNo);
-        Point previousPoint = (existingPoints == null || existingPoints.isEmpty()) ? null : existingPoints.get(0);
-
-        boolean shouldUpdateDatabase = false;
-        if (previousPoint != null) {
-            double distance = GeoUtils.calculateDistance(previousPoint, newPoint);
-            if (distance >= 1.0) { // 1km 이상 이동 시만 DB 저장
-                shouldUpdateDatabase = true;
-            }
-        } else {
-            shouldUpdateDatabase = true;
+    @Transactional
+    public void updateUserLocation(String userNo, Double latitude, Double longitude) {
+        // 1. 유효성 검사
+        if (userNo == null || userNo.trim().isEmpty()) {
+            log.error("[오류] 사용자 번호 없음.");
+            throw new BusinessException(ExceptionCode.MISSING_USER_NO);
         }
 
-        // 3. 일정 거리 이상 이동한 경우에만 DB 저장
-        if (shouldUpdateDatabase) {
+        if (latitude == null || longitude == null) {
+            log.error("[오류] 위치 정보 없음.");
+            throw new BusinessException(ExceptionCode.MISSING_LOCATION_INFO);
+        }
+
+        Point newPoint = new Point(longitude, latitude);
+        log.info("[위치 저장 요청] userNo: {}, latitude: {}, longitude: {}", userNo, latitude, longitude);
+
+        try {
+            // 1. Redis에서 기존 위치 가져오기
+            List<Point> existingPoints = stringRedisTemplate.opsForGeo().position("geo:user_locations", userNo);
+            Point previousPoint = (existingPoints == null || existingPoints.isEmpty()) ? null : existingPoints.get(0);
+
+            // 2. Redis에 없으면 Oracle에서 조회하여 다시 Redis에 저장
+            if (previousPoint == null) {
+                log.info("[Redis 미스] Redis에 데이터 없음 → Oracle에서 조회");
+                Userlocation oracleLocation = locationMapper.getUserLocation(userNo);
+
+                if (oracleLocation != null) {
+                    previousPoint = new Point(oracleLocation.getLongitude(), oracleLocation.getLatitude());
+                    stringRedisTemplate.opsForGeo().add("geo:user_locations", previousPoint, userNo);
+                    log.info("[Redis 동기화] Oracle 데이터 Redis에 캐싱 완료 userNo: {}", userNo);
+                } else {
+                    log.info("[최초 위치 저장] Oracle에도 데이터 없음 → 새로운 데이터 삽입");
+                    locationMapper.updateUserLocation(userNo, latitude, longitude);
+                    stringRedisTemplate.opsForGeo().add("geo:user_locations", newPoint, userNo);
+                    log.info("[Oracle & Redis 삽입 완료] userNo: {} -> ({}, {})", userNo, latitude, longitude);
+                    return; // INSERT 후 종료
+                }
+            }
+
+            // 3. Oracle에 없는 경우 예외 처리 (Redis에는 있는데 Oracle에 없는 상태)
+            Userlocation oracleLocation = locationMapper.getUserLocation(userNo);
+            if (oracleLocation == null) {
+                log.warn("[데이터 불일치] Redis에는 있지만 Oracle에 없음 → Oracle에 삽입");
+                locationMapper.updateUserLocation(userNo, latitude, longitude);
+                log.info("[Oracle 삽입 완료] userNo: {} -> ({}, {})", userNo, latitude, longitude);
+                return; // INSERT 후 종료
+            }
+
+            // 4. 위치 비교 후 500m 이상 이동 시만 Oracle 업데이트 실행
+            if (previousPoint != null) {
+                double distance = GeoUtils.calculateDistance(previousPoint, newPoint);
+                log.info("[거리 계산] userNo: {}, 거리: {} km", userNo, distance);
+
+                if (distance < 0.5) {
+                    log.info("[Oracle 업데이트 스킵] 500m 미만 이동으로 DB 업데이트 안 함.");
+                    return;
+                }
+            }
+
+            // 5. Oracle에 위치 저장 (MERGE INTO 사용)
             locationMapper.updateUserLocation(userNo, latitude, longitude);
+            log.info("[Oracle 위치 저장 완료] userNo: {} -> ({}, {})", userNo, latitude, longitude);
+
+        } catch (Exception e) {
+            log.error("[위치 저장 오류] userNo: {}, 오류: {}", userNo, e.getMessage(), e);
+            throw new BusinessException(ExceptionCode.LOCATION_UPDATE_FAILED);
         }
     }
 
