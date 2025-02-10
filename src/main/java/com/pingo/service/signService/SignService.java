@@ -164,8 +164,6 @@ public class SignService {
             String imageUrl = imageService.imageUpload(profileImage, userImagePath, imageNo);
 
             // 3-2. 이미지 디비에 저장하기
-            // UserImage 테이블에 필요한 정보 가지고 이미지 정보 저장시키기
-            // 위에 만들어둔 UserImage 객체 사용하면 되겠찌?
             signMapper.saveProfileImage(imageNo, imageUrl, "T", validatedUsers.getUserNo());
 
             ///////////4,5 번은 안해도 됨////////////
@@ -179,8 +177,8 @@ public class SignService {
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));   // HTTP 통신 객체를 생성
 
         }catch (Exception e) {
-            // 일단 생일 에러로 해놨는데 알맞은 에러 만들어서 넣기 (포괄적인 에러코드)
-            throw new BusinessException(ExceptionCode.INVALID_USER_BIRTH);
+            log.error(e.getMessage());
+            throw new BusinessException(ExceptionCode.SIGN_UP_FAIL);
         }
     }
 

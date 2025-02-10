@@ -26,7 +26,8 @@ public class ImageService {
             String projectRootPath = System.getProperty("user.dir");
 
             // 파일 객체를 생성 (File 클래스 사용)
-            String uploadDir = projectRootPath + File.separator + "uploads" + File.separator + "images" + File.separator + imagePath + File.separator;
+            String uploadDbDir = File.separator + "images" + File.separator + imagePath + File.separator;
+            String uploadDir = projectRootPath + File.separator + "uploads" + uploadDbDir;
             File uploadFolder = new File(uploadDir);
 
             log.info("imageUpload........22");
@@ -56,7 +57,7 @@ public class ImageService {
 
             log.info("imageFullName : " + imageFullName);
 
-            return uploadDir + imageFullName;
+            return uploadDbDir + imageFullName;
         } catch (Exception e) {
             throw new BusinessException(ExceptionCode.FILE_UPLOAD_FAIL);
         }
