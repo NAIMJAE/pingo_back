@@ -1,5 +1,6 @@
 package com.pingo.service.mainService;
 
+import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.profile.MainProfileResponseDTO;
 import com.pingo.entity.users.Userlocation;
 import com.pingo.exception.BusinessException;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,24 +99,24 @@ public class LocationService {
 
 
     // 반경 내 유저 검색
-    public List<MainProfileResponseDTO> getNearbyUsers(String userNo, int distanceKm) {
-        log.info("🔍 getNearbyUsers 호출 - userNo: {}, distanceKm: {}", userNo, distanceKm);
+    public ResponseEntity<?> getNearbyUsers(String userNo, int distanceKm) {
+        log.info("getNearbyUsers 호출 - userNo: {}, distanceKm: {}", userNo, distanceKm);
 
         List<MainProfileResponseDTO> users = locationMapper.findNearbyUsers(userNo, distanceKm);
-        log.info("🔍 검색된 유저 수: {}", users.size());
+        log.info("검색된 유저 수: {}", users.size());
 
         users.forEach(user -> {
             // 나이정보 set
-//            user.setAge(user.calculateAge(user.getUserBirth()));
-            log.info("👤 유저 정보 - userNo: {}, userName: {}, images: {}, age: {}, status:{}",
-                    user.getUserNo(), user.getUserName(), user.getImages() , user.getAge(), user.getStatus());
+            user.calculateAge(user.getUserBirth());
+            log.info("유저 정보 - userNo: {}, userName: {}, images: {}, age: {}, status:{}, distance:{}",
+                    user.getUserNo(), user.getUserName(), user.getImages() , user.getAge(), user.getStatus(), user.getDistance());
 
-            // ✅ images를 List<String>으로 변환하여 로그 출력
-            List<String> imageList = user.getImagesAsList();
-            log.info("🖼️ 변환된 이미지 리스트 - userNo: {}, images: {}", user.getUserNo(), imageList);
+            //  images를 List<String>으로 변환하여 로그 출력
+            user.getImagesAsList();
+            log.info("변환된 이미지 리스트 - userNo: {}, images: {}", user.getUserNo(), user.getImageList());
         });
 
-        log.info("✅ 최종 유저 목록 반환 완료");
-        return users;
+        log.info("최종 유저 목록 반환 완료");
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", users));
     }
 }

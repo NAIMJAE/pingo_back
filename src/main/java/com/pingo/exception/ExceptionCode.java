@@ -26,6 +26,7 @@ public enum ExceptionCode {
 
     // LOCATION
     MISSING_USER_NO(400, "USER_NO_MISSING", "사용자 번호가 제공되지 않았습니다."),
+    MISSING_BIRTH_INFO(400, "BIRTH_INFO_MISSING", "생년월일 정보가 제공되지 않았습니다."),
     MISSING_LOCATION_INFO(400, "LOCATION_INFO_MISSING", "위치 정보가 제공되지 않았습니다."),
     LOCATION_UPDATE_FAILED(500, "LOCATION_UPDATE_FAILED", "위치 업데이트 중 오류 발생"), // Redis 또는 DB 저장 오류
 

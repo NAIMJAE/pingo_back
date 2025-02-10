@@ -33,11 +33,13 @@ public class LocationController {
     }
 
     // 반경 내 유저 검색 API
-    @GetMapping("/permit/nearby")
-    public List<MainProfileResponseDTO> getNearbyUsers(
+    @GetMapping("/user/nearby")
+    public ResponseEntity<?>  getNearbyUsers(
             @RequestParam String userNo,
             @RequestParam int distanceKm
     ) {
+        log.info("유저 검색 api 입성");
+        log.info("파라미터 확인 : " + userNo + distanceKm);
         return locationService.getNearbyUsers(userNo, distanceKm);
     }
 }
