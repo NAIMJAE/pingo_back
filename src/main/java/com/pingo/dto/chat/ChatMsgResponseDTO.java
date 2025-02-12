@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @Setter
 @Getter
-public class MessageResponseDTO {
+public class ChatMsgResponseDTO {
     private String messageNo;
     private String chatNo;
     private String fromId;

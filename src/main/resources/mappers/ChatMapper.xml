@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pingo.mapper.ChatMapper">
+    <select id="selectChatRoom" parameterType="String" resultType="com.pingo.dto.chat.ChatRoomDTO">
+        SELECT cu."userNo", cu."roomId", ui."imageUrl" FROM "chatUser" cu
+        LEFT JOIN "userImage" ui ON cu."userNo" = ui."userNo"
+        WHERE "roomId" IN (SELECT "roomId" FROM "chatUser" WHERE "userNo" = #{userNo})
+        AND cu."userNo" != #{userNo}
+    </select>
+</mapper>
