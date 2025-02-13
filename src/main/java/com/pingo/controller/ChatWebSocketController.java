@@ -1,6 +1,6 @@
 package com.pingo.controller;
 
-import com.pingo.dto.chat.ChatMsgResponseDTO;
+import com.pingo.dto.chat.ChatMsgDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -25,7 +25,7 @@ public class ChatWebSocketController {
 
     // 채팅방
     @MessageMapping("/msg/{roomId}") // pub 클라이언트 -> 서버로 메시지 전송 / WebsocketConfig prefixes에서 pub 적용한 것 삭제
-    public void chatMessage(@DestinationVariable String roomId, @Payload ChatMsgResponseDTO messageResponseDTO) {
+    public void chatMessage(@DestinationVariable String roomId, @Payload ChatMsgDTO messageResponseDTO) {
         log.info("Chat Message: " + messageResponseDTO);
         messagingTemplate.convertAndSend("/topic/msg" + roomId, messageResponseDTO);
     }

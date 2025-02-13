@@ -5,9 +5,13 @@
 
 <mapper namespace="com.pingo.mapper.ChatMapper">
     <select id="selectChatRoom" parameterType="String" resultType="com.pingo.dto.chat.ChatRoomDTO">
-        SELECT cu."userNo", cu."roomId", ui."imageUrl" FROM "chatUser" cu
-        LEFT JOIN "userImage" ui ON cu."userNo" = ui."userNo"
+        SELECT cu."userNo", cu."roomId", ui."imageUrl", us."userName" FROM "chatUser" cu
+        LEFT JOIN "userImage" ui ON cu."userNo" = ui."userNo" AND ui."imageProfile" = 'T'
+        JOIN "users" us ON cu."userNo" = us."userNo"
         WHERE "roomId" IN (SELECT "roomId" FROM "chatUser" WHERE "userNo" = #{userNo})
         AND cu."userNo" != #{userNo}
     </select>
 </mapper>
+
+
+<!--imageProfile == T 인것을 조회-->
