@@ -1,8 +1,10 @@
-package com.pingo.service.userService;
+package com.pingo.service;
 
 import com.pingo.dto.ResponseDTO;
+import com.pingo.entity.users.UserImage;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
+import com.pingo.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
+/**
+ * - 프로젝트 내에서 이미지 저장, 삭제, 수정을 처리하기 위한 클래스
+ * - 일종의 util 클래스
+ * - 특정 기능에 국한된 것이 아닌 프로젝트의 모든 부분에서 호출해서 사용하는 클래스
+ */
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ImageService {
-
+    
     // 이미지 서버에 저장하기 [이미지 객체, 이미지 저장 경로, 파일 저장 이름]
     public String imageUpload(MultipartFile image, String imagePath, String imageName) {
 
@@ -63,7 +71,6 @@ public class ImageService {
         }
     }
 
-    // 이미지 삭제
 
 
 

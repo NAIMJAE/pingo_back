@@ -5,6 +5,7 @@
 
 <mapper namespace="com.pingo.mapper.UserMapper">
 
+    <!-- Users 객체 매핑 -->
     <resultMap id="UserInfoResultMap" type="com.pingo.entity.users.UserMypageInfo">
         <association property="users" javaType="com.pingo.entity.users.Users">
             <id column="userNo" property="userNo"/>
@@ -44,7 +45,8 @@
         AND U."userNo" = #{userNo}
 
     </select>
-    
+
+    <!-- 유저번호에 해당하는 이미지 조회 -->
     <select id="getUserImages" parameterType="map" resultType="com.pingo.entity.users.UserImage">
 
         SELECT "imageNo", "imageUrl", "imageProfile", "userNo"
@@ -52,5 +54,32 @@
         WHERE "userNo" = #{userNo}
 
     </select>
+    
+    <!-- 유저 대표이미지를 서브이미지로 설정 -->
+    <update id="setMainImageAsSubImage" parameterType="map">
+
+        UPDATE "userImage"
+        SET "imageProfile" = 'F'
+        WHERE "imageNo" = #{currentMainImageNo}
+
+    </update>
+
+    <!-- 선택한 서브이미지를 대표이미지로 설정 -->
+    <update id="setSubImageAsMainImage" parameterType="map">
+
+        UPDATE "userImage"
+        SET "imageProfile" = 'T'
+        WHERE "imageNo" = #{newMainImageNo}
+
+    </update>
+
+    <!-- 유저 이미지 추가 -->
+    <insert id="addUserImage" parameterType="com.pingo.entity.users.UserImage">
+
+        INSERT INTO "userImage" ("imageNo", "imageUrl", "imageProfile", "userNo")
+        VALUES (#{imageNo}, #{imageUrl}, #{imageProfile}, #{userNo})
+
+    </insert>
+
 
 </mapper>

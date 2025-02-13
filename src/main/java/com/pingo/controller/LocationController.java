@@ -2,7 +2,6 @@ package com.pingo.controller;
 
 import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.location.LocationRequest;
-import com.pingo.dto.profile.MainProfileResponseDTO;
 import com.pingo.service.mainService.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
