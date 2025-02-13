@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pingo.mapper.CommunityMapper">
+
+    <!-- 정렬 기준에 따라 장소 리뷰 조회 -->
+    <select id="selectPlaceReviewWithSort" parameterType="map" resultType="com.pingo.dto.community.PlaceReviewDTO">
+        SELECT * FROM
+        (
+            SELECT PR.*, UR."userNick", UI."imageUrl" FROM "placeReview" PR
+            JOIN "users" UR
+            ON PR."userNo" = UR."userNo"
+            JOIN "userImage" UI
+            ON PR."userNo" = UI."userNo"
+            WHERE PR."category" = #{cateSort}
+            AND UI."imageProfile" = 'T'
+            <trim prefix="ORDER BY" prefixOverrides=",">
+                <if test="searchSort.equals('popular')">
+                    PR."heart" DESC
+                </if>
+                <if test="searchSort.equals('newest')">
+                    PR."regDate" ASC
+                </if>
+                <if test="searchSort == null or searchSort == ''">
+                    PR."heart" DESC  <!-- 기본 정렬 -->
+                </if>
+            </trim>
+        )
+        WHERE ROWNUM <![CDATA[<=]]> 10
+    </select>
+
+    <!-- 검색어로 장소 리뷰 조회 -->
+    <select id="selectPlaceReviewWithKeyword" parameterType="map" resultType="com.pingo.dto.community.PlaceReviewDTO">
+        SELECT PR.*, UR."userNick", UI."imageUrl" FROM "placeReview" PR
+        JOIN "users" UR
+        ON PR."userNo" = UR."userNo"
+        JOIN "userImage" UI
+        ON PR."userNo" = UI."userNo"
+        WHERE PR."addressName" = #{keyword}
+        AND UI."imageProfile" = 'T'
+    </select>
+
+</mapper>
