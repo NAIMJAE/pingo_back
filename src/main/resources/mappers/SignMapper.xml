@@ -36,10 +36,4 @@
 
     </insert>
 
-    <insert id="saveProfileImage" parameterType="com.pingo.entity.users.UserImage">
-
-        INSERT INTO "userImage" ("imageNo", "imageUrl", "imageProfile", "userNo")
-        VALUES (#{imageNo}, #{imageUrl}, #{imageProfile}, #{userNo})
-
-    </insert>
 </mapper>

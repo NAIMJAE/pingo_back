@@ -25,7 +25,4 @@ public interface SignMapper {
 
     // 회원가입 유저정보테이블 추가
     void insertUserInfoForSignUp(UserInfo validatedUserInfo);
-
-    // 회원가입 이미지 추가
-    void saveProfileImage(@Param("imageNo") String imageNo, @Param("imageUrl") String imageUrl, @Param("imageProfile") String bool, @Param("userNo") String userNo);
 }

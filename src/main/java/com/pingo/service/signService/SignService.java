@@ -11,11 +11,12 @@ import com.pingo.entity.users.Users;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.SignMapper;
+import com.pingo.mapper.UserMapper;
 import com.pingo.security.MyUserDetails;
 import com.pingo.security.jwt.JwtProvider;
 import com.pingo.service.mainService.LocationService;
 import com.pingo.util.RedisTestService;
-import com.pingo.service.userService.ImageService;
+import com.pingo.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,7 @@ import java.util.Map;
 public class SignService {
 
     private final SignMapper signMapper;
+    private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
@@ -164,7 +166,7 @@ public class SignService {
             String imageUrl = imageService.imageUpload(profileImage, userImagePath, imageNo);
 
             // 3-2. 이미지 디비에 저장하기
-            signMapper.saveProfileImage(imageNo, imageUrl, "T", validatedUsers.getUserNo());
+            userMapper.addUserImage(imageNo, imageUrl, "T", validatedUsers.getUserNo());
 
             ///////////4,5 번은 안해도 됨////////////
             // 4. 유저 키워드 저장하기
