@@ -18,4 +18,5 @@ public class ChatMsgDTO {
     private boolean isRead;
     private String msgType;
     private LocalDateTime msgTime;
+
 }

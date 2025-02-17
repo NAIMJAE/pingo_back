@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,4 +26,15 @@ public class ChatMsgService {
         return chatMsgDTO;
 
     }
+
+    public String selectLastMessage(String roomId){
+        List<String> lastMessages = chatMsgRepository.findByMsgContentByRoomId(roomId);
+        if (lastMessages.isEmpty()) {
+            return "0"; //
+        }
+
+        return lastMessages.get(0); //
+    }
+
+
 }
