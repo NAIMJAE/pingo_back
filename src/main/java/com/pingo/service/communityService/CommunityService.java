@@ -1,6 +1,7 @@
 package com.pingo.service.communityService;
 
 import com.pingo.dto.ResponseDTO;
+import com.pingo.dto.community.DatingGuideDTO;
 import com.pingo.dto.community.PlaceReviewDTO;
 import com.pingo.entity.community.PlaceReview;
 import com.pingo.mapper.CommunityMapper;
@@ -46,12 +47,21 @@ public class CommunityService {
 
         // 내용 저장
         placeReview.insertThumb(imageUrl);
-
-        log.info("저장직전 placeReview : " + placeReview);
-
         communityMapper.insertPlaceReview(placeReview);
         
         return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", true));
+    }
+
+    // DatingGuide 최초 조회
+    public ResponseEntity<?> selectDatingGuideForInit() {
+        List<DatingGuideDTO> datingGuideList = communityMapper.selectDatingGuideForInit();
+
+        log.info("datingGuideList : " + datingGuideList);
+        
+        // 조회 확인 했음
+        // 이거 이제 Map 구조로 변경해서 프론트로 날리면 됨
+        
+        return null;
     }
 
 }

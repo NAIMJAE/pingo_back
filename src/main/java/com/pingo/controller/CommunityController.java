@@ -39,4 +39,10 @@ public class CommunityController {
 
         return communityService.insertPlaceReview(placeReview, placeImage);
     }
+
+    // DatingGuide 최초 조회
+    @GetMapping("permit/community/guide/init")
+    public ResponseEntity<?> selectDatingGuideForInit() {
+        return communityService.selectDatingGuideForInit();
+    }
 }

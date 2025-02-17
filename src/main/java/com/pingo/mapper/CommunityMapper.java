@@ -1,5 +1,6 @@
 package com.pingo.mapper;
 
+import com.pingo.dto.community.DatingGuideDTO;
 import com.pingo.dto.community.PlaceReviewDTO;
 import com.pingo.entity.community.PlaceReview;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,4 +17,6 @@ public interface CommunityMapper {
     public List<PlaceReviewDTO> selectPlaceReviewWithKeyword(@Param("keyword") String keyword);
 
     public void insertPlaceReview(PlaceReview placeReview);
+
+    public List<DatingGuideDTO> selectDatingGuideForInit();
 }
