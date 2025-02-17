@@ -11,6 +11,8 @@ import lombok.*;
 @Getter
 public class ChatUserDTO {
 
-    private String userId;
-    private String sessionId;
+    private String userNo;
+    private String roomId;
+    private String imageUrl;
+    private String userName;
 }

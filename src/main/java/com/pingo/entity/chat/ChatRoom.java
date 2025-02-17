@@ -2,6 +2,7 @@ package com.pingo.entity.chat;
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @ToString
@@ -13,6 +14,7 @@ public class ChatRoom {
 
     private String roomId;
     private String roomStatus;
+
 
 
     public void createRoomId() {
