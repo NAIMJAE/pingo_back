@@ -47,9 +47,11 @@ public class UserController {
 
     // 유저 이미지 삭제
     @DeleteMapping("/user/image")
-    public ResponseEntity<?> deleteUserImage(@RequestParam("imageNo") String imageNo) { // 파라미터 받는 거 변경
+    public ResponseEntity<?> deleteUserImage(@RequestBody Map<String, String> reqData) { // 파라미터 받는 거 변경
 
-        return userService.deleteUserImage(imageNo);
+        String ImageNoForDelete = (String) reqData.get("ImageNoForDelete");
+
+        return userService.deleteUserImage(ImageNoForDelete);
     }
 
 }

@@ -65,7 +65,7 @@
     </update>
 
     <!-- 선택한 서브이미지를 대표이미지로 설정 -->
-    <update id="setSubImageAsMainImage" parameterType="map">=
+    <update id="setSubImageAsMainImage" parameterType="map">
         UPDATE "userImage"
         SET "imageProfile" = 'T'
         WHERE "imageNo" = #{newMainImageNo}
@@ -77,5 +77,11 @@
         VALUES (#{imageNo}, #{imageUrl}, #{imageProfile}, #{userNo})
     </insert>
 
+    <delete id="deleteUserImage" parameterType="map">
+
+        DELETE FROM "userImage"
+        WHERE "imageNo" = #{imageNoForDelete}
+
+    </delete>
 
 </mapper>

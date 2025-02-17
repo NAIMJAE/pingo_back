@@ -21,6 +21,9 @@ public interface UserMapper {
     // 선택한 서브이미지를 대표이미지로 설정
     void setSubImageAsMainImage(@Param("newMainImageNo") String newMainImageNo);
 
-    // 회원가입 이미지 추가
+    // 유저 이미지 추가
     void addUserImage(@Param("imageNo") String imageNo, @Param("imageUrl") String imageUrl, @Param("imageProfile") String bool, @Param("userNo") String userNo);
+
+    // 유저 이미지 삭제
+    void deleteUserImage(@Param("imageNoForDelete") String imageNoForDelete);
 }
