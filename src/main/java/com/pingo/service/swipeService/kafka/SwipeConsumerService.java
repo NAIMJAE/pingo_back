@@ -6,6 +6,7 @@ import com.pingo.entity.swipe.Swipe;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.SwipeMapper;
+import com.pingo.service.swipeService.MatchService;
 import com.pingo.util.KafkaTopics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ public class SwipeConsumerService {
 
     private final SwipeMapper swipeMapper;
     private final ObjectMapper objectMapper;
+    private final MatchService matchService;
 
     @KafkaListener(topics = KafkaTopics.SWIPE_EVENTS, groupId = "swipe-consumer-group")
     public void consumeSwipeEvent(ConsumerRecord<String, String> record, Acknowledgment ack) {
@@ -48,9 +50,9 @@ public class SwipeConsumerService {
 
             // 1) PING 저장
             CompletableFuture<Void> saveSwipeFuture = CompletableFuture.runAsync(() -> { // runAsync() 반환값이 없는 비동기 처리
-                Swipe swipe = new Swipe().toInsertEntity(finalSwipeRequest);
+                Swipe swipe = new Swipe(finalSwipeRequest);
                 swipeMapper.insertUserSwipe(swipe);
-                log.info("✅ PING 저장 완료: {} -> {}, type: {}", fromUserNo, toUserNo, swipeType);
+                log.info("PING 저장 완료: {} -> {}, type: {}", fromUserNo, toUserNo, swipeType);
             });
 
             // 2) PANG이면 매칭 조회 생략, PING/SUPERPING이면 매칭 조회 실행
@@ -69,6 +71,8 @@ public class SwipeConsumerService {
                 saveSwipeFuture.thenCombine(checkMatchFuture, (voidResult, isMatched) -> {
                             if (isMatched) {
                                 log.info("매칭 성공! {} <-> {}", fromUserNo, toUserNo);
+                                // 매칭 성공시 매칭관련 작업 시작
+                                matchService.processMatch(fromUserNo, toUserNo);
                             } else {
                                 log.info("매칭 실패! {} <-> {}", fromUserNo, toUserNo);
                             }
