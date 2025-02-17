@@ -93,6 +93,7 @@ public class SignService {
 
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",userMap));
         } catch (Exception e) {
+            log.info(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());
