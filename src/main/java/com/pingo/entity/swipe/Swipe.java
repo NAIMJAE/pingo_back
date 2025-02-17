@@ -23,14 +23,13 @@ public class Swipe {
 
 
     // from, to 유저 둘다 처음 스와이프 엔티티
-    public Swipe toInsertEntity(SwipeRequest swipeRequest) {
-        return Swipe.builder()
-                .swipeNo(createSwipeNo())
-                .toUserNo(swipeRequest.getToUserNo())
-                .fromUserNo(swipeRequest.getFromUserNo())
-                .swipeType(swipeRequest.getSwipeType())
-                .swipeTime(LocalDateTime.now())
-                .build();
+    public Swipe(SwipeRequest swipeRequest) {
+        this.swipeNo = createSwipeNo();
+        this.toUserNo = swipeRequest.getToUserNo();
+        this.fromUserNo = swipeRequest.getFromUserNo();
+        this.swipeType = swipeRequest.getFromUserNo();
+        this.swipeTime = LocalDateTime.now();
+
     }
 
     // swipeNo 생성 로직 (중복 호출시 예외 처리)

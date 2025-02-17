@@ -7,6 +7,7 @@ import com.pingo.entity.swipe.Swipe;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.SwipeMapper;
+import com.pingo.service.swipeService.kafka.SwipeProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SwipeService {
 
     private final SwipeMapper swipeMapper;
+    private final SwipeProducerService swipeProducerService;
 
     // 스와이프 저장
     public ResponseEntity<?> saveSwipe(SwipeRequest swipeRequest) {
@@ -44,21 +46,27 @@ public class SwipeService {
             throw new BusinessException(ExceptionCode.MISSING_SWIPE_TYPE);
         }
 
-        try {
-            Swipe swipe = new Swipe().toInsertEntity(swipeRequest);
-            swipeMapper.insertUserSwipe(swipe);
+        // 매개변수 검증을 이렇게 하나로 합칠지 리팩토링 디벨롭 (ㅇ)
+//        if (swipeRequest == null ||
+//                swipeRequest.getFromUserNo() == null || swipeRequest.getFromUserNo().trim().isEmpty() ||
+//                swipeRequest.getToUserNo() == null || swipeRequest.getToUserNo().trim().isEmpty() ||
+//                swipeRequest.getSwipeType() == null || swipeRequest.getSwipeType().trim().isEmpty()) {
+//
+//            log.error("🚨 [오류] 잘못된 스와이프 요청: {}", swipeRequest);
+//            throw new BusinessException(ExceptionCode.INVALID_SWIPE_REQUEST);
+//        }
 
-            log.info("✅ [스와이프 저장 완료] fromUserNo: {}, toUserNo: {}, swipeType: {}",
-                    swipeRequest.getFromUserNo(), swipeRequest.getToUserNo(), swipeRequest.getSwipeType());
+        // Kafka 이벤트 전송
+        swipeProducerService.sendSwipeEvent(
+                swipeRequest.getFromUserNo(),
+                swipeRequest.getToUserNo(),
+                swipeRequest.getSwipeType()
+        );
 
-            // 성공 응답 반환
-            return ResponseEntity.ok().body(ResponseDTO.of("1", "스와이프가 저장되었습니다.", true));
+        //
 
-        } catch (Exception e) {
-            log.error("🚨 [스와이프 저장 오류] fromUserNo: {}, toUserNo: {}, 오류: {}",
-                    swipeRequest.getFromUserNo(), swipeRequest.getToUserNo(), e.getMessage(), e);
-            throw new BusinessException(ExceptionCode.SWIPE_SAVE_FAILED);
-        }
+        // 성공 응답 반환
+        return ResponseEntity.ok().body(ResponseDTO.of("1", "스와이프가 저장되었습니다.", true));
     }
 
 }

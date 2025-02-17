@@ -9,4 +9,13 @@
         INSERT INTO "swipe" ("swipeNo", "toUserNo", "fromUserNo", "swipeType", "swipeTime")
         VALUES (#{swipeNo}, #{toUserNo}, #{fromUserNo}, #{swipeType}, #{swipeTime})
     </insert>
+
+    <!-- 상대방이 나를 PING 했는지 확인 (매칭 여부 조사) -->
+    <select id="isSwipeMatched" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM "swipe"
+        WHERE ("fromUserNo" = #{toUserNo} AND "toUserNo" = #{fromUserNo})
+        AND "swipeType" IN ('PING', 'SUPERPING')
+    </select>
+
 </mapper>
