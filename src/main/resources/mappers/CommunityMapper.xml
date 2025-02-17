@@ -42,4 +42,10 @@
         AND UI."imageProfile" = 'T'
     </select>
 
+    <!-- 장소 리뷰 삽입 -->
+    <insert id="insertPlaceReview" parameterType="com.pingo.entity.community.PlaceReview">
+        INSERT INTO "placeReview" ("prNo", "placeName", "thumb", "addressName", "roadAddressName", "userNo", "contents", "category", "latitude", "longitude", "heart")
+        VALUES (#{prNo}, #{placeName}, #{thumb}, #{addressName}, #{roadAddressName}, #{userNo}, #{contents}, #{category}, #{latitude}, #{longitude}, #{heart})
+    </insert>
+
 </mapper>

@@ -35,6 +35,11 @@ public enum ExceptionCode {
     FILE_UPLOAD_FAIL(422, "FILE_UPLOAD_FAIL", "파일 업로드에 실패했습니다."),
     DUPLICATE_IMAGE_NO(409, "DUPLICATE_IMAGE_NO", "중복된 이미지입니다."),
 
+
+
+    // COMMUNITY
+    DUPLICATE_PLACE_REVIEW_NO(409, "DUPLICATE_PLACE_REVIEW_NO", "중복된 리뷰 번호 입니다."),
+    DUPLICATE_REVIEW_IMAGE_NO(409, "DUPLICATE_REVIEW_IMAGE_NO", "중복된 리뷰 이미지 번호 입니다."),
     ;
 
 
