@@ -1,6 +1,10 @@
 package com.pingo.dto.chat;
 
+import com.pingo.document.ChatMsgDocument;
 import lombok.*;
+import org.apache.logging.log4j.message.Message;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,10 +14,8 @@ import lombok.*;
 @Getter
 public class ChatRoomDTO {
 
-    private String userNo;
-    private String roomId;
-    private String imageUrl;
+    private List<ChatUserDTO> chatUser;
+    private List<ChatMsgDTO> message;
     private String lastMessage;
-    private String userName;
 
 }

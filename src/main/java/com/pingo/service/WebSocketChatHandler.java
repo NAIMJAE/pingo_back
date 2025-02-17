@@ -5,6 +5,7 @@ package com.pingo.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pingo.dto.chat.ChatSessionUserDTO;
 import com.pingo.dto.chat.ChatUserDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -24,7 +25,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     // 메세지 보내기
     // 연결 끊기 ( 연결을 끊으면 세션 소멸)
 
-    Map<String, List<ChatUserDTO>> chatRooms = new ConcurrentHashMap<>();
+    Map<String, List<ChatSessionUserDTO>> chatRooms = new ConcurrentHashMap<>();
 
     // JSON 변환을 위한 ObjectMapper
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -36,7 +37,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         String roomId = getRoomId(session);
         String userId = getUserId(session);
 
-        ChatUserDTO chatUserDTO = new ChatUserDTO(userId, sessionId);
+        ChatSessionUserDTO chatUserDTO = new ChatSessionUserDTO(userId, sessionId);
 
         // 키가 존재할 경우 value 변경없이 존재하는 key의 값을 리턴하고
         // 키가 존재하지 않는 경우에는 람다식을 적용한 값을 해당 key에 저장하고 newvalue를 리턴한다.(null일수도 있고 아닐수도 있고)
