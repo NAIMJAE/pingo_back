@@ -2,6 +2,7 @@ package com.pingo.mapper;
 
 import com.pingo.dto.community.DatingGuideDTO;
 import com.pingo.dto.community.PlaceReviewDTO;
+import com.pingo.entity.community.DatingGuide;
 import com.pingo.entity.community.PlaceReview;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -22,4 +23,6 @@ public interface CommunityMapper {
 
     public List<DatingGuideDTO> selectDatingGuideWithSort(@Param("cate") String cate,
                                                             @Param("sort") String sort);
+
+    public void insertDatingGuide(DatingGuide datingGuide);
 }

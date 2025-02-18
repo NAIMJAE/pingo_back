@@ -38,8 +38,11 @@ public enum ExceptionCode {
     // COMMUNITY
     DUPLICATE_PLACE_REVIEW_NO(409, "DUPLICATE_PLACE_REVIEW_NO", "중복된 리뷰 번호 입니다."),
     DUPLICATE_REVIEW_IMAGE_NO(409, "DUPLICATE_REVIEW_IMAGE_NO", "중복된 리뷰 이미지 번호 입니다."),
+    DUPLICATE_DATING_GUIDE_NO(409, "DUPLICATE_DATING_GUIDE_NO", "중복된 가이드 번호 입니다."),
 
-  // MATCHING
+    DUPLICATE_GUIDE_IMAGE_NO(409, "DUPLICATE_GUIDE_IMAGE_NO", "중복된 가이드 이미지 번호 입니다."),
+
+    // MATCHING
     DUPLICATE_MATCH_NO(409, "MATCH_NO_DUPLICATE", "매칭 번호가 이미 존재합니다."),
     MATCHING_FAILED(400, "MATCHING_FAILED", "매칭서비스가 실패되었습니다.");
     ;

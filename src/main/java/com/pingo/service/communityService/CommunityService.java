@@ -4,6 +4,7 @@ import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.community.DatingGuideDTO;
 import com.pingo.dto.community.DatingGuideSearchDTO;
 import com.pingo.dto.community.PlaceReviewDTO;
+import com.pingo.entity.community.DatingGuide;
 import com.pingo.entity.community.PlaceReview;
 import com.pingo.mapper.CommunityMapper;
 import com.pingo.service.ImageService;
@@ -58,14 +59,16 @@ public class CommunityService {
     public ResponseEntity<?> selectDatingGuideForInit() {
         List<DatingGuideDTO> datingGuideList = communityMapper.selectDatingGuideForInit();
 
+        // Map 구조로 변환
         Map<String, DatingGuideSearchDTO> guideMap = new HashMap<>();
         for (DatingGuideDTO each : datingGuideList) {
-            if (!guideMap.containsKey(each.getCateName())) {//
+            if (!guideMap.containsKey(each.getCateName())) {
                 guideMap.put(each.getCateName(), new DatingGuideSearchDTO(each.getCateName(), each.getCateNo()));
             }
             DatingGuideSearchDTO dgsDTO = guideMap.get(each.getCateName());
             dgsDTO.addDatingGuideList(each);
         }
+
         return ResponseEntity.ok().body(ResponseDTO.of("1","성공",guideMap));
     }
 
@@ -74,6 +77,21 @@ public class CommunityService {
         List<DatingGuideDTO> datingGuideList = communityMapper.selectDatingGuideWithSort(cate, sort);
 
         return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", datingGuideList));
+    }
+
+    // DatingGuide 작성
+    public ResponseEntity<?> insertDatingGuide(DatingGuide datingGuide, MultipartFile guideImage) {
+        // 이미지 저장
+        datingGuide.createDgNo();
+        String thumbName = datingGuide.createThumbName();
+        String placeImagePath = "datingGuideImages" + File.separator + datingGuide.getDgNo();
+        String imageUrl = imageService.imageUpload(guideImage, placeImagePath, thumbName);
+
+        // 내용 저장
+        datingGuide.insertThumb(imageUrl);
+        communityMapper.insertDatingGuide(datingGuide);
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", true));
     }
 
 }
