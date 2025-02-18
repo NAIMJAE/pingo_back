@@ -1,5 +1,6 @@
 package com.pingo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.chat.ChatRoomDTO;
 import com.pingo.dto.chat.ChatUserDTO;
@@ -39,7 +40,7 @@ public class ChatRoomController {
     //  final String? imageUrl;
     //  final String? userName;
     @GetMapping("/select/chatRoom")
-    public ResponseEntity<?> selectRoomId(@RequestParam String userNo) {
+    public ResponseEntity<?> selectRoomId(@RequestParam String userNo) throws JsonProcessingException {
         log.info("userNo 가져왔나 : " + userNo);
         // 사용자의 채팅방 목록 모두 가져오기
         List<ChatUserDTO> chatUserDTOS = chatRoomService.selectChatRoom(userNo);

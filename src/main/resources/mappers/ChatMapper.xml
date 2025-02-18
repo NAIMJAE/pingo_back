@@ -11,6 +11,12 @@
         WHERE "roomId" IN (SELECT "roomId" FROM "chatUser" WHERE "userNo" = #{userNo})
         AND cu."userNo" != #{userNo}
     </select>
+
+
+    <select id="selectChatUserList" parameterType="String" resultType="com.pingo.dto.chat.ChatUserListDTO">
+        SELECT "userNo", "roomId" FROM "chatUser"
+        WHERE "roomId" IN (SELECT "roomId" FROM "chatUser" WHERE "userNo" = #{userNo})
+    </select>
 </mapper>
 
 
