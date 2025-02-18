@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Document(collection = "chatMsg")
+@Builder
 public class ChatMsgDocument {
 
     @Id
