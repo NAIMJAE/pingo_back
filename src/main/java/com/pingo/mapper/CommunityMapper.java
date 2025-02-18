@@ -12,11 +12,14 @@ import java.util.List;
 public interface CommunityMapper {
 
     public List<PlaceReviewDTO> selectPlaceReviewWithSort(@Param("cateSort") String cateSort,
-                                                  @Param("searchSort") String searchSort);
+                                                            @Param("searchSort") String searchSort);
 
     public List<PlaceReviewDTO> selectPlaceReviewWithKeyword(@Param("keyword") String keyword);
 
     public void insertPlaceReview(PlaceReview placeReview);
 
     public List<DatingGuideDTO> selectDatingGuideForInit();
+
+    public List<DatingGuideDTO> selectDatingGuideWithSort(@Param("cate") String cate,
+                                                            @Param("sort") String sort);
 }

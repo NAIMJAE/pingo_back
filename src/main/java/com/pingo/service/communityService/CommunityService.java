@@ -2,6 +2,7 @@ package com.pingo.service.communityService;
 
 import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.community.DatingGuideDTO;
+import com.pingo.dto.community.DatingGuideSearchDTO;
 import com.pingo.dto.community.PlaceReviewDTO;
 import com.pingo.entity.community.PlaceReview;
 import com.pingo.mapper.CommunityMapper;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,7 +44,6 @@ public class CommunityService {
         // 이미지 저장
         placeReview.createPrNo();
         String thumbName = placeReview.createThumbName();
-
         String placeImagePath = "placeImages" + File.separator + placeReview.getPrNo();
         String imageUrl = imageService.imageUpload(placeImage, placeImagePath, thumbName);
 
@@ -56,12 +58,22 @@ public class CommunityService {
     public ResponseEntity<?> selectDatingGuideForInit() {
         List<DatingGuideDTO> datingGuideList = communityMapper.selectDatingGuideForInit();
 
-        log.info("datingGuideList : " + datingGuideList);
-        
-        // 조회 확인 했음
-        // 이거 이제 Map 구조로 변경해서 프론트로 날리면 됨
-        
-        return null;
+        Map<String, DatingGuideSearchDTO> guideMap = new HashMap<>();
+        for (DatingGuideDTO each : datingGuideList) {
+            if (!guideMap.containsKey(each.getCateName())) {//
+                guideMap.put(each.getCateName(), new DatingGuideSearchDTO(each.getCateName(), each.getCateNo()));
+            }
+            DatingGuideSearchDTO dgsDTO = guideMap.get(each.getCateName());
+            dgsDTO.addDatingGuideList(each);
+        }
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",guideMap));
+    }
+
+    // 개별 DatingGuide 정렬로 조회
+    public ResponseEntity<?> selectDatingGuideWithSort(String cate, String sort) {
+        List<DatingGuideDTO> datingGuideList = communityMapper.selectDatingGuideWithSort(cate, sort);
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", datingGuideList));
     }
 
 }

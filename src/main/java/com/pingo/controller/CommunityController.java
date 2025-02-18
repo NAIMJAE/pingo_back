@@ -41,8 +41,14 @@ public class CommunityController {
     }
 
     // DatingGuide 최초 조회
-    @GetMapping("permit/community/guide/init")
+    @GetMapping("/community/guide/init")
     public ResponseEntity<?> selectDatingGuideForInit() {
         return communityService.selectDatingGuideForInit();
+    }
+
+    // 개별 DatingGuide 정렬로 조회
+    @GetMapping("/community/guide/sort")
+    public ResponseEntity<?> selectDatingGuideWithSort(@RequestParam("cate") String cate, @RequestParam("sort") String sort) {
+        return communityService.selectDatingGuideWithSort(cate, sort);
     }
 }

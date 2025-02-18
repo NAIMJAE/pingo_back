@@ -20,6 +20,7 @@ public class DatingGuideDTO {
     private int heart;
     private LocalDateTime regDate;
     private String cateName;
+    private int cateNo;
     private String userName;
     private String imageUrl;
 }
