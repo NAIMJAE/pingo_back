@@ -7,11 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -57,5 +56,15 @@ public class CommunityController {
                                                @RequestPart("guideImage") MultipartFile guideImage) {
 
         return communityService.insertDatingGuide(datingGuide, guideImage);
+    }
+
+    // DatingGuide 좋아요
+    @PostMapping("/community/guide/heart")
+    public ResponseEntity<?> checkDatingGuideHeart(@RequestBody Map<String, String> reqData) {
+
+        String userNo = reqData.get("userNo");
+        String dgNo = reqData.get("dgNo");
+
+        return communityService.checkDatingGuideHeart(userNo, dgNo);
     }
 }

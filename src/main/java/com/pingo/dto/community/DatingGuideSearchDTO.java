@@ -13,12 +13,14 @@ import java.util.List;
 @NoArgsConstructor
 public class DatingGuideSearchDTO {
     private String category;
+    private String cateDesc;
     private String sort;
     private int cateNo;
     private List<DatingGuideDTO> datingGuideList;
 
-    public DatingGuideSearchDTO(String category, int cateNo) {
+    public DatingGuideSearchDTO(String category, int cateNo, String cateDesc) {
         this.category = category;
+        this.cateDesc = cateDesc;
         this.sort = "popular";
         this.cateNo = cateNo;
         this.datingGuideList = new ArrayList<>();

@@ -55,8 +55,8 @@
             ROW_NUMBER() OVER (PARTITION BY "category" ORDER BY "heart" DESC) AS rank
             FROM "datingGuide"
         )
-        SELECT RDG."dgNo", RDG."title", RDG."contents", RDG."thumb", RDG."userNo",
-        RDG."heart", RDG."regDate", DGC."cateName", RDG."category" AS "cateNo", US."userName", UI."imageUrl"
+        SELECT RDG."dgNo", RDG."title", RDG."contents", RDG."thumb", RDG."userNo", RDG."heart", RDG."regDate",
+        DGC."cateName", RDG."category" AS "cateNo", US."userName", UI."imageUrl"
         FROM RankedDatingGuide RDG
         JOIN "users" US ON RDG."userNo" = US."userNo"
         JOIN "userImage" UI ON RDG."userNo" = UI."userNo"
@@ -66,19 +66,21 @@
         ORDER BY RDG."category", RDG."heart" DESC
     </select>
 
+    <!-- 카테고리 테이블 조회 -->
+    <select id="selectDatingGuideCate" resultType="com.pingo.entity.community.DatingGuideCate">
+        SELECT * FROM "datingGuideCate"
+    </select>
+
     <!-- 개별 DatingGuide 정렬로 조회 -->
     <select id="selectDatingGuideWithSort" parameterType="map" resultType="com.pingo.dto.community.DatingGuideDTO">
         SELECT * FROM
         (
-            SELECT DG."dgNo", DG."title", DG."contents", DG."thumb", DG."userNo", DGC."cateName" ,DG."category" AS "cateNo",
-            DG."heart", DG."regDate", US."userName", UI."imageUrl"
+            SELECT DG."dgNo", DG."title", DG."contents", DG."thumb", DG."userNo", DG."heart", DG."regDate",
+            DGC."cateName" ,DG."category" AS "cateNo", US."userName", UI."imageUrl"
             FROM "datingGuide" DG
-            JOIN "users" US
-            ON DG."userNo" = US."userNo"
-            JOIN "userImage" UI
-            ON US."userNo" = UI."userNo"
-            JOIN "datingGuideCate" DGC
-            ON DG."category" = DGC."cateId"
+            JOIN "users" US ON DG."userNo" = US."userNo"
+            JOIN "userImage" UI ON US."userNo" = UI."userNo"
+            JOIN "datingGuideCate" DGC ON DG."category" = DGC."cateId"
             WHERE DG."category" = #{cate}
             AND UI."imageProfile" = 'T'
             <trim prefix="ORDER BY" prefixOverrides=",">
@@ -101,4 +103,33 @@
         INSERT INTO "datingGuide" ("dgNo", "title", "contents", "thumb", "category", "userNo", "heart", "regDate")
         VALUES (#{dgNo}, #{title}, #{contents}, #{thumb}, #{category}, #{userNo}, 0, SYSDATE)
     </insert>
+
+    <select id="selectDatingGuideHeart" parameterType="map" resultType="string">
+        SELECT "dgNoStr" FROM "datingGuideHeart"
+        WHERE "userNo" = #{userNo}
+    </select>
+
+    <update id="decreaseHeart" parameterType="map">
+        UPDATE "datingGuide" SET "heart" = "heart" - 1
+        WHERE "dgNo" = #{dgNo}
+    </update>
+
+    <update id="increaseHeart" parameterType="map">
+        UPDATE "datingGuide" SET "heart" = "heart" + 1
+        WHERE "dgNo" = #{dgNo}
+    </update>
+
+    <delete id="deleteDatingGuideHeart" parameterType="map">
+        DELETE FROM "datingGuideHeart" WHERE "userNo" = #{userNo}
+    </delete>
+
+    <select id="updateDatingGuideHeart" parameterType="map">
+        UPDATE "datingGuideHeart" SET "dgNoStr" = #{dgNoStr}
+        WHERE "userNo" = #{userNo}
+    </select>
+
+    <select id="insertDatingGuideHeart" parameterType="map">
+        INSERT INTO "datingGuideHeart" ("userNo", "dgNoStr") VALUES (#{userNo}, #{dgNoStr})
+    </select>
 </mapper>
+
