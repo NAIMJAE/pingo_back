@@ -36,4 +36,8 @@
 
     </insert>
 
+    <insert id="insertUserIntroduction" parameterType="map">
+        INSERT INTO "userIntroduction" ("userNo", "introduction") VALUES (#{userNo}, null)
+    </insert>
+
 </mapper>

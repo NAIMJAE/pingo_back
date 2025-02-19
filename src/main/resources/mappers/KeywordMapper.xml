@@ -31,4 +31,8 @@
         </foreach>
     </select>
 
+    <insert id="insertUserKeywordForSignUp" parameterType="map">
+        INSERT INTO "userKeyword" ("userNo", "my", "favorite") VALUES (#{userNo}, #{userMyKeyword}, #{userFavoriteKeyword})
+    </insert>
+
 </mapper>

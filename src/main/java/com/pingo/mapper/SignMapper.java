@@ -25,4 +25,7 @@ public interface SignMapper {
 
     // 회원가입 유저정보테이블 추가
     void insertUserInfoForSignUp(UserInfo validatedUserInfo);
+
+    // 유저 소개 테이블 정보 추가
+    void insertUserIntroduction(@Param("userNo") String userNo);
 }

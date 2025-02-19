@@ -114,4 +114,8 @@ public class KeywordService {
         return (double) intersection.size() / union.size();
     }
 
+    // [3] User Keyword 저장
+    public void insertUserKeywordForSignUp(String userNo, String userMyKeyword, String userFavoriteKeyword) {
+        keywordMapper.insertUserKeywordForSignUp(userNo, userMyKeyword, userFavoriteKeyword);
+    }
 }
