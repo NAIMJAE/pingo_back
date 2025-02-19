@@ -14,6 +14,7 @@ import com.pingo.mapper.SignMapper;
 import com.pingo.mapper.UserMapper;
 import com.pingo.security.MyUserDetails;
 import com.pingo.security.jwt.JwtProvider;
+import com.pingo.service.keywordServices.KeywordService;
 import com.pingo.service.mainService.LocationService;
 import com.pingo.util.RedisTestService;
 import com.pingo.service.ImageService;
@@ -47,14 +48,13 @@ public class SignService {
     private final LocationService locationService;
     private final RedisTestService redisTestService;
     private final ImageService imageService;
+    private final KeywordService keywordService;
 
 
 
     // 로그인 프로세스 @Transactional 추가 및 위치정보 업데이트 로직 추가 (준혁)
     @Transactional
     public ResponseEntity<?> signInProcess(String userId, String userPw, double latitude, double longitude) {
-        log.info("userId : {}", userId);
-        log.info("userPw : {}", userPw);
 
         try {
             log.info("signInProcess.........11");
@@ -169,24 +169,21 @@ public class SignService {
             // 3-2. 이미지 디비에 저장하기
             userMapper.addUserImage(imageNo, imageUrl, "T", validatedUsers.getUserNo());
 
-            ///////////4,5 번은 안해도 됨////////////
             // 4. 유저 키워드 저장하기
-
+            keywordService.insertUserKeywordForSignUp(validatedUsers.getUserNo(), userSignUpData.getUserMyKeyword(), userSignUpData.getUserFavoriteKeyword());
 
             // 5. 위치정보 저장하기
             locationService.updateUserLocation(validatedUsers.getUserNo(), latitude, longitude);
 
-            // 1 ~ 5 다 성공하면 ok 반환
-            return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));   // HTTP 통신 객체를 생성
+            // 6. 유저 소개 테이블 정보 추가
+            signMapper.insertUserIntroduction(validatedUsers.getUserNo());
+
+            // 다 성공하면 ok 반환
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));
 
         }catch (Exception e) {
             log.error(e.getMessage());
             throw new BusinessException(ExceptionCode.SIGN_UP_FAIL);
         }
-    }
-
-    // 이거 테스트용이라 지우지 말기
-    public ResponseEntity<?> test() {
-        throw new BusinessException(ExceptionCode.INVALID_USER_NAME);
     }
 }

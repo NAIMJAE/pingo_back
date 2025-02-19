@@ -21,4 +21,9 @@ public interface KeywordMapper {
 
     // 회원 키워드 목록 조회 (여러명 Map<String, Object> 구조 인데 Object에는 List<String> 구조로 userNo값)
     public List<UserKeyword> selectMultiUserKeyword(Map<String, Object> params);
+
+    // 회원 키워드 저장 (회원가입)
+    public void insertUserKeywordForSignUp(@Param("userNo") String userNo,
+                                           @Param("userMyKeyword") String userMyKeyword,
+                                           @Param("userFavoriteKeyword") String userFavoriteKeyword);
 }

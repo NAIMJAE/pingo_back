@@ -1,12 +1,8 @@
 package com.pingo.controller;
 
-import com.pingo.dto.ResponseDTO;
-import com.pingo.exception.BusinessException;
-import com.pingo.exception.ExceptionCode;
 import com.pingo.service.signService.SignService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,11 +26,6 @@ public class SignController {
 
         // 로그인 서비스 호출 후 응답 받아오기
         return signService.signInProcess(userInfo.get("userId"), userInfo.get("userPw"),latitude,longitude);
-    }
-
-    @GetMapping("/permit/test")
-    public ResponseEntity<?> autoLogin() {
-        return signService.test();
     }
 
     // 회원가입시 아이디 중복 검증
