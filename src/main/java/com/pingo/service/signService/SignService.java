@@ -121,7 +121,7 @@ public class SignService {
 
     // 회원가입
     @Transactional
-    public ResponseEntity<?> signUpProcess(String userSignUp, MultipartFile profileImage) {
+    public ResponseEntity<?> signUpProcess(String userSignUp, MultipartFile profileImage, double latitude, double longitude) {
 
         try {
             // 0. userSignUp이 String이니까 이걸 객체로 변환하기 (제이슨 변환기)
@@ -173,7 +173,7 @@ public class SignService {
 
 
             // 5. 위치정보 저장하기
-
+            locationService.updateUserLocation(validatedUsers.getUserNo(), latitude, longitude);
 
             // 1 ~ 5 다 성공하면 ok 반환
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));   // HTTP 통신 객체를 생성

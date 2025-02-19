@@ -52,10 +52,13 @@ public class SignController {
 
     // 회원가입
     @PostMapping("/permit/signup")
-    public ResponseEntity<?> signup(@RequestPart("userSignUp") String userSignUp, @RequestPart("image") MultipartFile profileImage) {
+    public ResponseEntity<?> signup(@RequestPart("userSignUp") String userSignUp,
+                                    @RequestPart("image") MultipartFile profileImage,
+                                    @RequestPart("latitude") double latitude,
+                                    @RequestPart("longitude") double longitude) {
         log.info("userSignUp : " + userSignUp);
         log.info("profileImage : " + profileImage.getOriginalFilename());
 
-        return signService.signUpProcess(userSignUp, profileImage);
+        return signService.signUpProcess(userSignUp, profileImage, latitude, longitude);
     }
 }
