@@ -18,4 +18,8 @@ public class ChatRoomDTO {
     private List<ChatMsgDTO> message;
     private String lastMessage;
 
+    public void insertChatUser(ChatUserDTO chatUser) {
+        this.chatUser.add(chatUser);
+    }
+
 }

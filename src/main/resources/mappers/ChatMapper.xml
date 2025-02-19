@@ -9,7 +9,7 @@
         LEFT JOIN "userImage" ui ON cu."userNo" = ui."userNo" AND ui."imageProfile" = 'T'
         JOIN "users" us ON cu."userNo" = us."userNo"
         WHERE "roomId" IN (SELECT "roomId" FROM "chatUser" WHERE "userNo" = #{userNo})
-        AND cu."userNo" != #{userNo}
+<!--        AND cu."userNo" != #{userNo}-->
     </select>
 
 

@@ -41,13 +41,14 @@ public class ChatWebSocketController {
     public void chatMessage(@DestinationVariable String roomId, @Payload ChatMsgDTO messageResponseDTO) {
         log.info("Chat Message: " + messageResponseDTO);
 
-        //
-        List<String> userList = chatUserList.get(roomId);
-        for (String user : userList) {
-            log.info("ㅁㄴㅇㄻㄴㅇㄹ");
-            messagingTemplate.convertAndSend("/topic/msg/" + user, messageResponseDTO);
-        }
-        //
+//        List<String> userList = chatUserList.get(roomId);
+//        for (String user : userList) {
+//            log.info("ㅁㄴㅇㄻㄴㅇㄹ");
+//            messagingTemplate.convertAndSend("/topic/msg/" + roomId, messageResponseDTO);
+//        }
+
+        messagingTemplate.convertAndSend("/topic/msg/" + roomId, messageResponseDTO);
+        //DB에 메세지 저장하기
         ChatMsgDTO dto = chatMsgService.insertMessage(messageResponseDTO);
     }
 

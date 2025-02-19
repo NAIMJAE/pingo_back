@@ -23,6 +23,7 @@ public class ChatMsgService {
     private final ChatMsgRepository chatMsgRepository;
     private final ObjectMapper objectMapper;
 
+    // 전체 메세지 조회
     public List<ChatMsgDTO> selectMessage(String roomId){
         List<ChatMsgDTO> chatMsgDTO = chatMsgRepository.findByRoomId(roomId);
         log.info("너의 값은? : " + chatMsgDTO);
@@ -31,12 +32,14 @@ public class ChatMsgService {
 
     }
 
+    // 마지막 메세지 조회
     public String selectLastMessage(String roomId) throws JsonProcessingException {
         List<String> lastMessages = chatMsgRepository.findByMsgContentByRoomId(roomId);
         if (lastMessages.isEmpty()) {
-            return "0"; //
+            return null; //
         }
         try{
+            // JSON 객체를 java로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(lastMessages.get(0));
             return jsonNode.get("msgContent").asText();
@@ -46,6 +49,7 @@ public class ChatMsgService {
 
     }
 
+    // 메세지 삽입
     public ChatMsgDTO insertMessage(ChatMsgDTO chatMsgDTO){
         ChatMsgDocument chatMsgDsgDocument = ChatMsgDocument.builder()
                 .roomId(chatMsgDTO.getRoomId())
