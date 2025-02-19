@@ -1,6 +1,8 @@
 package com.pingo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pingo.dto.ResponseDTO;
+import com.pingo.dto.chat.ChatMsgDTO;
 import com.pingo.dto.chat.ChatRoomDTO;
 import com.pingo.dto.chat.ChatUserDTO;
 import com.pingo.entity.chat.ChatRoom;
@@ -39,7 +41,7 @@ public class ChatRoomController {
     //  final String? imageUrl;
     //  final String? userName;
     @GetMapping("/select/chatRoom")
-    public ResponseEntity<?> selectRoomId(@RequestParam String userNo) {
+    public ResponseEntity<?> selectRoomId(@RequestParam String userNo) throws JsonProcessingException {
         log.info("userNo 가져왔나 : " + userNo);
         // 사용자의 채팅방 목록 모두 가져오기
         List<ChatUserDTO> chatUserDTOS = chatRoomService.selectChatRoom(userNo);
@@ -50,18 +52,28 @@ public class ChatRoomController {
 
         // 채팅방별로 데이터를 구성 : String이 roomId가 되어야한다.
 
-
+        // 하나의 List를 추출
         for(ChatUserDTO chatUserDTO : chatUserDTOS) {
             // 채팅방 존재 여부 확인
             String roomId = chatUserDTO.getRoomId();
-            // ChatRoomDTO 초기화 시키기
-            ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), null, null);            // chatUser추가하기
-            chatRoomDTO.getChatUser().add(chatUserDTO);
-            // 마지막 메세지 추가하기
-            chatRoomDTO.setLastMessage(chatMsgService.selectLastMessage(roomId));
 
-            // 맵에 저장하기
-            chatRoomMap.put(roomId, chatRoomDTO);
+            if (chatRoomMap.containsKey(roomId)) {
+                // 이미 방이 존재하면
+                chatRoomMap.get(roomId).insertChatUser(chatUserDTO);
+            }else {
+                // 방이 없으면
+                // ChatRoomDTO 초기화 시키기
+                ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null);            // chatUser추가하기
+                chatRoomDTO.insertChatUser(chatUserDTO);
+                // 해당 방에 해당되는 메세지들 조회하기
+                List<ChatMsgDTO> msgDTO = chatMsgService.selectMessage(roomId);
+                log.info("msgDTO : " + msgDTO);
+                chatRoomDTO.setMessage(msgDTO);
+                // 마지막 메세지 추가하기
+                chatRoomDTO.setLastMessage(chatMsgService.selectLastMessage(roomId));
+
+                chatRoomMap.put(roomId, chatRoomDTO);
+            }
 
         }
         log.info("맵 ChatUserDTO 값은? :" + chatRoomMap);
