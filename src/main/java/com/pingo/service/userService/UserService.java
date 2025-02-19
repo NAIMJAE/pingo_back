@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -77,6 +78,7 @@ public class UserService {
     }
 
     // 유저의 서브이미지를 메인이미지로 설정
+    @Transactional
     public ResponseEntity<?> setMainImage(String currentMainImageNo, String newMainImageNo) {
 
         // 대표이미지를 서브이미지로 설정
@@ -89,8 +91,10 @@ public class UserService {
     }
 
     // 유저 이미지 삭제
-    public ResponseEntity<?> deleteUserImage(String imageNo) {
+    public ResponseEntity<?> deleteUserImage(String ImageNoForDelete) {
 
-        return null;
+        userMapper.deleteUserImage(ImageNoForDelete);
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", true));
     }
 }
