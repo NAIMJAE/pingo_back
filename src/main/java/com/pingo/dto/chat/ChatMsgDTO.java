@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Builder
 @Setter
 @Getter
+
+// 메세지 DTO
 public class ChatMsgDTO {
     private String msgId;
     private String roomId;
