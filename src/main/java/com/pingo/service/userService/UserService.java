@@ -1,7 +1,9 @@
 package com.pingo.service.userService;
 
 import com.pingo.dto.ResponseDTO;
+import com.pingo.entity.keywords.Keyword;
 import com.pingo.entity.users.UserImage;
+import com.pingo.entity.users.UserKeyword;
 import com.pingo.entity.users.UserMypageInfo;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
@@ -15,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,21 +30,49 @@ public class UserService {
     final private UserMapper userMapper;
 
     // 마이페이지를 위한 회원 정보 조회
+    @Transactional
     public ResponseEntity<?> getUserInfo(String userNo) {
+        try {
+            // 유저 마이페이지 상세 정보 조회
+            UserMypageInfo userMypageInfo = userMapper.getUserMypageInfo(userNo);
+            log.info("userMypageInfo : " + userMypageInfo);
 
-        log.info("userNo : " + userNo);
+            // 유저 이미지 조회
+            List<UserImage> userImages = userMapper.getUserImages(userNo);
+            userMypageInfo.inputUserImage(userImages);
 
-        // 유저 마이페이지 상세 정보 조회
-        UserMypageInfo userMypageInfo = userMapper.getUserMypageInfo(userNo);
-        log.info("userMypageInfo : " + userMypageInfo);
+            // 유저 키워드 정보 조회
+            UserKeyword userKeyword = userMapper.getUserKeyword(userNo);
+            Map<String, List<Keyword>> userKeywordList = parseUserKeyword(userKeyword);
+            userMypageInfo.inputUserKeyword(userKeywordList);
 
-        // 유저 이미지 조회
-        List<UserImage> userImages = userMapper.getUserImages(userNo);
-        userMypageInfo.inputUserImage(userImages);
+            // 유저 소개 정보 조회
+            String userIntroduction = userMapper.selectUserIntroduction(userNo);
+            userMypageInfo.inputUserIntroduction(userIntroduction);
 
-        log.info("userMypageInfo : " + userMypageInfo);
+            log.info("userMypageInfo : " + userMypageInfo);
 
-        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", userMypageInfo));
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공", userMypageInfo));
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            throw new BusinessException(ExceptionCode.USER_INFO_NOT_FOUND);
+        }
+    }
+
+    // 유저 키워드 정보 파싱
+    private Map<String, List<Keyword>> parseUserKeyword(UserKeyword userKeyword) {
+        // 나의 키워드
+        String[] myKeywords = userKeyword.getMy().split("_");
+        String[] favoriteKeywords = userKeyword.getFavorite().split("_");
+
+        List<Keyword> myKeywordList = userMapper.getUserKeywordDetail(myKeywords);
+        List<Keyword> favoriteKeywordList = userMapper.getUserKeywordDetail(favoriteKeywords);
+
+        Map<String, List<Keyword>> resultMap = new HashMap<>();
+        resultMap.put("my", myKeywordList);
+        resultMap.put("favorite", favoriteKeywordList);
+
+        return resultMap;
     }
 
     // 유저 이미지 추가
@@ -96,5 +128,41 @@ public class UserService {
         userMapper.deleteUserImage(ImageNoForDelete);
 
         return ResponseEntity.ok().body(ResponseDTO.of("1","성공", true));
+    }
+
+    // 유저 정보 수정
+    @Transactional
+    public ResponseEntity<?> updateUserInfo(UserMypageInfo userMypageInfo) {
+        try {
+            // 1. userInfo 저장
+            userMypageInfo.getUserInfo(); // <- 여기 회원 정보 있음
+
+            // 2. userKeyword 저장
+            String myKeyword = parseKeywordToString(userMypageInfo.getMyKeywordList());
+            String favoriteKeyword = parseKeywordToString(userMypageInfo.getFavoriteKeywordList());
+            userMapper.updateUserKeyword(userMypageInfo.getUsers().getUserNo(), myKeyword, favoriteKeyword);
+
+            // 3. 자기 소개 저장
+            userMypageInfo.getUserIntroduction(); // <- 여기 회원 소개 있음
+
+
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            throw new BusinessException(ExceptionCode.UPDATE_USER_INFO_FAIL);
+        }
+    }
+
+    // 회원 키워드 리스트 문자열로 전환
+    public String parseKeywordToString(List<Keyword> keywordList) {
+        StringBuilder keywordStr = new StringBuilder();
+
+        for (Keyword each : keywordList) {
+            if (keywordStr.isEmpty()) {
+                keywordStr.append(each.getKwId());
+            }
+            keywordStr.append("_").append(each.getKwId());
+        }
+        return keywordStr.toString();
     }
 }

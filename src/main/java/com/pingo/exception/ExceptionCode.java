@@ -17,6 +17,8 @@ public enum ExceptionCode {
     INVALID_USER_GENDER(409, "INVALID_USER_GENDER", "유저 성별이 유효하지 않습니다."),
     INVALID_USER_BIRTH(409, "INVALID_USER_BIRTH", "유저 생년월일이 유효하지 않습니다."),
     SIGN_UP_FAIL(400, "SIGN_UP_FAIL", "회원가입에 실패했습니다"),
+    USER_INFO_NOT_FOUND(400, "USER_INFO_NOT_FOUND", "회원 정보 조회에 실패했습니다"),
+    UPDATE_USER_INFO_FAIL(400, "UPDATE_USER_INFO_FAIL", "회원정보 수정에 실패했습니다"),
 
     // SWIPE
     DUPLICATE_SWIPE_NO(409, "SWIPE_NO_DUPLICATE", "스와이프 번호가 이미 존재합니다."),
