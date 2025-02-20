@@ -1,11 +1,6 @@
 package com.pingo.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.pingo.dto.ResponseDTO;
-import com.pingo.dto.chat.ChatMsgDTO;
-import com.pingo.dto.chat.ChatRoomDTO;
-import com.pingo.dto.chat.ChatUserDTO;
-import com.pingo.entity.chat.ChatRoom;
 import com.pingo.service.chatService.ChatMsgService;
 import com.pingo.service.chatService.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,43 +34,20 @@ public class ChatRoomController {
     //  final String roomId;
     //  final String? imageUrl;
     //  final String? userName;
+
+
+    // 채팅방 목록 조회
     @GetMapping("/select/chatRoom")
     public ResponseEntity<?> selectRoomId(@RequestParam String userNo) throws JsonProcessingException {
         log.info("userNo 가져왔나 : " + userNo);
         // 사용자의 채팅방 목록 모두 가져오기
-        List<ChatUserDTO> chatUserDTOS = chatRoomService.selectChatRoom(userNo);
-        log.info("chatUserDTOS : " + chatUserDTOS);
+        return chatRoomService.selectChatRoom(userNo);
 
-        // 결과를 저장할 맵
-        Map<String, ChatRoomDTO> chatRoomMap = new HashMap<>();
+    }
 
-        // 채팅방별로 데이터를 구성 : String이 roomId가 되어야한다.
-
-        // 하나의 List를 추출
-        for(ChatUserDTO chatUserDTO : chatUserDTOS) {
-            // 채팅방 존재 여부 확인
-            String roomId = chatUserDTO.getRoomId();
-
-            if (chatRoomMap.containsKey(roomId)) {
-                // 이미 방이 존재하면
-                chatRoomMap.get(roomId).insertChatUser(chatUserDTO);
-            }else {
-                // 방이 없으면
-                // ChatRoomDTO 초기화 시키기
-                ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null);            // chatUser추가하기
-                chatRoomDTO.insertChatUser(chatUserDTO);
-                // 해당 방에 해당되는 메세지들 조회하기
-                List<ChatMsgDTO> msgDTO = chatMsgService.selectMessage(roomId);
-                log.info("msgDTO : " + msgDTO);
-                chatRoomDTO.setMessage(msgDTO);
-                // 마지막 메세지 추가하기
-                chatRoomDTO.setLastMessage(chatMsgService.selectLastMessage(roomId));
-
-                chatRoomMap.put(roomId, chatRoomDTO);
-            }
-
-        }
-        log.info("맵 ChatUserDTO 값은? :" + chatRoomMap);
-        return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", chatRoomMap));
+    // 채팅방 생성
+    @PostMapping("/permit/insert/chatRoom")
+    public ResponseEntity<?> insertChatRoom(@RequestBody List<String> userNoList) {
+        return chatRoomService.insertChatRoom(userNoList);
     }
 }

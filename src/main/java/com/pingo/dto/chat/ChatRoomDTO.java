@@ -1,8 +1,6 @@
 package com.pingo.dto.chat;
 
-import com.pingo.document.ChatMsgDocument;
 import lombok.*;
-import org.apache.logging.log4j.message.Message;
 
 import java.util.List;
 
@@ -12,6 +10,8 @@ import java.util.List;
 @Builder
 @Setter
 @Getter
+
+// Map<String,ChatRoom>을 사용하기 위한 DTO
 public class ChatRoomDTO {
 
     private List<ChatUserDTO> chatUser;

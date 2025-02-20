@@ -15,10 +15,11 @@ public class ChatRoom {
     private String roomId;
     private String roomStatus;
 
-
-
-    public void createRoomId() {
+    public void createRoomId(){
         String uuid = UUID.randomUUID().toString();
         this.roomId = "CR" + uuid.substring(0, 8);
+        this.roomStatus = "ACTIVE";
+
     }
+
 }
