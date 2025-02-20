@@ -18,7 +18,7 @@ public class KeywordController {
     // 2차 키워드 카테고리까지 조회 for Keyword_Page
     @GetMapping("/keyword") //keywordList?
     public ResponseEntity<?> selectKeywordListFor2ndCategory() {
-        log.info("keykeykey");
+
         return keywordService.selectKeywordListFor2ndCategory();
     }
 
@@ -26,10 +26,8 @@ public class KeywordController {
     @GetMapping("/recommend")
     public ResponseEntity<?> recommendBasedOnKeywords(@RequestParam("userNo") String userNo, @RequestParam("sKwId") String sKwId) {
 
-        log.info("userNo : " + userNo);
-        log.info("sKwId : " + sKwId);
+        int distanceKm = 10;
 
-
-        return keywordService.recommendBasedOnKeywords(userNo, sKwId);
+        return keywordService.recommendBasedOnKeywords(userNo, sKwId, distanceKm);
     }
 }

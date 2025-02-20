@@ -1,10 +1,12 @@
 package com.pingo.service.keywordServices;
 
 import com.pingo.dto.ResponseDTO;
+import com.pingo.dto.profile.MainProfileResponseDTO;
 import com.pingo.entity.keywords.Keyword;
 import com.pingo.entity.keywords.KeywordGroup;
 import com.pingo.entity.users.UserKeyword;
 import com.pingo.mapper.KeywordMapper;
+import com.pingo.service.mainService.LocationService;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.*;
 public class KeywordService {
 
     final private KeywordMapper keywordMapper;
+    final private LocationService locationService;
 
     // [1] 2차 키워드 카테고리까지 조회 for Keyword_Page
     public ResponseEntity<?> selectKeywordListFor2ndCategory() {
@@ -45,13 +48,16 @@ public class KeywordService {
     }
 
     // [2] Keyword Page에서 선택한 키워드에 알맞은 다른 사용자 추천 및 이상형 % 계산
-    public ResponseEntity<?> recommendBasedOnKeywords(String userNo, String sKwId) {
+    public ResponseEntity<?> recommendBasedOnKeywords(String userNo, String sKwId, int distanceKm) {
         // 1) 나의 키워드 정보 조회
         UserKeyword myKeyword = keywordMapper.selectUserKeyword(userNo);
 
         // 2) 내 주변 사람 목록 조회
-        //
-        List<String> userNoList = List.of("US12345678", "US12341234", "US99999901", "US99999902");
+        List<MainProfileResponseDTO> nearByUser = locationService.selectNearbyUsers(userNo, distanceKm);
+        List<String> userNoList = new ArrayList<>();
+        for (MainProfileResponseDTO each : nearByUser) {
+            userNoList.add(each.getUserNo());
+        }
 
         // 3) 내 주변 사람들의 키워드 조회
         Map<String, Object> userNos = new HashMap<>();
@@ -73,7 +79,10 @@ public class KeywordService {
             // 상대의 키워드와 내가 선택한 키워드의 일치 정도 분석 (일치하는 키워드가 2개 이하면 해당 사람 추천X)
             Set<String> commonElements = new HashSet<>(selectedKeywordList);
             commonElements.retainAll(otherMyKeywordList);
-            if (commonElements.size() < 3) {continue;}
+            if (commonElements.size() < 2) {
+                nearByUser.removeIf(each -> each.getUserNo().equals(other.getUserNo()));
+                continue;
+            }
 
             // 내가 상대를 마음에 들어할 수치
             double myPreference = keywordSimilarityCalculation(new HashSet<>(selectedKeywordList), new HashSet<>(otherMyKeywordList));
@@ -94,7 +103,7 @@ public class KeywordService {
             log.info("preference : " + preference);
         }
 
-        return null;
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",nearByUser));
     }
 
     // str to list

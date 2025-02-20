@@ -32,6 +32,7 @@ public class CommunityService {
         if (keyword == null || keyword.isEmpty()) {
             List<PlaceReviewDTO> placeReviewList = communityMapper.selectPlaceReviewWithSort(cateSort, searchSort);
 
+            log.info("placeReviewList : " + placeReviewList);
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",placeReviewList));
         }else {
             List<PlaceReviewDTO> placeReviewList = communityMapper.selectPlaceReviewWithKeyword(keyword);
