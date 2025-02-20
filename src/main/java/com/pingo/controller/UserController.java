@@ -1,5 +1,6 @@
 package com.pingo.controller;
 
+import com.pingo.entity.users.UserMypageInfo;
 import com.pingo.service.ImageService;
 import com.pingo.service.userService.UserService;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,15 @@ public class UserController {
         String ImageNoForDelete = (String) reqData.get("ImageNoForDelete");
 
         return userService.deleteUserImage(ImageNoForDelete);
+    }
+
+    // 유저 정보 수정
+    @PostMapping("/user/info")
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserMypageInfo userMypageInfo) {
+
+        log.info("userMypageInfo : " + userMypageInfo);
+
+        return userService.updateUserInfo(userMypageInfo);
     }
 
 }

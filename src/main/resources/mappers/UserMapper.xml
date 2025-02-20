@@ -84,4 +84,31 @@
 
     </delete>
 
+    <!-- 유저 키워드 조회 -->
+    <select id="getUserKeyword" parameterType="map" resultType="com.pingo.entity.users.UserKeyword">
+        SELECT * FROM "userKeyword"
+        WHERE "userNo" = #{userNo}
+    </select>
+
+    <!-- 유저 키워드 디테일 조회 -->
+    <select id="getUserKeywordDetail" resultType="com.pingo.entity.keywords.Keyword">
+        SELECT * FROM "keyword"
+        WHERE "kwId" IN
+        <foreach item="Keyword" collection="myKeywords" open="(" separator="," close=")">
+            #{Keyword}
+        </foreach>
+    </select>
+
+    <!-- 유저 소개 조회 -->
+    <select id="selectUserIntroduction" parameterType="map" resultType="string">
+        SELECT "introduction" FROM "userIntroduction"
+        WHERE "userNo" = #{userNo}
+    </select>
+
+    <!-- 유저 키워드 수정 -->
+    <update id="updateUserKeyword" parameterType="map">
+        UPDATE "userKeyword"
+        SET "my" = #{myKeyword}, "favorite" = #{favoriteKeyword}
+        WHERE "userNo" = #{userNo}
+    </update>
 </mapper>

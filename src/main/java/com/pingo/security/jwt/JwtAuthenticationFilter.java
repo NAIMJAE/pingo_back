@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰 추출
         String token = request.getHeader(AUTH_HEADER);
-        log.info("doFilterInternal...token : " + token);
 
         // 토큰 검사
         if (token != null) {
