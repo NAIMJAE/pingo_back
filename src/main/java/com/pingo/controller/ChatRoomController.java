@@ -44,10 +44,10 @@ public class ChatRoomController {
         return chatRoomService.selectChatRoom(userNo);
 
     }
-
-    // 채팅방 생성
-    @PostMapping("/permit/insert/chatRoom")
-    public ResponseEntity<?> insertChatRoom(@RequestBody List<String> userNoList) {
-        return chatRoomService.insertChatRoom(userNoList);
-    }
+//
+//    // 채팅방 생성
+//    @PostMapping("/permit/insert/chatRoom")
+//    public ResponseEntity<?> insertChatRoom(@RequestBody List<String> userNoList) {
+//        return chatRoomService.insertChatRoom(userNoList);
+//    }
 }
