@@ -99,9 +99,17 @@ public class LocationService {
 
 
     // 반경 내 유저 검색
-    public ResponseEntity<?> getNearbyUsers(String userNo, int distanceKm) {
+    public ResponseEntity<?> getNearbyUsersForMain(String userNo, int distanceKm) {
         log.info("getNearbyUsers 호출 - userNo: {}, distanceKm: {}", userNo, distanceKm);
 
+        List<MainProfileResponseDTO> users = selectNearbyUsers(userNo, distanceKm);
+
+        log.info("최종 유저 목록 반환 완료");
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", users));
+    }
+
+    // 반경 내 유저 검색
+    public List<MainProfileResponseDTO> selectNearbyUsers(String userNo, int distanceKm) {
         List<MainProfileResponseDTO> users = locationMapper.findNearbyUsers(userNo, distanceKm);
         log.info("검색된 유저 수: {}", users.size());
 
@@ -115,8 +123,6 @@ public class LocationService {
             user.getImagesAsList();
             log.info("변환된 이미지 리스트 - userNo: {}, images: {}", user.getUserNo(), user.getImageList());
         });
-
-        log.info("최종 유저 목록 반환 완료");
-        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", users));
+        return users;
     }
 }

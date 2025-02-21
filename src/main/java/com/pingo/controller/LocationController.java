@@ -39,6 +39,6 @@ public class LocationController {
     ) {
         log.info("유저 검색 api 입성");
         log.info("파라미터 확인 : " + userNo + distanceKm);
-        return locationService.getNearbyUsers(userNo, distanceKm);
+        return locationService.getNearbyUsersForMain(userNo, distanceKm);
     }
 }
