@@ -42,9 +42,9 @@ spring:
           max-wait: 5000  # 최대 대기 시간 (밀리초)
 
     mongodb:
-      host: localhost
+      host: 54.180.162.143
       port: 27017
-      database: test1
+      database: pingochat
 
 server:
   port: 8080
