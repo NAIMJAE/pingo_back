@@ -41,7 +41,6 @@ public enum ExceptionCode {
     DUPLICATE_PLACE_REVIEW_NO(409, "DUPLICATE_PLACE_REVIEW_NO", "중복된 리뷰 번호 입니다."),
     DUPLICATE_REVIEW_IMAGE_NO(409, "DUPLICATE_REVIEW_IMAGE_NO", "중복된 리뷰 이미지 번호 입니다."),
     DUPLICATE_DATING_GUIDE_NO(409, "DUPLICATE_DATING_GUIDE_NO", "중복된 가이드 번호 입니다."),
-
     DUPLICATE_GUIDE_IMAGE_NO(409, "DUPLICATE_GUIDE_IMAGE_NO", "중복된 가이드 이미지 번호 입니다."),
 
     // MATCHING
