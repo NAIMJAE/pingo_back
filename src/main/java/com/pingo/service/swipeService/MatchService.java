@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
@@ -52,10 +50,14 @@ public class MatchService {
 
             log.info("매칭 매퍼 저장 완료: {} <-> {}", fromUserNo, toUserNo);
 
+            // 3) 상대방 정보 조회 + 채팅방 생성 (비동기 병렬 처리)
+            CompletableFuture<Map<Character,MatchUser>> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
+                Map<Character,MatchUser> matchusers = new HashMap<>();
 
-            3) 상대방 정보 조회 + 채팅방 생성 (비동기 병렬 처리)
-            CompletableFuture<MatchUser> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
-                return userMapper.getMatchUser(toUserNo);
+                matchusers.put('T', userMapper.getMatchUser(toUserNo));
+                matchusers.put('F', userMapper.getMatchUser(fromUserNo));
+
+                return matchusers;
             });
 
             List<String> userNoList = new ArrayList<>();
