@@ -49,7 +49,7 @@ public class MatchService {
 
             log.info("매칭 매퍼 저장 완료: {} <-> {}", fromUserNo, toUserNo);
 
-            // 3) 상대방 정보 조회 + 채팅방 생성 (비동기 병렬 처리)
+////             3) 상대방 정보 조회 + 채팅방 생성 (비동기 병렬 처리)
 //            CompletableFuture<UserProfile> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
 //                return matchingMapper.getUserProfile(toUserNo);
 //            });
@@ -57,9 +57,8 @@ public class MatchService {
             List<String> userNoList = new ArrayList<>();
             userNoList.add(fromUserNo);
             userNoList.add(toUserNo);
-            CompletableFuture<String> createChatRoomFuture = CompletableFuture.supplyAsync(() -> {
-                boolean result = chatRoomService.createChatRoomAndUser(userNoList);
-                return "뭘 리턴해?";
+            CompletableFuture<Void> createChatRoomFuture = CompletableFuture.runAsync(() -> {
+                chatRoomService.createChatRoomAndUser(userNoList);
             });
 //
 //            // 4) 두 작업이 완료되면 웹소켓을 통해 알림 전송
