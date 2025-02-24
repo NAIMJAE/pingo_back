@@ -8,6 +8,7 @@ import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.MatchMapper;
 import com.pingo.mapper.MatchingMapper;
 import com.pingo.mapper.UserMapper;
+import com.pingo.service.WebSocketService;
 import com.pingo.service.chatService.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class MatchService {
     private final MatchMapper matchMapper;
     private final ChatRoomService chatRoomService;
     private final UserMapper userMapper;
+    private final WebSocketService webSocketService;
 
     // 매칭이 성공되면 실행
     // 1. 매칭테이블 데이터 삽입
@@ -51,11 +53,11 @@ public class MatchService {
             log.info("매칭 매퍼 저장 완료: {} <-> {}", fromUserNo, toUserNo);
 
             // 3) 상대방 정보 조회 + 채팅방 생성 (비동기 병렬 처리)
-            CompletableFuture<Map<Character,MatchUser>> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
-                Map<Character,MatchUser> matchusers = new HashMap<>();
+            CompletableFuture<Map<String,MatchUser>> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
+                Map<String,MatchUser> matchusers = new HashMap<>();
 
-                matchusers.put('T', userMapper.getMatchUser(toUserNo));
-                matchusers.put('F', userMapper.getMatchUser(fromUserNo));
+                matchusers.put(toUserNo, userMapper.getMatchUser(toUserNo));
+                matchusers.put(fromUserNo, userMapper.getMatchUser(fromUserNo));
 
                 return matchusers;
             });
@@ -67,15 +69,18 @@ public class MatchService {
                 chatRoomService.createChatRoomAndUser(userNoList);
             });
 
-//            // 4) 두 작업이 완료되면 웹소켓을 통해 알림 전송
-//            fetchOpponentInfoFuture.thenCombine(createChatRoomFuture, (opponentProfile, chatRoomId) -> {
-//                webSocketService.sendMatchNotification(fromUserNo, toUserNo, opponentProfile, chatRoomId);
-//                log.info(" 웹소켓 알림 전송 완료: {} <-> {}", fromUserNo, toUserNo);
-//                return null;
-//            }).exceptionally(ex -> {
-//                log.error("[웹소켓 전송 중 오류 발생] {}", ex.getMessage(), ex);
-//                return null;
-//            });
+            // 4) 두 작업이 완료되면 웹소켓을 통해 알림 전송
+            fetchOpponentInfoFuture.thenCombine(createChatRoomFuture, (opponentProfile, chatRoomId) -> {
+                // fetchOpponentInfoFuture의 결과값을 join()으로 가져옴
+                Map<String, MatchUser> opponentInfo = fetchOpponentInfoFuture.join();
+
+                webSocketService.sendMatchNotification(opponentInfo, toUserNo, fromUserNo);
+                log.info(" 웹소켓 알림 전송 완료: {} <-> {}", fromUserNo, toUserNo);
+                return null;
+            }).exceptionally(ex -> {
+                log.error("[웹소켓 전송 중 오류 발생] {}", ex.getMessage(), ex);
+                return null;
+            });
 
         } catch (Exception e) {
             log.error("[매칭 처리 중 오류 발생] fromUserNo: {}, toUserNo: {}, 오류: {}",
