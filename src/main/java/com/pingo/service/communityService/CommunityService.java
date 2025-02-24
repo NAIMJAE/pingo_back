@@ -77,7 +77,7 @@ public class CommunityService {
             guideMap.get(each.getCateName()).addDatingGuideList(each);
         }
 
-        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",guideMap));
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", guideMap));
     }
 
     // 개별 DatingGuide 정렬로 조회

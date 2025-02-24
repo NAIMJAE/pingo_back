@@ -18,7 +18,6 @@ public class SignController {
     @PostMapping("/permit/signin")
     public ResponseEntity<?> login(@RequestBody Map<String, String> userInfo) {
         log.info("Login attempt - userId: {}", userInfo.get("userId"));
-        log.info("데이터 구조좀 볼까? " + userInfo.toString());
 
         // 위치 정보 추가
         double latitude = Double.parseDouble(userInfo.get("latitude"));
@@ -35,6 +34,8 @@ public class SignController {
         return signService.validateId(inputId);
     }
 
+    // 회원가입시 닉네임 중복 검사
+
     // 회원가입시 3차 키워드 조회
     @GetMapping("/permit/3ndKeyword")
     public ResponseEntity<?> select3ndKeyword() {
@@ -47,8 +48,6 @@ public class SignController {
                                     @RequestPart("image") MultipartFile profileImage,
                                     @RequestPart("latitude") double latitude,
                                     @RequestPart("longitude") double longitude) {
-        log.info("userSignUp : " + userSignUp);
-        log.info("profileImage : " + profileImage.getOriginalFilename());
 
         return signService.signUpProcess(userSignUp, profileImage, latitude, longitude);
     }

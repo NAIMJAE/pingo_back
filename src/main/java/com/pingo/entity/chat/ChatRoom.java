@@ -19,7 +19,6 @@ public class ChatRoom {
         String uuid = UUID.randomUUID().toString();
         this.roomId = "CR" + uuid.substring(0, 8);
         this.roomStatus = "ACTIVE";
-
     }
 
 }

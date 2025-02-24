@@ -43,7 +43,6 @@ public class KeywordService {
                 getKG.addChildKeyword(item);
             }
         }
-        log.info("keywordGroup.toString() : " + keywordGroup.toString());
         return keywordGroup;
     }
 

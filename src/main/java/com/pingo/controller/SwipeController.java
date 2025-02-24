@@ -19,7 +19,7 @@ public class SwipeController {
     private final SwipeService swipeService;
 
     @PostMapping("/insertSwipe")
-    public ResponseEntity<?> login(@RequestBody SwipeRequest swipeRequest) {
+    public ResponseEntity<?> insertSwipe(@RequestBody SwipeRequest swipeRequest) {
 
         log.info("스위프트 저장 로직 입성");
         log.info("리퀘스트 ㅂ보자" + swipeRequest.toString());

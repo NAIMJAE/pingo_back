@@ -31,7 +31,7 @@ public class UserController {
     // 이미지를 주고 받기 위해서는 content-type : multipart/form-data
     // 유저 이미지 추가
     @PostMapping("/user/image")
-    public ResponseEntity<?> addUserImage(@RequestPart("userNo") String userNo, @RequestPart("userImageForAdd") MultipartFile userImageForAdd) {  // 파라미터 받는 거 변경
+    public ResponseEntity<?> addUserImage(@RequestPart("userNo") String userNo, @RequestPart("userImageForAdd") MultipartFile userImageForAdd) {
 
         return userService.addUserImage(userNo, userImageForAdd);
     }
@@ -48,7 +48,7 @@ public class UserController {
 
     // 유저 이미지 삭제
     @DeleteMapping("/user/image")
-    public ResponseEntity<?> deleteUserImage(@RequestBody Map<String, String> reqData) { // 파라미터 받는 거 변경
+    public ResponseEntity<?> deleteUserImage(@RequestBody Map<String, String> reqData) {
 
         String ImageNoForDelete = (String) reqData.get("ImageNoForDelete");
 

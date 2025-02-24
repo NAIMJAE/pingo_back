@@ -16,7 +16,7 @@
     <update id="updateUserLocation">
         MERGE INTO user_locations ul
         USING (
-        SELECT #{userNo} AS userNo, #{latitude} AS latitude, #{longitude} AS longitude FROM dual
+            SELECT #{userNo} AS userNo, #{latitude} AS latitude, #{longitude} AS longitude FROM dual
         ) dummy
         ON (ul.userNo = dummy.userNo)
         WHEN MATCHED THEN

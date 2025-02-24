@@ -21,7 +21,6 @@ import java.util.Optional;
 public class ChatMsgService {
 
     private final ChatMsgRepository chatMsgRepository;
-    private final ObjectMapper objectMapper;
 
     // 전체 메세지 조회
     public List<ChatMsgDTO> selectMessage(String roomId){
@@ -29,10 +28,9 @@ public class ChatMsgService {
         log.info("너의 값은? : " + chatMsgDTO);
 
         return chatMsgDTO;
-
     }
 
-    // 마지막 메세지 조회
+    // 마지막 메세지 조회 - ★ 필요 없음
     public String selectLastMessage(String roomId) throws JsonProcessingException {
         List<String> lastMessages = chatMsgRepository.findByMsgContentByRoomId(roomId);
         if (lastMessages.isEmpty()) {
@@ -49,7 +47,7 @@ public class ChatMsgService {
 
     }
 
-    // 메세지 삽입
+    // 메세지 삽입 ★ 반환값?
     public ChatMsgDTO insertMessage(ChatMsgDTO chatMsgDTO){
         ChatMsgDocument chatMsgDsgDocument = ChatMsgDocument.builder()
                 .roomId(chatMsgDTO.getRoomId())
