@@ -22,4 +22,10 @@ public class ChatRoomDTO {
         this.chatUser.add(chatUser);
     }
 
+    public void saveMessage(List<ChatMsgDTO> messageList) {
+        // List<ChatMsgDTO> message 에 저장
+
+        // String lastMessage에 저장
+    }
+
 }

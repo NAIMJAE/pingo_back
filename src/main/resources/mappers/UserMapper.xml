@@ -36,28 +36,23 @@
 
     <!-- 사용자 정보 조회 -->
     <select id="getUserMypageInfo" parameterType="map" resultMap="UserInfoResultMap">
-
         SELECT U."userNo", U."userName", U."userNick", U."userGender",
         UI."userBirth", UI."userHeight", UI."userAddress", UI."user1stJob", UI."user2ndJob",
         UI."userReligion", UI."userDrinking", UI."userSmoking", UI."userBloodType"
         FROM "users" U, "userInfo" UI
         WHERE U."userNo" = UI."userNo"
         AND U."userNo" = #{userNo}
-
     </select>
 
     <!-- 유저번호에 해당하는 이미지 조회 -->
     <select id="getUserImages" parameterType="map" resultType="com.pingo.entity.users.UserImage">
-
         SELECT "imageNo", "imageUrl", "imageProfile", "userNo"
         FROM "userImage"
         WHERE "userNo" = #{userNo}
-
     </select>
 
     <!-- 유저번호에 해당하는 유저이름, 유저나이, 유저 대표이미지 조회 -->
     <select id="getMatchUser" parameterType="map" resultType="com.pingo.entity.match.MatchUser">
-
         SELECT US."userName" , UF."userBirth" , UI."imageUrl", UI."imageProfile"
         FROM "users" US
         JOIN "userInfo" UF
@@ -66,16 +61,13 @@
         ON US."userNo" = UI."userNo"
         WHERE "userNo" = #{userNo}
         AND UI."imageProfile" = 'T'
-
     </select>
 
     <!-- 유저 대표이미지를 서브이미지로 설정 -->
     <update id="setMainImageAsSubImage" parameterType="map">
-
         UPDATE "userImage"
         SET "imageProfile" = 'F'
         WHERE "imageNo" = #{currentMainImageNo}
-
     </update>
 
     <!-- 선택한 서브이미지를 대표이미지로 설정 -->
@@ -91,11 +83,10 @@
         VALUES (#{imageNo}, #{imageUrl}, #{imageProfile}, #{userNo})
     </insert>
 
+    <!-- 유저 이미지 삭제 -->
     <delete id="deleteUserImage" parameterType="map">
-
         DELETE FROM "userImage"
         WHERE "imageNo" = #{imageNoForDelete}
-
     </delete>
 
     <!-- 유저 키워드 조회 -->

@@ -5,22 +5,34 @@
 
 <mapper namespace="com.pingo.mapper.ChatMapper">
     <select id="selectChatUser" parameterType="String" resultType="com.pingo.dto.chat.ChatUserDTO">
-        SELECT cu."userNo", cu."roomId", ui."imageUrl", us."userName" FROM "chatUser" cu
-        LEFT JOIN "userImage" ui ON cu."userNo" = ui."userNo" AND ui."imageProfile" = 'T'
-        JOIN "users" us ON cu."userNo" = us."userNo"
-        WHERE "roomId" IN (SELECT "roomId" FROM "chatUser" WHERE "userNo" = #{userNo})
-<!--        AND cu."userNo" != #{userNo}-->
+        SELECT cu."userNo", cu."roomId", ui."imageUrl", us."userName"
+        FROM "chatUser" cu
+        JOIN "userImage" ui
+        ON cu."userNo" = ui."userNo"
+        JOIN "users" us
+        ON cu."userNo" = us."userNo"
+        WHERE "roomId" IN
+        (
+            SELECT "roomId"
+            FROM "chatUser"
+            WHERE "userNo" = #{userNo}
+        )
+        AND ui."imageProfile" = 'T'
     </select>
-
 
     <select id="selectChatUserList" parameterType="String" resultType="com.pingo.dto.chat.ChatUserListDTO">
-        SELECT "userNo", "roomId" FROM "chatUser"
-        WHERE "roomId" IN (SELECT "roomId" FROM "chatUser" WHERE "userNo" = #{userNo})
+        SELECT "userNo", "roomId"
+        FROM "chatUser"
+        WHERE "roomId" IN
+        (
+            SELECT "roomId"
+            FROM "chatUser"
+            WHERE "userNo" = #{userNo}
+        )
     </select>
 
-
     <insert id="insertChatRoom" parameterType="com.pingo.entity.chat.ChatRoom">
-        INSERT INTO "chatRoom" ("roomId","roomStatus")
+        INSERT INTO "chatRoom" ("roomId", "roomStatus")
         VALUES (#{roomId}, #{roomStatus})
     </insert>
 
@@ -29,6 +41,3 @@
         VALUES (#{CUId}, #{userNo}, #{roomId})
     </insert>
 </mapper>
-
-
-<!--imageProfile == T 인것을 조회-->

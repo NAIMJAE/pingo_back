@@ -14,8 +14,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -25,7 +23,6 @@ public class LocationService {
 
     private final LocationMapper locationMapper;
     private final StringRedisTemplate stringRedisTemplate;
-
 
     // 유저 위치 저장
     @Transactional

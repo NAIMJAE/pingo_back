@@ -50,32 +50,25 @@ public class SignService {
     private final ImageService imageService;
     private final KeywordService keywordService;
 
-
-
     // 로그인 프로세스 @Transactional 추가 및 위치정보 업데이트 로직 추가 (준혁)
     @Transactional
     public ResponseEntity<?> signInProcess(String userId, String userPw, double latitude, double longitude) {
 
         try {
-            log.info("signInProcess.........11");
+            log.info("signInProcess.........시작");
 
             // 인증용 객체 생성
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, userPw);
-            log.info("signInProcess.........22");
             // DB 조회
             // AuthenticationManager -> AuthenticationProvider(s) -> UserDetailsService -> DB 조회까지 이 한줄로 해결
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            log.info("signInProcess.........33");
             // 인증된 사용자 정보 가져오기
             MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-            log.info("signInProcess.........44");
             Users users = userDetails.getUsers();
-            log.info("signInProcess.........55");
 
             // 토큰 발급
             String accessToken = jwtProvider.createToken(users, 1);
             String refreshToken = jwtProvider.createToken(users, 7);
-            log.info("signInProcess.........66");
 
             Map<String, Object> userMap = new HashMap<>();
 
@@ -83,13 +76,11 @@ public class SignService {
             userMap.put("userRole", users.getUserRole());
             userMap.put("accessToken", accessToken);
             userMap.put("refreshToken", refreshToken);
-            log.info("signInProcess.........77");
-
-            log.info("레디스 테스트 시작 ...");
-            redisTestService.testRedisConnection();
 
             // 위치 정보 저장 추가
             locationService.updateUserLocation(users.getUserNo(), latitude, longitude);
+
+            log.info("signInProcess.........종료");
 
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",userMap));
         } catch (Exception e) {
@@ -130,7 +121,6 @@ public class SignService {
             objectMapper.registerModule(new JavaTimeModule());
             UserSignUp userSignUpData = objectMapper.readValue(userSignUp, UserSignUp.class);
 
-
             // 1-1. user 값 검증
             Users validatedUsers = userSignUpData.getUsers().validatedSignUpUserData();
             int duplicateIdCount = signMapper.selectUserIdForValidateId(validatedUsers.getUserId());
@@ -160,7 +150,6 @@ public class SignService {
             // 3-1. 이미지 서버에 저장하기
             UserImage userImage = new UserImage();
             userImage.makeImageNo();
-
             String imageNo = userImage.getImageNo();
 
             String userImagePath = "users" + File.separator + validatedUsers.getUserNo();

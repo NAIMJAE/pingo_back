@@ -24,9 +24,6 @@ public class LocationController {
     // 위치 업데이트 API
     @PostMapping("/location/update")
     public ResponseEntity<?> updateUserLocation(@RequestBody LocationRequest request) {
-
-        log.info("위치 업데이트 입성(자동 로그인)");
-        log.info(request.toString());
         locationService.updateUserLocation(request.getUserNo(), request.getLatitude(), request.getLongitude());
         return ResponseEntity.ok(ResponseDTO.of("1","성공",true));
     }

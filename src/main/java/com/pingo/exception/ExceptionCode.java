@@ -45,7 +45,12 @@ public enum ExceptionCode {
 
     // MATCHING
     DUPLICATE_MATCH_NO(409, "MATCH_NO_DUPLICATE", "매칭 번호가 이미 존재합니다."),
-    MATCHING_FAILED(400, "MATCHING_FAILED", "매칭서비스가 실패되었습니다.");
+    MATCHING_FAILED(400, "MATCHING_FAILED", "매칭서비스가 실패되었습니다."),
+
+
+    // CHAT
+    NOT_FOUND_CHAT_ROOM(400, "NOT_FOUND_CHAT_ROOM", "채팅방 조회에 실패했습니다."),
+
     ;
 
 
