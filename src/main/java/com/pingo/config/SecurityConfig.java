@@ -45,7 +45,7 @@ public class SecurityConfig {
 //                )
 
                 .authorizeHttpRequests(auth -> auth
-                        // "/api/auth/**" 경로로 들어오는 요청은 인증 없이 접근 가능하도록 설정 (로그인, 회원가입 등)
+                        // "/permit/**" 경로로 들어오는 요청은 인증 없이 접근 가능하도록 설정 (로그인, 회원가입 등)
                                 .requestMatchers("/permit/**").permitAll()
                                 .requestMatchers("/auto-signin").authenticated() // 자동 로그인은 인증된 사용자만 접근 가능
 
