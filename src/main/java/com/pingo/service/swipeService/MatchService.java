@@ -52,7 +52,8 @@ public class MatchService {
 
             log.info("매칭 매퍼 저장 완료: {} <-> {}", fromUserNo, toUserNo);
 
-            // 3) 상대방 정보 조회 + 채팅방 생성 (비동기 병렬 처리)
+
+            3) 상대방 정보 조회 + 채팅방 생성 (비동기 병렬 처리)
             CompletableFuture<MatchUser> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
                 return userMapper.getMatchUser(toUserNo);
             });
