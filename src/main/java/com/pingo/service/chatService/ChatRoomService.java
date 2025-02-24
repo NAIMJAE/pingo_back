@@ -82,7 +82,7 @@ public class ChatRoomService {
 //    }
 
     @Transactional
-    public boolean createChatRoomAndUser(List<String> userNoList) {
+    public void createChatRoomAndUser(List<String> userNoList) {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.createRoomId();
 
@@ -93,6 +93,5 @@ public class ChatRoomService {
             chatUser.insertUserAndRoom(user, chatRoom.getRoomId());
             chatMapper.insertChatUser(chatUser);
         }
-        return true;
     }
 }

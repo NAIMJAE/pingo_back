@@ -23,12 +23,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.setApplicationDestinationPrefixes("/pub"); // @MessageMapping 클라이언트가 서버로 메세지를 보낼 때 사용할 경로 지정 , 클라이언트가 메세지를 보낼 때 !
     }
 
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*").setHandshakeHandler(new DefaultHandshakeHandler());
         // 테스트를 위해 와일드카드로 모든 도메인을 열어줌. ("*")에는 웹소캣 cors 정책으로 인해 허용 도메인을 지정해주어야한다.
     }
-
 }
 
 // STOMP는 핸들러를 직접 사용하지 않고 메시지를 @MessageMapping으로 처리하는 컨트롤러로 보낸다. 즉 세션은 생성이 되지만 직접 핸들러에서 다루지않고 STOMP가 관리하는 방식
