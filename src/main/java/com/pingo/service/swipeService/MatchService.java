@@ -1,11 +1,13 @@
 package com.pingo.service.swipeService;
 
 import com.pingo.entity.match.MatchMapperEntity;
+import com.pingo.entity.match.MatchUser;
 import com.pingo.entity.match.Matching;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.MatchMapper;
 import com.pingo.mapper.MatchingMapper;
+import com.pingo.mapper.UserMapper;
 import com.pingo.service.chatService.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,7 @@ public class MatchService {
     private final MatchingMapper matchingMapper;
     private final MatchMapper matchMapper;
     private final ChatRoomService chatRoomService;
+    private final UserMapper userMapper;
 
     // 매칭이 성공되면 실행
     // 1. 매칭테이블 데이터 삽입
@@ -50,18 +53,17 @@ public class MatchService {
             log.info("매칭 매퍼 저장 완료: {} <-> {}", fromUserNo, toUserNo);
 
             // 3) 상대방 정보 조회 + 채팅방 생성 (비동기 병렬 처리)
-//            CompletableFuture<UserProfile> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
-//                return matchingMapper.getUserProfile(toUserNo);
-//            });
+            CompletableFuture<MatchUser> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
+                return userMapper.getMatchUser(toUserNo);
+            });
 
             List<String> userNoList = new ArrayList<>();
             userNoList.add(fromUserNo);
             userNoList.add(toUserNo);
-            CompletableFuture<String> createChatRoomFuture = CompletableFuture.supplyAsync(() -> {
-                boolean result = chatRoomService.createChatRoomAndUser(userNoList);
-                return "뭘 리턴해?";
+            CompletableFuture<Void> createChatRoomFuture = CompletableFuture.runAsync(() -> {
+                chatRoomService.createChatRoomAndUser(userNoList);
             });
-//
+
 //            // 4) 두 작업이 완료되면 웹소켓을 통해 알림 전송
 //            fetchOpponentInfoFuture.thenCombine(createChatRoomFuture, (opponentProfile, chatRoomId) -> {
 //                webSocketService.sendMatchNotification(fromUserNo, toUserNo, opponentProfile, chatRoomId);

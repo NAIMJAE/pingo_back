@@ -1,6 +1,7 @@
 package com.pingo.mapper;
 
 import com.pingo.entity.keywords.Keyword;
+import com.pingo.entity.match.MatchUser;
 import com.pingo.entity.users.UserImage;
 import com.pingo.entity.users.UserKeyword;
 import com.pingo.entity.users.UserMypageInfo;
@@ -13,6 +14,9 @@ import java.util.List;
 public interface UserMapper {
     // 유저 마이페이지 상세 정보 조회
     UserMypageInfo getUserMypageInfo(@Param("userNo") String userNo);
+
+    // 매칭 유저 정보 조회
+    MatchUser getMatchUser(@Param("userNo") String userNo);
 
     // 유저 이미지 조회
     List<UserImage> getUserImages(@Param("userNo") String userNo);
