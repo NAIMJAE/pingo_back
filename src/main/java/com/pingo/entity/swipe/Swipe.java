@@ -27,7 +27,7 @@ public class Swipe {
         this.swipeNo = createSwipeNo();
         this.toUserNo = swipeRequest.getToUserNo();
         this.fromUserNo = swipeRequest.getFromUserNo();
-        this.swipeType = swipeRequest.getFromUserNo();
+        this.swipeType = swipeRequest.getSwipeType();
         this.swipeTime = LocalDateTime.now();
 
     }

@@ -7,7 +7,7 @@
 
     <!-- 매칭 매퍼 테이블 삽입 -->
     <insert id="insertMatchMapper" parameterType="com.pingo.entity.match.MatchMapperEntity">
-        INSERT INTO "match_mapper" ("userNo", "matchUserNo", "matchNo")
+        INSERT INTO "matchMapper" ("userNo", "matchUserNo", "matchNo")
         VALUES (#{userNo}, #{matchUserNo}, #{matchNo})
     </insert>
 

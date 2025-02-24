@@ -59,7 +59,7 @@
         ON US."userNo" = UF."userNo"
         JOIN "userImage" UI
         ON US."userNo" = UI."userNo"
-        WHERE "userNo" = #{userNo}
+        WHERE US."userNo" = #{userNo}
         AND UI."imageProfile" = 'T'
     </select>
 
