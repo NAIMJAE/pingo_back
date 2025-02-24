@@ -12,10 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ChatMsgRepository extends MongoRepository<ChatMsgDocument, String> {
 
-    // 모든 메세지
+    // 모든 메세지 조회
     List<ChatMsgDTO> findByRoomId(String roomId);
 
-    // 마지막으로 보낸 메세지
-    @Query(value = "{'roomId':  ?0}", fields = "{'msgContent' : 1, '_id' :  0}" , sort = "{'msgTime': -1}")
-    List<String> findByMsgContentByRoomId(String roomId);
 }

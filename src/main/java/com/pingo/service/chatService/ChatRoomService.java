@@ -1,6 +1,5 @@
 package com.pingo.service.chatService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.chat.*;
 import com.pingo.entity.chat.ChatRoom;
@@ -51,18 +50,12 @@ public class ChatRoomService {
 
                     // 해당 방에 해당되는 메세지들 조회하기
                     List<ChatMsgDTO> msgDTO = chatMsgService.selectMessage(roomId);
-
+                    // 모든메세지, 마지막 메세지 저장
                     chatRoomDTO.saveMessage(msgDTO);
-
-                    ///
-                    chatRoomDTO.setMessage(msgDTO); // ★ 세터 바꾸세요
-                    chatRoomDTO.setLastMessage(chatMsgService.selectLastMessage(roomId));
-                    ///
 
                     chatRoomMap.put(roomId, chatRoomDTO);
                 }
             }
-            log.info("맵 ChatUserDTO 값은? :" + chatRoomMap);
             return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", chatRoomMap));
         }catch (Exception e) {
             log.error(e.getMessage());

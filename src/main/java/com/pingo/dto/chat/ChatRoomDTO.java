@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Getter
 
+
 // Map<String,ChatRoom>을 사용하기 위한 DTO
 public class ChatRoomDTO {
 
@@ -22,10 +23,13 @@ public class ChatRoomDTO {
         this.chatUser.add(chatUser);
     }
 
+    // 모든메세지, 마지막 메세지 저장
     public void saveMessage(List<ChatMsgDTO> messageList) {
-        // List<ChatMsgDTO> message 에 저장
+        // 마지막 인덱스 조회
+        String lastMessage = messageList.get(messageList.size() - 1).getMsgContent();
+        this.message.addAll(messageList);
+        this.lastMessage = lastMessage;
 
-        // String lastMessage에 저장
     }
 
 }

@@ -38,6 +38,9 @@ public class ChatWebSocketController {
     @MessageMapping("/msg/{roomId}") // pub 클라이언트 -> 서버로 메시지 전송 / WebsocketConfig prefixes에서 pub 적용한 것 삭제
     public void chatMessage(@DestinationVariable String roomId, @Payload ChatMsgDTO messageResponseDTO) {
         log.info("Chat Message: " + messageResponseDTO);
+        if(messageResponseDTO.getMsgType() == "image") {
+
+        }
 
         messagingTemplate.convertAndSend("/topic/msg/" + roomId, messageResponseDTO);
         //DB에 메세지 저장하기
