@@ -54,7 +54,21 @@
         WHERE "userNo" = #{userNo}
 
     </select>
-    
+
+    <!-- 유저번호에 해당하는 유저이름, 유저나이, 유저 대표이미지 조회 -->
+    <select id="getMatchUser" parameterType="map" resultType="com.pingo.entity.match.MatchUser">
+
+        SELECT US."userName" , UF."userBirth" , UI."imageUrl", UI."imageProfile"
+        FROM "users" US
+        JOIN "userInfo" UF
+        ON US."userNo" = UF."userNo"
+        JOIN "userImage" UI
+        ON US."userNo" = UI."userNo"
+        WHERE "userNo" = #{userNo}
+        AND UI."imageProfile" = 'T'
+
+    </select>
+
     <!-- 유저 대표이미지를 서브이미지로 설정 -->
     <update id="setMainImageAsSubImage" parameterType="map">
 
