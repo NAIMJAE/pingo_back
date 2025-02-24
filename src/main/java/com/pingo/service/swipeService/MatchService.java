@@ -57,11 +57,10 @@ public class MatchService {
             List<String> userNoList = new ArrayList<>();
             userNoList.add(fromUserNo);
             userNoList.add(toUserNo);
-            CompletableFuture<String> createChatRoomFuture = CompletableFuture.supplyAsync(() -> {
-                boolean result = chatRoomService.createChatRoomAndUser(userNoList);
-                return "뭘 리턴해?";
+            CompletableFuture<Void> createChatRoomFuture = CompletableFuture.runAsync(() -> {
+                chatRoomService.createChatRoomAndUser(userNoList);
             });
-//
+
 //            // 4) 두 작업이 완료되면 웹소켓을 통해 알림 전송
 //            fetchOpponentInfoFuture.thenCombine(createChatRoomFuture, (opponentProfile, chatRoomId) -> {
 //                webSocketService.sendMatchNotification(fromUserNo, toUserNo, opponentProfile, chatRoomId);
