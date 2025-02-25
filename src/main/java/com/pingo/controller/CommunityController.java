@@ -28,6 +28,13 @@ public class CommunityController {
         return communityService.searchPlaceReview(cateSort, searchSort, keyword);
     }
 
+    // PlaceReview 장소 이미지 크롤링
+    @PostMapping("/community/place/crawling")
+    public ResponseEntity<?> crawlingPlaceImage(@RequestBody Map<String, String> reqData) {
+        String placeUrl = reqData.get("placeUrl");
+        return communityService.crawlingPlaceImage(placeUrl);
+    }
+
     // PlaceReview 삽입
     @PostMapping("/community/place")
     public ResponseEntity<?> insertPlaceReview(@RequestPart("placeReview") PlaceReview placeReview,
