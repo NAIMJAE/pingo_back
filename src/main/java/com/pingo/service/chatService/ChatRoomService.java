@@ -31,29 +31,38 @@ public class ChatRoomService {
         // 유효성 검사 예외처리
         try {
             List<ChatUserDTO> chatUserDTOS = chatMapper.selectChatUser(userNo);
-            // 결과를 저장할 맵 (채팅방별로 데이터를 구성 : String이 roomId가 되어야한다.)
+            log.info("값이없나요?" + chatUserDTOS);
+            if(chatUserDTOS.isEmpty()) {
+                throw new BusinessException(ExceptionCode.MATCHING_FAILED);
+            }
+            // 결과를 저장할 맵 (채팅방별로 데이터를 구성 : String이 roomId가 되어야한다.) // 비어있는 맵 생성
             Map<String, ChatRoomDTO> chatRoomMap = new HashMap<>();
 
             // 하나의 List를 추출
             for(ChatUserDTO chatUserDTO : chatUserDTOS) {
                 // 채팅방 존재 여부 확인
                 String roomId = chatUserDTO.getRoomId();
+                log.info("여기 roomId는 있나요? : " + roomId);
 
                 if (chatRoomMap.containsKey(roomId)) {
                     // 이미 방이 존재하면
                     chatRoomMap.get(roomId).insertChatUser(chatUserDTO);
+                    log.info("이방은 있나요? : " + chatRoomMap);
                 }else {
                     // 방이 없으면
                     // ChatRoomDTO 초기화 시키기
                     ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null);            // chatUser추가하기
                     chatRoomDTO.insertChatUser(chatUserDTO);
+                    log.info("그럼 이 DTO는 있나요? : " + chatRoomDTO);
 
                     // 해당 방에 해당되는 메세지들 조회하기
                     List<ChatMsgDTO> msgDTO = chatMsgService.selectMessage(roomId);
                     // 모든메세지, 마지막 메세지 저장
+                    log.info("여기까지 값은 들어오나요 ? : " + msgDTO);
                     chatRoomDTO.saveMessage(msgDTO);
 
                     chatRoomMap.put(roomId, chatRoomDTO);
+                    log.info("어디서 에러가 나나요? : " + chatRoomMap);
                 }
             }
             return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", chatRoomMap));

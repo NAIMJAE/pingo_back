@@ -79,6 +79,7 @@
             JOIN "matching" "m" ON "mm"."matchNo" = "m"."matchNo"
             WHERE "mm"."userNo" =#{userNo}
             AND "m"."matchState" = 'ACTIVE'
+            AND "mm"."matchUserNo" = "DIST"."USERNO"
         )
         GROUP BY "u"."userNo", "u"."userName", "ui"."userBirth", "DIST"."DISTANCE"
         ORDER BY "DIST"."DISTANCE" ASC

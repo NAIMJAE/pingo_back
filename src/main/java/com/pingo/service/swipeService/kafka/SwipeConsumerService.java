@@ -28,7 +28,7 @@ public class SwipeConsumerService {
     private final MatchService matchService;
 
     @Transactional
-    @KafkaListener(topics = KafkaTopics.SWIPE_EVENTS, groupId = "swipe-consumer-group")
+    @KafkaListener(topics = KafkaTopics.SWIPE_EVENTS, groupId = "swipe-consumer-group-1")
     public void consumeSwipeEvent(ConsumerRecord<String, String> record, Acknowledgment ack) {
         log.info("✅ Kafka 리스너 실행됨");  // 실행 확인용 로그 추가
         log.info("✅ Kafka 리스너 실행됨 - Partition: {}, Offset: {}", record.partition(), record.offset());
