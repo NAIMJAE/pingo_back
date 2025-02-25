@@ -17,7 +17,7 @@ public class MembershipController {
     // 멤버쉽 조회
     @GetMapping("/membership")
     public ResponseEntity<?> getMembership() {
-
+        log.info("g2");
         return membershipService.getMembership();
     }
 }

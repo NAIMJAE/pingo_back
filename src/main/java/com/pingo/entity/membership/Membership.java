@@ -14,4 +14,5 @@ public class Membership {
     private String title;
     private int period;
     private String contents;
+    private int price;
 }
