@@ -26,6 +26,7 @@ public class CommunityService {
 
     final private ImageService imageService;
     final private CommunityMapper communityMapper;
+    final private PlaceCrawlingService placeCrawlingService;
 
     // 정렬로 PlaceReview 조회
     public ResponseEntity<?> searchPlaceReview(String cateSort, String searchSort, String keyword) {
@@ -39,6 +40,15 @@ public class CommunityService {
 
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",placeReviewList));
         }
+    }
+
+    // PlaceReview 장소 이미지 크롤링
+    public ResponseEntity<?> crawlingPlaceImage(String placeUrl) {
+
+        byte[] imageData = placeCrawlingService.crawlingPlaceImage(placeUrl);
+        String base64Image = imageData != null ? Base64.getEncoder().encodeToString(imageData) : null;
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",base64Image));
     }
 
     // PlaceReview 삽입

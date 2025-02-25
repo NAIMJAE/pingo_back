@@ -1,10 +1,16 @@
 package com.pingo.service.swipeService;
 
+import com.pingo.dto.ResponseDTO;
+import com.pingo.dto.chat.ChatRoomDTO;
+import com.pingo.dto.chat.ChatUserDTO;
+import com.pingo.entity.chat.ChatRoom;
+import com.pingo.entity.chat.ChatUser;
 import com.pingo.entity.match.MatchMapperEntity;
 import com.pingo.entity.match.MatchUser;
 import com.pingo.entity.match.Matching;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
+import com.pingo.mapper.ChatMapper;
 import com.pingo.mapper.MatchMapper;
 import com.pingo.mapper.MatchingMapper;
 import com.pingo.mapper.UserMapper;
@@ -12,6 +18,7 @@ import com.pingo.service.WebSocketService;
 import com.pingo.service.chatService.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +35,7 @@ public class MatchService {
     private final ChatRoomService chatRoomService;
     private final UserMapper userMapper;
     private final WebSocketService webSocketService;
+    private final ChatMapper chatMapper;
 
     // 매칭이 성공되면 실행
     // 1. 매칭테이블 데이터 삽입
@@ -65,16 +73,68 @@ public class MatchService {
             List<String> userNoList = new ArrayList<>();
             userNoList.add(fromUserNo);
             userNoList.add(toUserNo);
+
+
+
+            // 빈 Map 생성해
+            Map<String, ChatRoomDTO> chatRoomMap = new HashMap<>();
+
+            Map<String, ChatRoomDTO> fromUserChatRooms = new HashMap<>();
+            Map<String, ChatRoomDTO> toUserChatRooms = new HashMap<>();
+
             CompletableFuture<Void> createChatRoomFuture = CompletableFuture.runAsync(() -> {
+
+                // 채팅방 생성
                 chatRoomService.createChatRoomAndUser(userNoList);
+
+                // 그 아이디로 포문 돌려서 chatUSerListDTO 찾기 (내 방이랑 상대방 프로필 등등)
+                for(String user : userNoList) {
+                    List<ChatUserDTO> chatUserDTOs = chatMapper.selectChatUser(user);
+                    // user : 나와 상대방
+                    // 내이름으로 찾은 여러ro의 키의 ChatUSerDTO
+
+                    // 그걸 하나의 List로 만들어서
+                    for(ChatUserDTO chatUserDTO : chatUserDTOs) {
+                        log.info("asdfasdf : " + chatUserDTO);
+                        // 방아이디를 뺀다(키로 쓸)
+                        String roomId = chatUserDTO.getRoomId();
+                        // 방 아이디가 있으면 거기에 추가시키고
+                        if(chatRoomMap.containsKey(roomId)) {
+                            chatRoomMap.get(roomId).insertChatUser(chatUserDTO);
+                        }else {
+                            // 방 아이디가 없으면 roomDTO를 한번 초기화시키고 그 곳에 chatUserDTO를 넣는다 (새매치이기 때문에 메세지가 없어서 따로 insert하지않음)
+                            ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null);
+                            chatRoomDTO.insertChatUser(chatUserDTO);
+                            chatRoomMap.put(roomId, chatRoomDTO);
+
+
+                        }
+
+                    }
+                }
+                // 각각의 Map mapping
+                for (Map.Entry<String, ChatRoomDTO> entry : chatRoomMap.entrySet()) {
+                    List<ChatUserDTO> chatUsers = entry.getValue().getChatUser();
+
+                    for (ChatUserDTO oneUser : chatUsers) {
+                        if (oneUser.getUserNo().equals(fromUserNo)) {
+                            fromUserChatRooms.put(entry.getKey(), entry.getValue());
+                        }
+                        else if (oneUser.getUserNo().equals(toUserNo)) {
+                            toUserChatRooms.put(entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
             });
+
+
 
             // 4) 두 작업이 완료되면 웹소켓을 통해 알림 전송
             fetchOpponentInfoFuture.thenCombine(createChatRoomFuture, (opponentProfile, chatRoomId) -> {
                 // fetchOpponentInfoFuture의 결과값을 join()으로 가져옴
                 Map<String, MatchUser> opponentInfo = fetchOpponentInfoFuture.join();
 
-                webSocketService.sendMatchNotification(opponentInfo, toUserNo, fromUserNo);
+                webSocketService.sendMatchNotification(opponentInfo, toUserNo, fromUserNo, fromUserChatRooms, toUserChatRooms);
                 log.info(" 웹소켓 알림 전송 완료: {} <-> {}", fromUserNo, toUserNo);
                 return null;
             }).exceptionally(ex -> {

@@ -27,7 +27,6 @@ public class SwipeConsumerService {
     private final ObjectMapper objectMapper;
     private final MatchService matchService;
 
-
     @KafkaListener(topics = KafkaTopics.SWIPE_EVENTS, groupId = "swipe-consumer-group", concurrency = "3")
     public void consumeSwipeEvent(ConsumerRecord<String, String> record, Acknowledgment ack) {
         log.info("✅ Kafka 리스너 실행됨");  // 실행 확인용 로그 추가
