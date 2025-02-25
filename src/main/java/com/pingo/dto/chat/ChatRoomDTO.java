@@ -1,6 +1,8 @@
 package com.pingo.dto.chat;
 
+import com.pingo.entity.chat.ChatUser;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
 @Builder
 @Setter
 @Getter
-
+@Slf4j
 // Map<String,ChatRoom>을 사용하기 위한 DTO
 public class ChatRoomDTO {
 
@@ -22,10 +24,15 @@ public class ChatRoomDTO {
         this.chatUser.add(chatUser);
     }
 
+    // 모든메세지, 마지막 메세지 저장
     public void saveMessage(List<ChatMsgDTO> messageList) {
-        // List<ChatMsgDTO> message 에 저장
-
-        // String lastMessage에 저장
+        if (messageList == null || messageList.isEmpty()) {
+            log.warn("메시지 리스트가 null이거나 비어 있습니다.");
+            return;
+        }
+        String lastMessage = messageList.get(messageList.size() - 1).getMsgContent();
+        this.message.addAll(messageList);
+        this.lastMessage = lastMessage;
     }
 
 }

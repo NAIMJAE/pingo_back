@@ -30,25 +30,8 @@ public class ChatMsgService {
         return chatMsgDTO;
     }
 
-    // 마지막 메세지 조회 - ★ 필요 없음
-    public String selectLastMessage(String roomId) throws JsonProcessingException {
-        List<String> lastMessages = chatMsgRepository.findByMsgContentByRoomId(roomId);
-        if (lastMessages.isEmpty()) {
-            return null; //
-        }
-        try{
-            // JSON 객체를 java로 변환
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(lastMessages.get(0));
-            return jsonNode.get("msgContent").asText();
-        }catch (Exception e){
-            return "message 파싱 실패";
-        }
-
-    }
-
-    // 메세지 삽입 ★ 반환값?
-    public ChatMsgDTO insertMessage(ChatMsgDTO chatMsgDTO){
+    // 메세지 삽입
+    public void insertMessage(ChatMsgDTO chatMsgDTO){
         ChatMsgDocument chatMsgDsgDocument = ChatMsgDocument.builder()
                 .roomId(chatMsgDTO.getRoomId())
                 .msgContent(chatMsgDTO.getMsgContent())
@@ -58,10 +41,8 @@ public class ChatMsgService {
                 .msgType(chatMsgDTO.getMsgType())
                 .build();
         ChatMsgDocument savedDocument = chatMsgRepository.save(chatMsgDsgDocument);
+        log.info("챗저장 값 : " +savedDocument);
 
-        chatMsgDTO.setMsgId(savedDocument.getMsgId());
-
-        return chatMsgDTO;
     }
 
 }
