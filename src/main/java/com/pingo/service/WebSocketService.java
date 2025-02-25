@@ -21,8 +21,8 @@ public class WebSocketService {
         String destination = "/topic/match/notification/";
 
         // 담아서 보낼 정보 DTO
-        messagingTemplate.convertAndSend("destination" + toUserNo, matchUsers);
-        messagingTemplate.convertAndSend("destination" + fromUserNo, matchUsers);
+        messagingTemplate.convertAndSend(destination + toUserNo, matchUsers);
+        messagingTemplate.convertAndSend(destination + fromUserNo, matchUsers);
 
     }
 }

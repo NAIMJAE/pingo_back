@@ -24,7 +24,7 @@ public class LocationService {
     private final LocationMapper locationMapper;
     private final StringRedisTemplate stringRedisTemplate;
 
-    // 유저 위치 저장
+    // 유저 위치 저장 <리팩토링 필요>
     @Transactional
     public void updateUserLocation(String userNo, Double latitude, Double longitude) {
         // 1. 유효성 검사

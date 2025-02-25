@@ -84,7 +84,7 @@ public class ChatRoomService {
             chatMapper.insertChatUser(chatUser);
         }
     }
-
+// 죽은코드임 제거해야함
 //    // 채팅방 user조회
 //    public Map<String,List<String>> selectChatRoomUser(String userNo) {
 //        List<ChatUserListDTO> chatUserListDTOS = chatMapper.selectChatUserList(userNo);
