@@ -48,7 +48,7 @@
             "u"."userName",
             "ui"."userBirth",
             '접속중' "status",
-                TO_CHAR("DIST"."DISTANCE", '999.99') || ' km' AS "distance",
+                TO_CHAR("DIST"."DISTANCE", 'FM990.00') || ' km' AS "distance",
                     (SELECT COALESCE(LISTAGG("img"."imageUrl", ',') WITHIN GROUP (ORDER BY "img"."imageUrl"), '')
                     FROM "userImage" "img"
                 WHERE "img"."userNo" = "u"."userNo") AS "images"
