@@ -17,4 +17,9 @@
         ORDER BY "msNo" ASC
     </select>
 
+    <!-- 멤버쉽 등록 -->
+    <insert id="insertUserMembership" parameterType="com.pingo.entity.membership.UserMembership">
+        INSERT INTO "userMembership" ("umNo", "userNo", "msNo", "payDate", "expDate", "state")
+        VALUES (#{umNo}, #{userNo}, #{msNo}, #{payDate}, #{expDate}, #{state})
+    </insert>
 </mapper>
