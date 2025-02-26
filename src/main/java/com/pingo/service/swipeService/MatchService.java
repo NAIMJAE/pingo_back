@@ -64,8 +64,8 @@ public class MatchService {
             CompletableFuture<Map<String,MatchUser>> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
                 Map<String,MatchUser> matchusers = new HashMap<>();
 
-                matchusers.put(toUserNo, userMapper.getMatchUser(toUserNo));
-                matchusers.put(fromUserNo, userMapper.getMatchUser(fromUserNo));
+                matchusers.put("toUser", userMapper.getMatchUser(toUserNo));
+                matchusers.put("fromUser", userMapper.getMatchUser(fromUserNo));
 
                 return matchusers;
             });
@@ -88,44 +88,77 @@ public class MatchService {
                 chatRoomService.createChatRoomAndUser(userNoList);
 
                 // 그 아이디로 포문 돌려서 chatUSerListDTO 찾기 (내 방이랑 상대방 프로필 등등)
-                for(String user : userNoList) {
-                    List<ChatUserDTO> chatUserDTOs = chatMapper.selectChatUser(user);
+
+                    List<ChatUserDTO> chatUserDTOS = chatMapper.selectChatUser(userNoList.get(0));
+
+                for(ChatUserDTO chatUserDTO : chatUserDTOS) {
+                    // 채팅방 존재 여부 확인
+                    String roomId = chatUserDTO.getRoomId();
+
+                    if (chatRoomMap.containsKey(roomId)) {
+                        // 이미 방이 존재하면
+                        chatRoomMap.get(roomId).insertChatUser(chatUserDTO);
+                    } else {
+                        // 방이 없으면
+                        // ChatRoomDTO 초기화 시키기
+                        ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null);            // chatUser추가하기
+                        chatRoomDTO.insertChatUser(chatUserDTO);
+                        chatRoomMap.put(roomId, chatRoomDTO);
+                    }
+
                     // user : 나와 상대방
                     // 내이름으로 찾은 여러ro의 키의 ChatUSerDTO
 
                     // 그걸 하나의 List로 만들어서
-                    for(ChatUserDTO chatUserDTO : chatUserDTOs) {
-                        log.info("asdfasdf : " + chatUserDTO);
-                        // 방아이디를 뺀다(키로 쓸)
-                        String roomId = chatUserDTO.getRoomId();
-                        // 방 아이디가 있으면 거기에 추가시키고
-                        if(chatRoomMap.containsKey(roomId)) {
-                            chatRoomMap.get(roomId).insertChatUser(chatUserDTO);
-                        }else {
-                            // 방 아이디가 없으면 roomDTO를 한번 초기화시키고 그 곳에 chatUserDTO를 넣는다 (새매치이기 때문에 메세지가 없어서 따로 insert하지않음)
-                            ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null);
-                            chatRoomDTO.insertChatUser(chatUserDTO);
-                            chatRoomMap.put(roomId, chatRoomDTO);
+//                    for(ChatUserDTO chatUserDTO : chatUserDTOs) {
+//                        log.info("asdfasdf : " + chatUserDTO);
+//
+//                        // 방아이디를 뺀다(키로 쓸)
+//                        String roomId = chatUserDTO.getRoomId();
+//
+//                        chatRoomMap.computeIfAbsent(roomId, key -> {
+//                            ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null);
+//                            chatRoomDTO.insertChatUser(chatUserDTO);
+//                            log.info("chatRoomDTO의 값 : "+ chatRoomDTO);
+//                            return chatRoomDTO;
+//                        });
+//
+
+//                        // 기존 방이 없으면 새로운 방을 추가
+//                        ChatRoomDTO chatRoomDTO = chatRoomMap.putIfAbsent(roomId, new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null));
+                    // 기존 방이 없었던 경우, 방을 가져와서 사용자 추가
+//                        if (chatRoomDTO == null) {
+//                            chatRoomDTO = chatRoomMap.get(roomId); // 새로 추가된 방 가져오기
+//                            chatRoomDTO.insertChatUser(chatUserDTO);
+//                        }
 
 
+////                        // 방 아이디가 있으면 거기에 추가시키고
+//                        if(chatRoomMap.containsKey(roomId)) {
+//                            chatRoomMap.get(roomId).insertChatUser(chatUserDTO); // 여기수정
+//                        }else {
+                    // 방 아이디가 없으면 roomDTO를 한번 초기화시키고 그 곳에 chatUserDTO를 넣는다 (새매치이기 때문에 메세지가 없어서 따로 insert하지않음)
+//                            ChatRoomDTO chatRoomDTO = new ChatRoomDTO(new ArrayList<>(), new ArrayList<>(), null);
+//                            chatRoomDTO.insertChatUser(chatUserDTO);
+//                            chatRoomMap.putIfAbsent(roomId, chatRoomDTO);
+
+//                        }
+
+//                    }
+
+                    // 각각의 toUser, fromUSer mapping
+                    for (Map.Entry<String, ChatRoomDTO> entry : chatRoomMap.entrySet()) {
+                        List<ChatUserDTO> chatUsers = entry.getValue().getChatUser();
+
+                        for (ChatUserDTO oneUser : chatUsers) {
+                            if (oneUser.getUserNo().equals(fromUserNo)) {
+                                fromUserChatRooms.put(entry.getKey(), entry.getValue());
+                            } else if (oneUser.getUserNo().equals(toUserNo)) {
+                                toUserChatRooms.put(entry.getKey(), entry.getValue());
+                            }
                         }
-
                     }
-                }
-                // 각각의 Map mapping
-                for (Map.Entry<String, ChatRoomDTO> entry : chatRoomMap.entrySet()) {
-                    List<ChatUserDTO> chatUsers = entry.getValue().getChatUser();
-
-                    for (ChatUserDTO oneUser : chatUsers) {
-                        if (oneUser.getUserNo().equals(fromUserNo)) {
-                            fromUserChatRooms.put(entry.getKey(), entry.getValue());
-                        }
-                        else if (oneUser.getUserNo().equals(toUserNo)) {
-                            toUserChatRooms.put(entry.getKey(), entry.getValue());
-                        }
-                    }
-                }
-            });
+                }});
 
 
 
