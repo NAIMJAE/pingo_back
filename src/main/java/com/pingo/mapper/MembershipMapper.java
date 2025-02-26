@@ -16,4 +16,6 @@ public interface MembershipMapper {
     // 멤버쉽 조회
     public List<Membership> selectMembership();
 
+    // 멤버쉽 등록
+    public void insertUserMembership(UserMembership membership);
 }
