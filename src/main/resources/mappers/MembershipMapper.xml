@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pingo.mapper.MembershipMapper">
+
+    <!-- 멤버쉽 테이블 조회 -->
+    <select id="selectMembership" resultType="com.pingo.entity.membership.Membership">
+        SELECT * FROM "membership"
+        ORDER BY "msNo" ASC
+    </select>
+
+</mapper>
