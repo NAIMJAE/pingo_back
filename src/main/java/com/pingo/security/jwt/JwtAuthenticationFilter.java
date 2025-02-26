@@ -1,6 +1,8 @@
 package com.pingo.security.jwt;
 
+import com.pingo.entity.membership.UserMembership;
 import com.pingo.entity.users.Users;
+import com.pingo.mapper.MembershipMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,12 +16,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
+    private final MembershipMapper membershipMapper;
 
     private static final String AUTH_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer";
@@ -48,13 +53,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String userNo = (String) claims.get("userNo");
                     String userRole = (String) claims.get("userRole");
 
+                    Optional<UserMembership> userMembership = membershipMapper.selectUserMembership(userNo);
+                    LocalDateTime expDate = userMembership.get().getExpDate();
+
                     // JSON 응답 설정
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
 
                     // JSON 데이터 생성
-                    String jsonResponse = "{ \"data\": { \"message\": \"자동 로그인 성공\", \"userNo\": \"" + userNo + "\", \"userRole\": \"" + userRole + "\" } }";
+                    String jsonResponse = "{ \"data\": { \"message\": \"자동 로그인 성공\", \"userNo\": \"" + userNo + "\", \"userRole\": \"" + userRole + "\", \"expDate\": \"" + expDate + "\" } }";
                     response.getWriter().write(jsonResponse);
                     return;
                 }
