@@ -130,12 +130,12 @@ public class UserService {
         return ResponseEntity.ok().body(ResponseDTO.of("1","성공", true));
     }
 
-    // ★ 유저 정보 수정
+    // 유저 정보 수정
     @Transactional
     public ResponseEntity<?> updateUserInfo(UserMypageInfo userMypageInfo) {
         try {
             // 1. userInfo 저장
-            userMypageInfo.getUserInfo(); // <- 여기 회원 정보 있음
+            userMapper.updateUserInfo(userMypageInfo.getUserInfo()); // <- 여기 회원 정보 있음
 
             // 2. userKeyword 저장
             String myKeyword = parseKeywordToString(userMypageInfo.getMyKeywordList());
@@ -143,7 +143,7 @@ public class UserService {
             userMapper.updateUserKeyword(userMypageInfo.getUsers().getUserNo(), myKeyword, favoriteKeyword);
 
             // 3. 자기 소개 저장
-            userMypageInfo.getUserIntroduction(); // <- 여기 회원 소개 있음
+            userMapper.updateUserIntro(userMypageInfo.getUsers().getUserNo(), userMypageInfo.getUserIntroduction()); // <- 여기 회원 소개 있음
 
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));
         }catch (Exception e) {

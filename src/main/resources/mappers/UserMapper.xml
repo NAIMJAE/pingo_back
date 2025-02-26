@@ -110,10 +110,27 @@
         WHERE "userNo" = #{userNo}
     </select>
 
+    <!-- 유저 상세 정보 수정 -->
+    <update id="updateUserInfo" parameterType="map">
+        UPDATE "userInfo"
+        SET "userBirth" = #{userBirth}, "userHeight" = #{userHeight}, "userAddress" = #{userAddress},
+            "user1stJob" = #{user1stJob}, "user2ndJob" = #{user2ndJob}, "userReligion" = #{userReligion},
+            "userDrinking" = #{userDrinking}, "userSmoking" = #{userSmoking}, "userBloodType" = #{userBloodType}
+        WHERE "userNo" = #{userNo}
+    </update>
+
     <!-- 유저 키워드 수정 -->
     <update id="updateUserKeyword" parameterType="map">
         UPDATE "userKeyword"
         SET "my" = #{myKeyword}, "favorite" = #{favoriteKeyword}
         WHERE "userNo" = #{userNo}
     </update>
+
+    <!-- 유저 자기소개 수정 -->
+    <update id="updateUserIntro" parameterType="map">
+        UPDATE "userIntroduction"
+        SET "introduction" = #{userIntroduction}
+        WHERE "userNo" = #{userNo}
+    </update>
+
 </mapper>

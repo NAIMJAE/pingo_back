@@ -3,6 +3,7 @@ package com.pingo.mapper;
 import com.pingo.entity.keywords.Keyword;
 import com.pingo.entity.match.MatchUser;
 import com.pingo.entity.users.UserImage;
+import com.pingo.entity.users.UserInfo;
 import com.pingo.entity.users.UserKeyword;
 import com.pingo.entity.users.UserMypageInfo;
 import org.apache.ibatis.annotations.Mapper;
@@ -42,8 +43,14 @@ public interface UserMapper {
     // 유저 소개 조회
     String selectUserIntroduction(@Param("userNo") String userNo);
 
+    // 유저 상세 정보 수정
+    void updateUserInfo(UserInfo userInfo);
+    
     // 유저 키워드 수정
     void updateUserKeyword(@Param("userNo") String userNo,
                            @Param("myKeyword") String myKeyword,
                            @Param("favoriteKeyword") String favoriteKeyword);
+
+    // 유저 자기소개 수정
+    void updateUserIntro(@Param("userNo") String userNo, @Param("userIntroduction") String userIntroduction);
 }
