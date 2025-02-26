@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,8 +17,7 @@ public class MembershipController {
 
     // 멤버쉽 조회
     @GetMapping("/membership")
-    public ResponseEntity<?> getMembership() {
-        log.info("g2");
-        return membershipService.getMembership();
+    public ResponseEntity<?> getMembership(@RequestParam("userNo") String userNo) {
+        return membershipService.getMembership(userNo);
     }
 }

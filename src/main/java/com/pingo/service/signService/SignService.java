@@ -4,18 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pingo.dto.ResponseDTO;
 import com.pingo.entity.keywords.Keyword;
+import com.pingo.entity.membership.UserMembership;
 import com.pingo.entity.users.UserImage;
 import com.pingo.entity.users.UserInfo;
 import com.pingo.entity.users.UserSignUp;
 import com.pingo.entity.users.Users;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
+import com.pingo.mapper.MembershipMapper;
 import com.pingo.mapper.SignMapper;
 import com.pingo.mapper.UserMapper;
 import com.pingo.security.MyUserDetails;
 import com.pingo.security.jwt.JwtProvider;
 import com.pingo.service.keywordServices.KeywordService;
 import com.pingo.service.mainService.LocationService;
+import com.pingo.service.membershipService.MembershipService;
 import com.pingo.util.RedisTestService;
 import com.pingo.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,6 +52,7 @@ public class SignService {
     private final LocationService locationService;
     private final RedisTestService redisTestService;
     private final ImageService imageService;
+    private final MembershipMapper membershipMapper;
     private final KeywordService keywordService;
 
     // 로그인 프로세스 @Transactional 추가 및 위치정보 업데이트 로직 추가 (준혁)
@@ -70,12 +75,19 @@ public class SignService {
             String accessToken = jwtProvider.createToken(users, 1);
             String refreshToken = jwtProvider.createToken(users, 7);
 
+            // 멤버쉽 정보 조회
+            Optional<UserMembership> userMembership = membershipMapper.selectUserMembership(users.getUserNo());
+
             Map<String, Object> userMap = new HashMap<>();
 
             userMap.put("userNo", users.getUserNo());
             userMap.put("userRole", users.getUserRole());
             userMap.put("accessToken", accessToken);
             userMap.put("refreshToken", refreshToken);
+
+            if (userMembership.isPresent()) {
+                userMap.put("expDate", userMembership.get().getExpDate());
+            }
 
             // 위치 정보 저장 추가
             locationService.updateUserLocation(users.getUserNo(), latitude, longitude);

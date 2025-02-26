@@ -1,5 +1,6 @@
 package com.pingo.config;
 
+import com.pingo.mapper.MembershipMapper;
 import com.pingo.security.jwt.JwtAuthenticationFilter;
 import com.pingo.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration // Spring Security 설정 파일임을 나타내는 어노테이션
 public class SecurityConfig {
     private final JwtProvider jwtProvider;
+    private final MembershipMapper membershipMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,7 +30,7 @@ public class SecurityConfig {
                 // Flutter와 같은 프론트엔드에서 요청을 보낼 때 CSRF 토큰이 없기 때문에 비활성화해야 함
 
                 // 토큰 검사 필터 등록
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, membershipMapper), UsernamePasswordAuthenticationFilter.class)
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 세션을 사용하지 않도록 설정 (JWT 기반 인증을 사용하기 때문에 필요)
