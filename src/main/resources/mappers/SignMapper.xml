@@ -37,7 +37,7 @@
     </insert>
 
     <insert id="insertUserIntroduction" parameterType="map">
-        INSERT INTO "userIntroduction" ("userNo", "introduction") VALUES (#{userNo}, null)
+        INSERT INTO "userIntroduction" ("userNo", "introduction") VALUES (#{userNo}, '자기소개를 입력해주세요')
     </insert>
 
 </mapper>
