@@ -28,6 +28,16 @@ public class CommunityController {
         return communityService.searchPlaceReview(cateSort, searchSort, keyword);
     }
 
+    // 정렬로 PlaceReview 조회 with location
+    @GetMapping("/community/place/location")
+    public ResponseEntity<?> searchPlaceReviewWithLocation(@RequestParam("cateSort") String cateSort,
+                                               @RequestParam("latitude") double latitude,
+                                               @RequestParam("longitude") double longitude) {
+
+        return communityService.searchPlaceReviewWithLocation(cateSort, latitude, longitude);
+    }
+
+
     // PlaceReview 장소 이미지 크롤링
     @PostMapping("/community/place/crawling")
     public ResponseEntity<?> crawlingPlaceImage(@RequestBody Map<String, String> reqData) {
