@@ -39,16 +39,16 @@ public class ChatMsgController {
 
     // 받은 메세지에서 이미지파일 서버에 저장하기
     // fromData는 RequestParam or RequestPart로 받는다.
-    @PostMapping("/chat/save/chatImage")
+    @PostMapping("/chat/save/chatFile")
     public ResponseEntity<?> saveImage(@RequestPart("roomId") String roomId,
-                            @RequestPart("chatImage") MultipartFile chatImage) {
+                            @RequestPart("chatFile") MultipartFile chatFile) {
         log.info("roomId : " + roomId);
-        log.info("chatImage : " + chatImage);
+        log.info("chatFile : " + chatFile.getOriginalFilename());
 
-        String chatImageName = "CI_" + UUID.randomUUID().toString();
-        String chatImagePath = "chatImages" + File.separator + chatImageName;
-        String imageUrl = imageService.imageUpload(chatImage,chatImagePath,chatImageName);
-        log.info("이거 주소 머임 ? : "+ imageUrl);
-        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", imageUrl));
+        String chatFileName = "CI_" + UUID.randomUUID().toString();
+        String chatFilePath = "chatFiles" + File.separator + chatFileName;
+        String fileUrl = imageService.imageUpload(chatFile,chatFilePath,chatFileName);
+        log.info("이거 주소 머임 ? : "+ fileUrl);
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", fileUrl));
     }
 }
