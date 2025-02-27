@@ -35,6 +35,7 @@ public class ChatMsgService {
         ChatMsgDocument chatMsgDsgDocument = ChatMsgDocument.builder()
                 .roomId(chatMsgDTO.getRoomId())
                 .msgContent(chatMsgDTO.getMsgContent())
+                .fileName(chatMsgDTO.getFileName())
                 .msgTime(chatMsgDTO.getMsgTime())
                 .isRead(chatMsgDTO.isRead())
                 .userNo(chatMsgDTO.getUserNo())
