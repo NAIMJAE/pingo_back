@@ -74,4 +74,11 @@ public class CommunityController {
 
         return communityService.checkDatingGuideHeart(userNo, dgNo);
     }
+
+    // 장소 공유 채팅 조회
+    @GetMapping("/community/chat")
+    public ResponseEntity<?> searchPlaceForChat(@RequestParam("placeName") String placeName,
+                                                @RequestParam("placeAddress") String placeAddress) {
+        return communityService.searchPlaceForChat(placeName, placeAddress);
+    }
 }

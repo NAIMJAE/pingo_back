@@ -21,6 +21,9 @@ public interface CommunityMapper {
 
     public void insertPlaceReview(PlaceReview placeReview);
 
+    public PlaceReview selectPlaceReviewForChat(@Param("placeName") String placeName,
+                                                @Param("placeAddress") String placeAddress);
+
     public List<DatingGuideDTO> selectDatingGuideForInit();
 
     public List<DatingGuideDTO> selectDatingGuideWithSort(@Param("cate") String cate,

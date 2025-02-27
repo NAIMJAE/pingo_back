@@ -48,6 +48,13 @@
         VALUES (#{prNo}, #{placeName}, #{thumb}, #{addressName}, #{roadAddressName}, #{userNo}, #{contents}, #{category}, #{latitude}, #{longitude}, #{heart})
     </insert>
 
+    <!-- 장소 리뷰 조회 (name & address) -->
+    <select id="selectPlaceReviewForChat" resultType="com.pingo.entity.community.PlaceReview">
+        SELECT * FROM "placeReview"
+        WHERE "placeName" = #{placeName}
+        AND "addressName" = #{placeAddress}
+    </select>
+
     <!-- DatingGuide 최초 조회 -->
     <select id="selectDatingGuideForInit" resultType="com.pingo.dto.community.DatingGuideDTO">
         WITH RankedDatingGuide AS (

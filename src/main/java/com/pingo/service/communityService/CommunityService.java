@@ -153,4 +153,12 @@ public class CommunityService {
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공","increase"));
         }
     }
+
+    // 장소 공유 채팅 조회
+    public ResponseEntity<?> searchPlaceForChat(String placeName, String placeAddress) {
+
+        PlaceReview placeReview = communityMapper.selectPlaceReviewForChat(placeName, placeAddress);
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",placeReview));
+    }
 }
