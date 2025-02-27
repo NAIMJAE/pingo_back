@@ -51,6 +51,13 @@ public enum ExceptionCode {
     // CHAT
     NOT_FOUND_CHAT_ROOM(400, "NOT_FOUND_CHAT_ROOM", "채팅방 조회에 실패했습니다."),
 
+    // MEMBERSHIP
+    MEMBERSHIP_PROCESS_FAIL(400, "MEMBERSHIP_PROCESS_FAIL", "멤버쉽 등록에 실패했습니다."),
+    DUPLICATE_MEMBERSHIP(409, "DUPLICATE_MEMBERSHIP", "멤버쉽이 이미 존재합니다."),
+    NOT_FOUND_MEMBERSHIP(400, "NOT_FOUND_MEMBERSHIP", "멤버쉽을 찾을 수 없습니다."),
+
+
+
     ;
 
 

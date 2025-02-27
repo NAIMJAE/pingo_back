@@ -21,6 +21,7 @@ public class ChatMsgDocument {
     private String roomId;
     private String userNo;
     private String msgContent;
+    private String fileName;
     private boolean isRead;
     private String msgType;
     private LocalDateTime msgTime;
