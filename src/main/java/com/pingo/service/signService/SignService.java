@@ -187,4 +187,11 @@ public class SignService {
             throw new BusinessException(ExceptionCode.SIGN_UP_FAIL);
         }
     }
+
+    // 이메일 인증
+    public ResponseEntity<?> verifyEmail(String userEmail) {
+
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));
+    }
 }

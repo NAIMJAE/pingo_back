@@ -51,4 +51,12 @@ public class SignController {
 
         return signService.signUpProcess(userSignUp, profileImage, latitude, longitude);
     }
+    
+    // 이메일 인증
+    @PostMapping("/permit/email")
+    public ResponseEntity<?> verifyEmail(@RequestBody String userEmail) {
+
+
+        return signService.verifyEmail(userEmail);
+    }
 }
