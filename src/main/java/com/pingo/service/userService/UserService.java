@@ -29,6 +29,27 @@ public class UserService {
     final private ImageService imageService;
     final private UserMapper userMapper;
 
+    // DetailPage를 위한 회원 상세정보 조회 <나중에 합쳐주세용~>
+    public ResponseEntity<?> getInfo(String userNo) {
+        try {
+            // ★ 상세정보랑 소개정보는 join으로 합칠 수 있음
+            // 유저 마이페이지 상세 정보 조회
+            UserMypageInfo userMypageInfo = userMapper.getUserMypageInfo(userNo);
+            log.info("userMypageInfo : " + userMypageInfo);
+
+            // 유저 소개 정보 조회
+            String userIntroduction = userMapper.selectUserIntroduction(userNo);
+            userMypageInfo.inputUserIntroduction(userIntroduction);
+
+            log.info("userMypageInfo : " + userMypageInfo);
+
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공", userMypageInfo));
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            throw new BusinessException(ExceptionCode.USER_INFO_NOT_FOUND);
+        }
+    }
+
     // 마이페이지를 위한 회원 정보 조회
     @Transactional
     public ResponseEntity<?> getUserInfo(String userNo) {
@@ -164,4 +185,6 @@ public class UserService {
         }
         return keywordStr.toString();
     }
+
+
 }
