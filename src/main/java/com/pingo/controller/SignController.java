@@ -1,6 +1,9 @@
 package com.pingo.controller;
 
 import com.pingo.service.signService.SignService;
+import com.pingo.service.userService.EmailService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -52,11 +55,11 @@ public class SignController {
         return signService.signUpProcess(userSignUp, profileImage, latitude, longitude);
     }
     
-    // 이메일 인증
-    @PostMapping("/permit/email")
-    public ResponseEntity<?> verifyEmail(@RequestBody String userEmail) {
+    // 회원가입 이메일 인증코드 발송
+    @PostMapping("/permit/sendemail")
+    public ResponseEntity<?> verifyEmail(@RequestBody String userEmail, HttpSession session) throws MessagingException {
 
 
-        return signService.verifyEmail(userEmail);
+        return signService.verifyEmailForSignUp(userEmail, session);
     }
 }

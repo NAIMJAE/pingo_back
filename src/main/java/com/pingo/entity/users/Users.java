@@ -25,6 +25,7 @@ public class Users {
     private String userState;
     private String userRole;
     private LocalDateTime userrDate;
+    private String userEmail;
 
     // 아이디 검증
     public Users validatedSignUpUserData() {
@@ -69,7 +70,13 @@ public class Users {
         // 8. 가입일 검증
         this.userrDate = LocalDateTime.now();
 
-        // 9. 모든 검증 완료 시 userNo (pk) 생성
+        // 9. 이메일 검증
+        if (!Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$\n", this.userEmail)) {
+            // 거짓
+            throw new BusinessException(ExceptionCode.INVALID_USER_EMAIL);
+        }
+
+        // 10. 모든 검증 완료 시 userNo (pk) 생성
         this.userNo = createUserNo();
 
         return this;

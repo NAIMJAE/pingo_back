@@ -19,8 +19,11 @@ import com.pingo.security.jwt.JwtProvider;
 import com.pingo.service.keywordServices.KeywordService;
 import com.pingo.service.mainService.LocationService;
 import com.pingo.service.membershipService.MembershipService;
+import com.pingo.service.userService.EmailService;
 import com.pingo.util.RedisTestService;
 import com.pingo.service.ImageService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -54,6 +57,7 @@ public class SignService {
     private final ImageService imageService;
     private final MembershipMapper membershipMapper;
     private final KeywordService keywordService;
+    private final EmailService emailService;
 
     // 로그인 프로세스 @Transactional 추가 및 위치정보 업데이트 로직 추가 (준혁)
     @Transactional
@@ -188,10 +192,17 @@ public class SignService {
         }
     }
 
-    // 이메일 인증
-    public ResponseEntity<?> verifyEmail(String userEmail) {
+    // 회원가입 이메일 인증
+    public ResponseEntity<?> verifyEmailForSignUp(String userEmail, HttpSession session) throws MessagingException {
 
+        // 이메일 중복 여부 체크
+        int duplicateEmailCount = signMapper.selectUserEmailForValidateEmail(userEmail);
+        if (duplicateEmailCount > 0) {
+            throw new BusinessException(ExceptionCode.DUPLICATE_USER_EMAIL);
+        }
 
+        // 이메일 인증코드 발송
+        emailService.sendVerificationEmail(userEmail, session);
         return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));
     }
 }

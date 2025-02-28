@@ -28,4 +28,7 @@ public interface SignMapper {
 
     // 유저 소개 테이블 정보 추가
     void insertUserIntroduction(@Param("userNo") String userNo);
+
+    // 회원가입시 이메일 중복 체크를 위한 회원 이메일 조회
+    int selectUserEmailForValidateEmail(@Param("userEmail") String userEmail);
 }
