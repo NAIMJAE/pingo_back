@@ -16,7 +16,9 @@ public interface CommunityMapper {
 
     public List<PlaceReviewDTO> selectPlaceReviewWithSort(@Param("cateSort") String cateSort,
                                                             @Param("searchSort") String searchSort);
-
+    public List<PlaceReviewDTO> selectPlaceReviewWithLocation(@Param("cateSort") String cateSort,
+                                                                @Param("latitude") double latitude,
+                                                                @Param("longitude") double longitude);
     public List<PlaceReviewDTO> selectPlaceReviewWithKeyword(@Param("keyword") String keyword);
 
     public void insertPlaceReview(PlaceReview placeReview);

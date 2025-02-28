@@ -33,13 +33,20 @@ public class CommunityService {
         if (keyword == null || keyword.isEmpty()) {
             List<PlaceReviewDTO> placeReviewList = communityMapper.selectPlaceReviewWithSort(cateSort, searchSort);
 
-            log.info("placeReviewList : " + placeReviewList);
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",placeReviewList));
         }else {
             List<PlaceReviewDTO> placeReviewList = communityMapper.selectPlaceReviewWithKeyword(keyword);
 
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",placeReviewList));
         }
+    }
+
+    // 정렬로 PlaceReview 조회 with location
+    public ResponseEntity<?> searchPlaceReviewWithLocation(String cateSort, double latitude, double longitude) {
+        List<PlaceReviewDTO> placeReviewList = communityMapper.selectPlaceReviewWithLocation(cateSort, latitude, longitude);
+
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",placeReviewList));
+
     }
 
     // PlaceReview 장소 이미지 크롤링
