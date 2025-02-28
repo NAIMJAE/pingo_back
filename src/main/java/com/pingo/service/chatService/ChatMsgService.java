@@ -31,7 +31,7 @@ public class ChatMsgService {
     }
 
     // 메세지 삽입
-    public void insertMessage(ChatMsgDTO chatMsgDTO){
+    public ChatMsgDTO insertMessage(ChatMsgDTO chatMsgDTO){
         ChatMsgDocument chatMsgDsgDocument = ChatMsgDocument.builder()
                 .roomId(chatMsgDTO.getRoomId())
                 .msgContent(chatMsgDTO.getMsgContent())
@@ -43,6 +43,8 @@ public class ChatMsgService {
                 .build();
         ChatMsgDocument savedDocument = chatMsgRepository.save(chatMsgDsgDocument);
         log.info("챗저장 값 : " +savedDocument);
+        chatMsgDTO.setMsgId(savedDocument.getMsgId());
+        return chatMsgDTO;
 
     }
 

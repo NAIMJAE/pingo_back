@@ -54,15 +54,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String userRole = (String) claims.get("userRole");
 
                     Optional<UserMembership> userMembership = membershipMapper.selectUserMembership(userNo);
-                    LocalDateTime expDate = userMembership.get().getExpDate();
 
                     // JSON 응답 설정
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
 
+                    String jsonResponse;
+
+                    if (userMembership.isPresent()) {
+                        LocalDateTime expDate = userMembership.get().getExpDate();
+                        jsonResponse = "{ \"data\": { \"message\": \"자동 로그인 성공\", \"userNo\": \"" + userNo + "\", \"userRole\": \"" + userRole + "\", \"expDate\": \"" + expDate + "\" } }";
+                    } else {
+                        jsonResponse = "{ \"data\": { \"message\": \"자동 로그인 성공\", \"userNo\": \"" + userNo + "\", \"userRole\": \"" + userRole + "\" } }";
+                    }
+
                     // JSON 데이터 생성
-                    String jsonResponse = "{ \"data\": { \"message\": \"자동 로그인 성공\", \"userNo\": \"" + userNo + "\", \"userRole\": \"" + userRole + "\", \"expDate\": \"" + expDate + "\" } }";
                     response.getWriter().write(jsonResponse);
                     return;
                 }
