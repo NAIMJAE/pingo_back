@@ -20,6 +20,12 @@ public enum ExceptionCode {
     USER_INFO_NOT_FOUND(400, "USER_INFO_NOT_FOUND", "회원 정보 조회에 실패했습니다"),
     UPDATE_USER_INFO_FAIL(400, "UPDATE_USER_INFO_FAIL", "회원정보 수정에 실패했습니다"),
 
+    // EMAIL
+    DUPLICATE_USER_EMAIL(409, "USER_EMAIL_DUPLICATE", "중복된 유저 이메일 입니다."),
+    INVALID_USER_EMAIL(409, "USER_EMAIL_INVALID", "유저 이메일이 유효하지 않습니다."),
+    EMAIL_SEND_FAILED(554, "EMAIL_SEND_FAILED", "메일 발송 중 오류가 발생했습니다."),
+
+
     // SWIPE
     DUPLICATE_SWIPE_NO(409, "SWIPE_NO_DUPLICATE", "스와이프 번호가 이미 존재합니다."),
     INVALID_SWIPE_REQUEST(400, "INVALID_SWIPE_REQUEST", "잘못된 스와이프 요청 데이터입니다."),

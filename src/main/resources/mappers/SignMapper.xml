@@ -21,6 +21,7 @@
         SELECT * FROM "keyword" WHERE "kwLevel" = 3 ORDER BY "kwName" ASC
     </select>
 
+    <!--  회원가입을 위한 유저 정보 삽입  -->
     <insert id="insertUserForSignUp" parameterType="com.pingo.entity.users.Users">
 
         INSERT INTO "users" ("userNo", "userId", "userPw", "userName", "userNick", "userGender", "userState", "userrDate", "userRole")
@@ -28,6 +29,7 @@
 
     </insert>
 
+    <!--  회원가입을 위한 유저 상세 정보 삽입  -->
     <insert id="insertUserInfoForSignUp" parameterType="com.pingo.entity.users.UserInfo">
 
         INSERT INTO "userInfo" ("userNo", "userBirth", "userHeight", "userAddress", "user1stJob", "user2ndJob", "userReligion", "userDrinking", "userSmoking", "userBloodType")
@@ -36,8 +38,14 @@
 
     </insert>
 
+    <!--  회원가입을 위한 유저 자기소개 삽입  -->
     <insert id="insertUserIntroduction" parameterType="map">
         INSERT INTO "userIntroduction" ("userNo", "introduction") VALUES (#{userNo}, '자기소개를 입력해주세요')
     </insert>
+
+    <!--  이메일 중복 체크  -->
+    <select id="selectUserEmailForValidateEmail" parameterType="string" resultType="int" useCache="false">
+        SELECT COUNT(*) FROM "users" WHERE "userEmail" = #{userEmail}
+    </select>
 
 </mapper>
