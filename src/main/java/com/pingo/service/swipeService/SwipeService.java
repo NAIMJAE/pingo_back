@@ -69,4 +69,7 @@ public class SwipeService {
         return ResponseEntity.ok().body(ResponseDTO.of("1", "스와이프가 저장되었습니다.", true));
     }
 
+    // 나를 SuperPing, Ping 한 사람들 조회
+
+
 }
