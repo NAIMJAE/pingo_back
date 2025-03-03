@@ -73,6 +73,48 @@ public class CommunityService {
         return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", true));
     }
 
+    // PlaceReview 좋아요
+    @Transactional
+    public ResponseEntity<?> checkPlaceHeart(String userNo, String prNo) {
+        Optional<String> prNoStrOpt = communityMapper.selectPlaceHeart(userNo);
+
+        // 내가 좋아요한 목록 List 변환
+        List<String> prNoList = new ArrayList<>();
+        if (prNoStrOpt.isPresent()) {
+            String[] prNoArray = prNoStrOpt.get().split("_");
+            Collections.addAll(prNoList, prNoArray);
+        }
+
+        boolean isRemoved = prNoList.remove(prNo);
+        if (!isRemoved) {
+            prNoList.add(prNo);
+        }
+
+        String newPrNoStr = String.join("_", prNoList);
+
+        if (isRemoved) {
+            communityMapper.placeDecreaseHeart(prNo);
+        } else {
+            communityMapper.placeIncreaseHeart(prNo);
+        }
+
+        if (prNoStrOpt.isPresent()) {
+            if (newPrNoStr.isEmpty()) {
+                communityMapper.deletePlaceReviewHeart(userNo);
+            }else {
+                communityMapper.updatePlaceReviewHeart(userNo, newPrNoStr);
+            }
+        } else {
+            communityMapper.insertPlaceReviewHeart(userNo, newPrNoStr);
+        }
+
+        if (isRemoved) {
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공","decrease"));
+        }else {
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공","increase"));
+        }
+    }
+
     // DatingGuide 최초 조회
     public ResponseEntity<?> selectDatingGuideForInit() {
         List<DatingGuideDTO> datingGuideList = communityMapper.selectDatingGuideForInit();

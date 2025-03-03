@@ -53,6 +53,16 @@ public class CommunityController {
         return communityService.insertPlaceReview(placeReview, placeImage);
     }
 
+    // PlaceReview 좋아요
+    @PostMapping("/community/place/heart")
+    public ResponseEntity<?> checkPlaceHeart(@RequestBody Map<String, String> reqData) {
+
+        String userNo = reqData.get("userNo");
+        String prNo = reqData.get("prNo");
+
+        return communityService.checkPlaceHeart(userNo, prNo);
+    }
+
     // DatingGuide 최초 조회
     @GetMapping("/community/guide/init")
     public ResponseEntity<?> selectDatingGuideForInit() {

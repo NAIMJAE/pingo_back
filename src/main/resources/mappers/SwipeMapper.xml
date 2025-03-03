@@ -20,43 +20,48 @@
 
     <!-- 나를 SUPERPING or PING을 한 유저 조회 -->
     <select id="selectPingorSuperpingbyme" resultType="com.pingo.dto.profile.CheckPingProfileResponseDTO">
-        SELECT  US."userNo",
-        US."userName",
-        UF."userBirth",
+        SELECT
+            US."userNo",
+            US."userName",
+            UF."userBirth",
         (SELECT UI."imageUrl"
         FROM "userImage" UI
         WHERE UI."userNo" = US."userNo"
-        AND UI."imageProfile" = 'T'
-        AND ROWNUM = 1) AS "imageUrl",
+            AND UI."imageProfile" = 'T'
+            AND ROWNUM = 1) AS "imageUrl",
         (SELECT LISTAGG(UI."imageUrl", ',') WITHIN GROUP (ORDER BY UI."imageUrl")
         FROM "userImage" UI
         WHERE UI."userNo" = US."userNo") AS "images",
         CASE
-        WHEN T."maxSwipeType" = 'SUPERPING' THEN 'SUPERPING'
-        ELSE 'PING'
+            WHEN T."maxSwipeType" = 'SUPERPING' THEN 'SUPERPING'
+            ELSE 'PING'
         END AS "swipeType"
         FROM "users" US
         JOIN "userInfo" UF ON US."userNo" = UF."userNo"
         RIGHT JOIN (
-        SELECT SW."fromUserNo", SW."toUserNo",
-        MAX(SW."swipeType") AS "maxSwipeType"
-        FROM "swipe" SW
-        WHERE SW."swipeType" IN ('SUPERPING', 'PING')
-        AND NOT EXISTS (
-        SELECT 1
-        FROM "swipe" SW2
-        WHERE SW2."fromUserNo" = SW."fromUserNo"
-        AND SW2."toUserNo" = SW."toUserNo"
-        AND SW2."swipeType" = 'PANG'
-        )
-        GROUP BY SW."fromUserNo", SW."toUserNo"
+            SELECT
+                SW."fromUserNo",
+                SW."toUserNo",
+                MAX(SW."swipeType") AS "maxSwipeType"
+            FROM "swipe" SW
+            WHERE SW."swipeType" IN ('SUPERPING', 'PING')
+            AND NOT EXISTS (
+                SELECT 1
+                FROM "swipe" SW2
+                WHERE SW2."fromUserNo" = SW."fromUserNo"
+                AND SW2."toUserNo" = SW."toUserNo"
+                AND SW2."swipeType" = 'PANG'
+            )
+            GROUP BY SW."fromUserNo", SW."toUserNo"
         ) T ON T."fromUserNo" = US."userNo"
         WHERE T."toUserNo" = #{userNo}
-        AND NOT EXISTS (
-        SELECT 1
-        FROM "matchMapper" MM
-        WHERE MM."matchUserNo" = US."userNo"
-        )
+            AND NOT EXISTS (
+                SELECT 1
+                FROM "matchMapper" MM
+                WHERE MM."matchUserNo" = US."userNo"
+                AND MM."matchNo" = #{userNo}
+            )
+
 
     </select>
 

@@ -80,6 +80,35 @@
         AND "addressName" = #{placeAddress}
     </select>
 
+    <!-- 장소 리뷰 좋아요 처리 -->
+    <select id="selectPlaceHeart" parameterType="map" resultType="string">
+        SELECT "prNoStr" FROM "placeReviewHeart"
+        WHERE "userNo" = #{userNo}
+    </select>
+
+    <update id="placeDecreaseHeart" parameterType="map">
+        UPDATE "placeReview" SET "heart" = "heart" - 1
+        WHERE "prNo" = #{prNo}
+    </update>
+
+    <update id="placeIncreaseHeart" parameterType="map">
+        UPDATE "placeReview" SET "heart" = "heart" + 1
+        WHERE "prNo" = #{prNo}
+    </update>
+
+    <delete id="deletePlaceReviewHeart" parameterType="map">
+        DELETE FROM "placeReviewHeart" WHERE "userNo" = #{userNo}
+    </delete>
+
+    <select id="updatePlaceReviewHeart" parameterType="map">
+        UPDATE "placeReviewHeart" SET "prNoStr" = #{prNoStr}
+        WHERE "userNo" = #{userNo}
+    </select>
+
+    <select id="insertPlaceReviewHeart" parameterType="map">
+        INSERT INTO "placeReviewHeart" ("userNo", "prNoStr") VALUES (#{userNo}, #{prNoStr})
+    </select>
+
     <!-- DatingGuide 최초 조회 -->
     <select id="selectDatingGuideForInit" resultType="com.pingo.dto.community.DatingGuideDTO">
         WITH RankedDatingGuide AS (
