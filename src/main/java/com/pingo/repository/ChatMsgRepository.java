@@ -14,7 +14,7 @@ import java.util.List;
 public interface ChatMsgRepository extends MongoRepository<ChatMsgDocument, String> {
 
     // 모든 메세지 조회
-    @Query(value = "{'roomId' :  ?0}", sort = "{'_id' : -1, 'msgTime' : -1}")
+    @Query(value = "{'roomId' :  ?0}", sort = "{'_id' : -1, 'msgTime' : 1}")
     List<ChatMsgDTO> findByRoomId(String roomId, Pageable pageable);
 
 
