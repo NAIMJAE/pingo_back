@@ -59,7 +59,7 @@
                 SELECT 1
                 FROM "matchMapper" MM
                 WHERE MM."matchUserNo" = US."userNo"
-                AND MM."matchNo" = #{userNo}
+                AND MM."userNo" = #{userNo}
             )
 
 

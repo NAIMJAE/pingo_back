@@ -27,7 +27,7 @@ public class SwipeConsumerService {
     private final ObjectMapper objectMapper;
     private final MatchService matchService;
 
-    @KafkaListener(topics = KafkaTopics.SWIPE_EVENTS, groupId = "swipe-consumer-group", concurrency = "3")
+    @KafkaListener(topics = KafkaTopics.SWIPE_EVENTS, concurrency = "3")
     public void consumeSwipeEvent(ConsumerRecord<String, String> record, Acknowledgment ack) {
         log.info("Kafka 리스너 실행됨");  // 실행 확인용 로그 추가
         log.info("Kafka 리스너 실행됨 - Partition: {}, Offset: {}", record.partition(), record.offset());
@@ -50,7 +50,7 @@ public class SwipeConsumerService {
             final String toUserNo = finalSwipeRequest.getToUserNo();
             final String swipeType = finalSwipeRequest.getSwipeType();
 
-            // 1) PING 저장
+            // 1) SwipeType 저장
             CompletableFuture<Void> saveSwipeFuture = CompletableFuture.runAsync(() -> { // runAsync() 반환값이 없는 비동기 처리
                 Swipe swipe = new Swipe(finalSwipeRequest);
                 log.info("[DEBUG] swipe 테이블 INSERT 실행 시작: {}", swipe.toString());
