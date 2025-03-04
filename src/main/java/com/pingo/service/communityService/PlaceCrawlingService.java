@@ -19,7 +19,7 @@ import java.net.URL;
 @Service
 public class PlaceCrawlingService {
 
-    private static final String CHROME_DRIVER_PATH = "src/main/resources/chromDriver/chromedriverwin64.exe";
+    private static final String CHROME_DRIVER_PATH = "src/main/resources/chromDriver/chromedriver64.exe";
 
     public byte[] crawlingPlaceImage(String placeUrl) {
         System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_PATH);
@@ -39,22 +39,15 @@ public class PlaceCrawlingService {
             driver.get(placeUrl);
             Thread.sleep(3000); // 페이지 로딩 대기
 
-            // 대표 이미지가 있는 `span.bg_present` 요소 찾기
-            WebElement imageElement = driver.findElement(By.cssSelector("span.bg_present"));
+            // 대표 이미지가 포함된 `img` 태그 찾기
+            WebElement imageElement = driver.findElement(By.cssSelector("img.img-thumb.img_cfit"));
 
-            // span 이 없는 예외 처리
+            // 이미지 URL(src 속성) 가져오기
+            String imageUrl = imageElement.getAttribute("src");
 
-            // `background-image` 속성에서 이미지 URL 추출
-            String styleAttribute = imageElement.getAttribute("style");
-            String imageUrl = null;
-
-            if (styleAttribute != null && styleAttribute.contains("background-image")) {
-                imageUrl = styleAttribute.split("url\\(")[1].split("\\)")[0].replace("\"", "").trim();
-
-                // 🔥 URL이 "//"로 시작하는 경우, "https:" 추가
-                if (imageUrl.startsWith("//")) {
-                    imageUrl = "https:" + imageUrl;
-                }
+            // 🔥 URL이 "//"로 시작하는 경우, "https:" 추가
+            if (imageUrl.startsWith("//")) {
+                imageUrl = "https:" + imageUrl;
             }
 
             if (imageUrl != null) {
