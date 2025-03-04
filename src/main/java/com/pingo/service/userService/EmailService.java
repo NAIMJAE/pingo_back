@@ -66,8 +66,8 @@ public class EmailService {
             // SessionManager에 세션 저장
             SessionManager.addSession(session);
 
-            log.info("🔵 [세션 저장] 이메일: {}, 저장된 코드: {}", userEmail, code);
-            log.info("🟢 [세션 유지 시간] {}초, 세션 ID: {}", session.getMaxInactiveInterval(), sessionId);
+            log.info("[세션 저장] 이메일: {}, 저장된 코드: {}", userEmail, code);
+            log.info("[세션 유지 시간] {}초, 세션 ID: {}", session.getMaxInactiveInterval(), sessionId);
 
             // sessionId만 반환
             return sessionId;
@@ -85,8 +85,7 @@ public class EmailService {
         HttpSession session = SessionManager.getSession(sessionId);
 
         if (session == null) {
-            log.info("유효하지 않은 세션 ID: {}", sessionId);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseDTO.of("0", "유효하지 않은 세션입니다.", false));
+            throw new BusinessException(ExceptionCode.INVALID_SESSION);
         }
 
         try {
@@ -104,5 +103,4 @@ public class EmailService {
             throw new BusinessException(ExceptionCode.CODE_CHECK_FAILED);
         }
     }
-
 }

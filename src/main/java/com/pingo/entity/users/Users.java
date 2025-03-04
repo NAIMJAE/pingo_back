@@ -71,7 +71,7 @@ public class Users {
         this.userrDate = LocalDateTime.now();
 
         // 9. 이메일 검증
-        if (!Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$\n", this.userEmail)) {
+        if (!Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", this.userEmail)) {
             // 거짓
             throw new BusinessException(ExceptionCode.INVALID_USER_EMAIL);
         }

@@ -25,6 +25,7 @@ public enum ExceptionCode {
     EMAIL_SEND_FAILED(554, "EMAIL_SEND_FAILED", "메일 발송 중 오류가 발생했습니다."),
     VERIFICATION_CODE_MISMATCH(422, "VERIFICATION_CODE_MISMATCH", "인증번호가 일치하지 않습니다."),
     CODE_CHECK_FAILED(400, "CODE_CHECK_FAILED", "인증코드 확인에 실패했습니다."),
+    INVALID_SESSION(409, "INVALID_SESSION", "세션이 유효하지 않습니다."),
 
 
     // SWIPE
