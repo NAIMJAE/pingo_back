@@ -50,7 +50,7 @@ public class SwipeConsumerService {
             final String toUserNo = finalSwipeRequest.getToUserNo();
             final String swipeType = finalSwipeRequest.getSwipeType();
 
-            // 1) PING 저장
+            // 1) SwipeType 저장
             CompletableFuture<Void> saveSwipeFuture = CompletableFuture.runAsync(() -> { // runAsync() 반환값이 없는 비동기 처리
                 Swipe swipe = new Swipe(finalSwipeRequest);
                 log.info("[DEBUG] swipe 테이블 INSERT 실행 시작: {}", swipe.toString());
