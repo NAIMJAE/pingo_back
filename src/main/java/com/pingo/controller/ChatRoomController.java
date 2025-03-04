@@ -1,18 +1,13 @@
 package com.pingo.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.pingo.service.chatService.ChatMsgService;
+
 import com.pingo.service.chatService.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor

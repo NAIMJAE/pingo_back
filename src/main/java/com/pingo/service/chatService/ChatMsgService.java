@@ -1,8 +1,5 @@
 package com.pingo.service.chatService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pingo.document.ChatMsgDocument;
 import com.pingo.dto.chat.ChatMsgDTO;
 import com.pingo.repository.ChatMsgRepository;
