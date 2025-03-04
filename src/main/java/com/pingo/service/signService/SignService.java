@@ -117,6 +117,16 @@ public class SignService {
         }
     }
 
+    // 회원가입시 아이디 중복 검사
+    public ResponseEntity<?> validateNick(String inputNick) {
+        int result = signMapper.selectUserNickForValidateNick(inputNick);
+        if(result > 0) {
+            return ResponseEntity.ok().body(ResponseDTO.of("2", "실패", false));
+        }else {
+            return ResponseEntity.ok().body(ResponseDTO.of("1", "성공", true));
+        }
+    }
+
     // 회원 가입시 선택할 키워드 조회
     public ResponseEntity<?> select3ndKeyword() {
         List<Keyword> keywordList = signMapper.select3ndKeyword();

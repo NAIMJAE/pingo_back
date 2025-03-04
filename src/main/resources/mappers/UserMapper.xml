@@ -17,6 +17,7 @@
             <result column="userState" property="userState"/>
             <result column="userRole" property="userRole"/>
             <result column="userrDate" property="userrDate"/>
+            <result column="userEmail" property="userEmail"/>
         </association>
 
         <!-- UserInfo 객체 매핑 -->
@@ -36,7 +37,7 @@
 
     <!-- 사용자 정보 조회 -->
     <select id="getUserMypageInfo" parameterType="map" resultMap="UserInfoResultMap">
-        SELECT U."userNo", U."userName", U."userNick", U."userGender",
+        SELECT U."userNo", U."userName", U."userNick", U."userGender", U."userEmail",
         UI."userBirth", UI."userHeight", UI."userAddress", UI."user1stJob", UI."user2ndJob",
         UI."userReligion", UI."userDrinking", UI."userSmoking", UI."userBloodType"
         FROM "users" U, "userInfo" UI
