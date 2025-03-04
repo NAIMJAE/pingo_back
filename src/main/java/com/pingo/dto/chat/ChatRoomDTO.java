@@ -30,7 +30,7 @@ public class ChatRoomDTO {
             log.warn("메시지 리스트가 null이거나 비어 있습니다.");
             return;
         }
-        String lastMessage = messageList.get(messageList.size() - 1).getMsgContent();
+        String lastMessage = messageList.get(0).getMsgContent();
         this.message.addAll(messageList);
         this.lastMessage = lastMessage;
     }

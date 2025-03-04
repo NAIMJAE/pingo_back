@@ -8,18 +8,18 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Repository
 public interface ChatMsgRepository extends MongoRepository<ChatMsgDocument, String> {
 
     // 모든 메세지 조회
-    @Query(value = "{'roomId' :  ?0}", sort = "{'_id' : -1}")
+    @Query(value = "{'roomId' :  ?0}", sort = "{'_id' : -1, 'msgTime' : -1}")
     List<ChatMsgDTO> findByRoomId(String roomId, Pageable pageable);
 
 
     // 100개 메세지 더 조회하기(로컬디비 사용시 필요없음)
-    @Query(value = "{'roomId' : ?0, '_id' : { '$lt': ?1 }}")
-    List<ChatMsgDTO> findByMsgId(String roomId, String msgId);
+    @Query(value = "{'roomId' : ?0, '_id' : { '$lt': ?1 }}", sort = "{'_id' : -1, 'msgTime' : 1}")
+    List<ChatMsgDTO> findByMsgId(String roomId, String msgId, Pageable pageable);
 
 }
