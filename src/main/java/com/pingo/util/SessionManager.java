@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
-    // 🔥 세션을 저장할 Map (동시 접근을 고려하여 ConcurrentHashMap 사용)
+    // 세션을 저장할 Map (동시 접근을 고려하여 ConcurrentHashMap 사용)
     private static final Map<String, HttpSession> sessionMap = new ConcurrentHashMap<>();
 
     // 세션을 저장 (이메일 인증 요청 시 호출)

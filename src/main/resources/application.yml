@@ -9,12 +9,12 @@ spring:
       enabled: false
 
   datasource:
-    url: jdbc:oracle:thin:@54.180.162.143:1521/XE
+    url: jdbc:oracle:thin:@13.125.102.57:1521/XE
     username: pingo
     password: Qwer1234
     driver-class-name: oracle.jdbc.OracleDriver
   kafka:
-    bootstrap-servers: 54.180.162.143:9092  # ✅ EC2 Kafka 브로커 주소
+    bootstrap-servers: 13.125.102.57:9092  # ✅ EC2 Kafka 브로커 주소
     producer:
       retries: 3  # ✅ 실패 시 최대 3번 재시도 (네트워크 불안정 대비)
       acks: all   # ✅ 모든 리더가 메시지를 받아야 성공 처리 (데이터 손실 방지)
@@ -31,7 +31,7 @@ spring:
       ack-mode: manual_immediate  # ✅ 수동 확인 모드 (메시지 손실 방지)
   data:
     redis:
-      host: 54.180.162.143  # AWS Redis 컨테이너 IP 주소
+      host: 13.125.102.57  # AWS Redis 컨테이너 IP 주소
       port: 6379
       timeout: 6000  # 타임아웃 (밀리초)
       lettuce:
@@ -42,7 +42,7 @@ spring:
           max-wait: 5000  # 최대 대기 시간 (밀리초)
 
     mongodb:
-      host: 54.180.162.143
+      host: 13.125.102.57
       port: 27017
       database: pingochat
 

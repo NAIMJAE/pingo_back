@@ -69,16 +69,16 @@ public class SignController {
     @PostMapping("/permit/checkcode")
     public ResponseEntity<?> checkCode(@RequestBody Map<String, String> requestBody) {
         log.info("requestBody : " + requestBody);
-        String sessionId = requestBody.get("sessionId"); // 🔥 클라이언트가 보낸 세션 ID
+        String sessionId = requestBody.get("sessionId"); // 클라이언트가 보낸 세션 ID
         if (sessionId == null || sessionId.isEmpty()) {
-            log.info("❌ 세션 ID 없음");
+            log.info("세션 ID 없음");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 ID가 없습니다.");
         }
 
         String userEmail = requestBody.get("userEmail");
         String code = requestBody.get("code");
 
-        return signService.checkCode(userEmail, code, sessionId); // 🔥 sessionId를 전달
+        return signService.checkCode(userEmail, code, sessionId); // sessionId를 전달
     }
 
 }
