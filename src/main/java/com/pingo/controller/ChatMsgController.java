@@ -36,6 +36,15 @@ public class ChatMsgController {
 
     }
 
+    // 스크롤시 그보다 위의 채팅 메세지 일부 조회(만약 로컬디비 사용시 해당 부분 필요없음)
+    @GetMapping("/select/oldMessage")
+    public ResponseEntity<?> selectOldMessage(@RequestParam String msgId, @RequestParam String roomId) {
+        log.info("룸아이디와 MSGID는?:"+roomId,msgId);
+        List<ChatMsgDTO> chatMsgDTOS = chatMsgService.selectOldMessage(msgId,roomId);
+        log.info("과거채팅목록조회 : " + chatMsgDTOS);
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공", chatMsgDTOS));
+    }
+
 
     // 받은 메세지에서 이미지파일 서버에 저장하기
     // fromData는 RequestParam or RequestPart로 받는다.
