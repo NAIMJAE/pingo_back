@@ -7,7 +7,6 @@ package com.pingo.exception;
  */
 
 public enum ExceptionCode {
-
     // USER
     DUPLICATE_USER_NO(409, "USER_NO_DUPLICATE", "중복된 유저 아이디 입니다."),
     INVALID_USER_ID(409, "USER_ID_INVALID", "유저 아이디가 유효하지 않습니다."),
@@ -24,6 +23,8 @@ public enum ExceptionCode {
     DUPLICATE_USER_EMAIL(409, "USER_EMAIL_DUPLICATE", "중복된 유저 이메일 입니다."),
     INVALID_USER_EMAIL(409, "USER_EMAIL_INVALID", "유저 이메일이 유효하지 않습니다."),
     EMAIL_SEND_FAILED(554, "EMAIL_SEND_FAILED", "메일 발송 중 오류가 발생했습니다."),
+    VERIFICATION_CODE_MISMATCH(422, "VERIFICATION_CODE_MISMATCH", "인증번호가 일치하지 않습니다."),
+    CODE_CHECK_FAILED(400, "CODE_CHECK_FAILED", "인증코드 확인에 실패했습니다."),
 
 
     // SWIPE

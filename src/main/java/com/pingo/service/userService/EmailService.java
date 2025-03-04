@@ -3,17 +3,23 @@ package com.pingo.service.userService;
 import com.pingo.dto.ResponseDTO;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
+import com.pingo.util.SessionManager;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -44,28 +50,59 @@ public class EmailService {
 
         return message;
     }
-    
-    // 3. 인증코드 이메일 발송
-    public ResponseEntity<?>  sendVerificationEmail(String sendEmail, HttpSession session) throws MessagingException {
-        String code = createVerificationCode(); // 랜덤 인증코드 생성
 
-        MimeMessage message = createVerificationEmail(sendEmail, code); // 메일 생성
+    // 인증코드 이메일 발송
+    public String sendVerificationEmail(String userEmail, HttpSession session) throws MessagingException {
+        String code = createVerificationCode();
+        MimeMessage message = createVerificationEmail(userEmail, code);
+
         try {
-            javaMailSender.send(message); // 메일 발송
-
-            // 4. 이메일이 보내지면 세션에 인증코드 저장 (10분 후 만료)
-            session.setAttribute(sendEmail, code);
+            javaMailSender.send(message);
+            session.setAttribute(userEmail, code);
             session.setMaxInactiveInterval(600);
+
+            String sessionId = session.getId(); // 세션 ID 저장
+
+            // SessionManager에 세션 저장
+            SessionManager.addSession(session);
+
+            log.info("🔵 [세션 저장] 이메일: {}, 저장된 코드: {}", userEmail, code);
+            log.info("🟢 [세션 유지 시간] {}초, 세션 ID: {}", session.getMaxInactiveInterval(), sessionId);
+
+            // sessionId만 반환
+            return sessionId;
         } catch (MailException e) {
             throw new BusinessException(ExceptionCode.EMAIL_SEND_FAILED);
         }
-
-        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));
     }
 
 
     // ----------------------------------------------------------------
 
     // 이메일 인증번호 확인 메서드
+    public ResponseEntity<?> checkCode(String userEmail, String code, String sessionId) {
+        // 클라이언트가 보낸 세션 ID로 세션 조회
+        HttpSession session = SessionManager.getSession(sessionId);
+
+        if (session == null) {
+            log.info("유효하지 않은 세션 ID: {}", sessionId);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseDTO.of("0", "유효하지 않은 세션입니다.", false));
+        }
+
+        try {
+            // 세션에서 해당 이메일의 인증번호 가져오기
+            String sessionCode = (String) session.getAttribute(userEmail);
+            log.info("🔹 세션에서 가져온 인증 코드: {}", sessionCode);
+
+            // 인증번호가 존재하고, 입력된 코드와 일치하면 성공 응답 반환
+            if (sessionCode != null && sessionCode.equals(code)) {
+                return ResponseEntity.ok().body(ResponseDTO.of("1", "인증 성공", true));
+            } else {
+                throw new BusinessException(ExceptionCode.VERIFICATION_CODE_MISMATCH);
+            }
+        } catch (Exception e) {
+            throw new BusinessException(ExceptionCode.CODE_CHECK_FAILED);
+        }
+    }
 
 }
