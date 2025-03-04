@@ -21,7 +21,7 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    // 채팅방 목록 조회
+    // 채팅방 목록 처음 조회
     @GetMapping("/select/chatRoom")
     public ResponseEntity<?> selectRoomId(@RequestParam String userNo) {
         log.info("userNo 가져왔나 : " + userNo);
