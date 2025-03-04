@@ -64,8 +64,8 @@ public class MatchService {
             CompletableFuture<Map<String,MatchUser>> fetchOpponentInfoFuture = CompletableFuture.supplyAsync(() -> {
                 Map<String,MatchUser> matchusers = new HashMap<>();
 
-                matchusers.put("toUser", userMapper.getMatchUser(toUserNo));
-                matchusers.put("fromUser", userMapper.getMatchUser(fromUserNo));
+                matchusers.put(toUserNo, userMapper.getMatchUser(toUserNo));
+                matchusers.put(fromUserNo, userMapper.getMatchUser(fromUserNo));
 
                 return matchusers;
             });
