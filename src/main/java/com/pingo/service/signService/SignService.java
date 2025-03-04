@@ -192,7 +192,7 @@ public class SignService {
         }
     }
 
-    // 회원가입 이메일 인증
+    // 회원가입 이메일 인증코드 발송
     public ResponseEntity<?> verifyEmailForSignUp(String userEmail, HttpSession session) throws MessagingException {
 
         // 이메일 중복 여부 체크
@@ -202,7 +202,12 @@ public class SignService {
         }
 
         // 이메일 인증코드 발송
-        emailService.sendVerificationEmail(userEmail, session);
-        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));
+        String sessionId = emailService.sendVerificationEmail(userEmail, session);
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",sessionId));
+    }
+
+    // 이메일 인증코드 확인
+    public ResponseEntity<?> checkCode(String userEmail, String code, String sessionId) {
+        return emailService.checkCode(userEmail, code, sessionId);
     }
 }
