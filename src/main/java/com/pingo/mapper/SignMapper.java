@@ -17,6 +17,9 @@ public interface SignMapper {
     // 회원가입시 아이디 중복 체크를 위한 회원 아이디 조회
     int selectUserIdForValidateId(@Param("inputId") String inputId);
 
+    // 회원가입시 닉네임 중복 체크를 위한 회원 닉네임 조회
+    int selectUserNickForValidateNick(@Param("inputNick") String inputNick);
+
     // 회원가입시 키워드 선택을 위한 3차 키워드 조회
     List<Keyword> select3ndKeyword();
 

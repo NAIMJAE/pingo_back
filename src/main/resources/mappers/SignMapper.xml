@@ -16,6 +16,11 @@
         SELECT COUNT(*) FROM "users" WHERE "userId" = #{inputId}
     </select>
 
+    <!-- 아이디 중복 체크 -->
+    <select id="selectUserNickForValidateNick" parameterType="string" resultType="int" useCache="false">
+        SELECT COUNT(*) FROM "users" WHERE "userNick" = #{inputNick}
+    </select>
+
     <!-- 성향 3차 키워드 조회 -->
     <select id="select3ndKeyword" resultType="com.pingo.entity.keywords.Keyword" useCache="false">
         SELECT * FROM "keyword" WHERE "kwLevel" = 3 ORDER BY "kwName" ASC

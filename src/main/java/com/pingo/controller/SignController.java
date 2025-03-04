@@ -40,6 +40,11 @@ public class SignController {
     }
 
     // 회원가입시 닉네임 중복 검사
+    @GetMapping("/permit/validateNick")
+    public ResponseEntity<?> validateNick(@RequestParam String inputNick) {
+        log.info("inputNick : " + inputNick);
+        return signService.validateNick(inputNick);
+    }
 
     // 회원가입시 3차 키워드 조회
     @GetMapping("/permit/3ndKeyword")
