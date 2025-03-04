@@ -26,6 +26,20 @@ public interface CommunityMapper {
     public PlaceReview selectPlaceReviewForChat(@Param("placeName") String placeName,
                                                 @Param("placeAddress") String placeAddress);
 
+    public Optional<String> selectPlaceHeart(@Param("userNo") String UserNo);
+
+    public void placeDecreaseHeart(@Param("prNo") String prNo);
+
+    public void placeIncreaseHeart(@Param("prNo") String prNo);
+
+    public void deletePlaceReviewHeart(@Param("userNo") String userNo);
+
+    public void updatePlaceReviewHeart(@Param("userNo") String userNo,
+                                       @Param("prNoStr") String prNoStr);
+
+    public void insertPlaceReviewHeart(@Param("userNo") String userNo,
+                                       @Param("prNoStr") String prNoStr);
+
     public List<DatingGuideDTO> selectDatingGuideForInit();
 
     public List<DatingGuideDTO> selectDatingGuideWithSort(@Param("cate") String cate,
