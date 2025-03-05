@@ -4,6 +4,7 @@ import com.pingo.dto.ResponseDTO;
 import com.pingo.dto.chat.*;
 import com.pingo.entity.chat.ChatRoom;
 import com.pingo.entity.chat.ChatUser;
+import com.pingo.entity.chat.Test;
 import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.ChatMapper;
@@ -28,6 +29,9 @@ public class ChatRoomService {
 
     // chatRoom 조회 (채팅방 목록, 메세지, 마지막메세지)
     public ResponseEntity<?> selectChatRoom(String userNo) {
+
+        Test aa = new Test("홍", 20);
+
         // 유효성 검사 예외처리
         try {
             List<ChatUserDTO> chatUserDTOS = chatMapper.selectChatUser(userNo);
