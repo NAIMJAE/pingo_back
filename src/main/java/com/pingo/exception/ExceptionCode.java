@@ -18,6 +18,9 @@ public enum ExceptionCode {
     SIGN_UP_FAIL(400, "SIGN_UP_FAIL", "회원가입에 실패했습니다"),
     USER_INFO_NOT_FOUND(400, "USER_INFO_NOT_FOUND", "회원 정보 조회에 실패했습니다"),
     UPDATE_USER_INFO_FAIL(400, "UPDATE_USER_INFO_FAIL", "회원정보 수정에 실패했습니다"),
+    FIND_USER_ID_FAIL(400, "FIND_USER_ID_FAIL", "유저 아이디 찾기에 실패했습니다."),
+    FIND_USER_PW_FAIL(400, "FIND_USER_PW_FAIL", "유저 비밀번호 찾기에 실패했습니다."),
+    RESET_USER_PW_FAIL(400, "RESET_USER_PW_FAIL", "유저 비밀번호 재설정에 실패했습니다."),
 
     // EMAIL
     DUPLICATE_USER_EMAIL(409, "USER_EMAIL_DUPLICATE", "중복된 유저 이메일 입니다."),
