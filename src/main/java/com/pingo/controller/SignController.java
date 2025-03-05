@@ -63,27 +63,9 @@ public class SignController {
     }
     
     // 회원가입 이메일 인증코드 발송
-    @PostMapping("/permit/sendemail")
-    public ResponseEntity<?> verifyEmail(@RequestBody String userEmail, HttpSession session) throws MessagingException {
-
+    @PostMapping("/permit/sendemailforsignup")
+    public ResponseEntity<?> verifyEmailForSignup(@RequestBody String userEmail, HttpSession session) throws MessagingException {
 
         return signService.verifyEmailForSignUp(userEmail, session);
     }
-
-    // 회원가입 이메일 인증코드 확인
-    @PostMapping("/permit/checkcode")
-    public ResponseEntity<?> checkCode(@RequestBody Map<String, String> requestBody) {
-        log.info("requestBody : " + requestBody);
-        String sessionId = requestBody.get("sessionId"); // 클라이언트가 보낸 세션 ID
-        if (sessionId == null || sessionId.isEmpty()) {
-            log.info("세션 ID 없음");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 ID가 없습니다.");
-        }
-
-        String userEmail = requestBody.get("userEmail");
-        String code = requestBody.get("code");
-
-        return signService.checkCode(userEmail, code, sessionId); // sessionId를 전달
-    }
-
 }

@@ -9,9 +9,12 @@ import com.pingo.exception.BusinessException;
 import com.pingo.exception.ExceptionCode;
 import com.pingo.mapper.UserMapper;
 import com.pingo.service.ImageService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +31,8 @@ public class UserService {
 
     final private ImageService imageService;
     final private UserMapper userMapper;
+    private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     // DetailPage를 위한 회원 상세정보 조회 <나중에 합쳐주세용~>
     public ResponseEntity<?> getInfo(String userNo) {
@@ -155,15 +160,18 @@ public class UserService {
     @Transactional
     public ResponseEntity<?> updateUserInfo(UserMypageInfo userMypageInfo) {
         try {
-            // 1. userInfo 저장
+            // 1. usrs 의 이메일 저장
+            userMapper.updateUserEmail(userMypageInfo.getUsers().getUserNo(), userMypageInfo.getUsers().getUserEmail());
+            
+            // 2. userInfo 저장
             userMapper.updateUserInfo(userMypageInfo.getUserInfo()); // <- 여기 회원 정보 있음
 
-            // 2. userKeyword 저장
+            // 3. userKeyword 저장
             String myKeyword = parseKeywordToString(userMypageInfo.getMyKeywordList());
             String favoriteKeyword = parseKeywordToString(userMypageInfo.getFavoriteKeywordList());
             userMapper.updateUserKeyword(userMypageInfo.getUsers().getUserNo(), myKeyword, favoriteKeyword);
 
-            // 3. 자기 소개 저장
+            // 4. 자기 소개 저장
             userMapper.updateUserIntro(userMypageInfo.getUsers().getUserNo(), userMypageInfo.getUserIntroduction()); // <- 여기 회원 소개 있음
 
             return ResponseEntity.ok().body(ResponseDTO.of("1","성공",true));
@@ -186,5 +194,51 @@ public class UserService {
         return keywordStr.toString();
     }
 
+    // 이메일 인증코드 발송
+    public ResponseEntity<?> verifyEmail(String userEmail, HttpSession session) throws MessagingException {
 
+        // 이메일 인증코드 발송
+        String sessionId = emailService.sendVerificationEmail(userEmail, session);
+        return ResponseEntity.ok().body(ResponseDTO.of("1","성공",sessionId));
+    }
+
+    // 이메일 인증코드 확인
+    public ResponseEntity<?> checkCode(String userEmail, String code, String sessionId) {
+        return emailService.checkCode(userEmail, code, sessionId);
+    }
+
+    // 유저 아이디 찾기
+    public ResponseEntity<?> findUserId(String userName, String userEmail) {
+        try {
+            String userId = userMapper.findUserId(userName, userEmail);
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공", userId));
+        } catch (Exception e) {
+            throw new BusinessException(ExceptionCode.FIND_USER_ID_FAIL);
+        }
+    }
+
+    // 유저 비밀번호 재설정으로 이동
+    public ResponseEntity<?> findUserPw(String userId, String userEmail) {
+        try {
+            String userNo = userMapper.findUserPw(userId, userEmail);
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공", userNo));
+        } catch (Exception e) {
+            throw new BusinessException(ExceptionCode.FIND_USER_PW_FAIL);
+        }
+    }
+
+    // 유저 비밀번호 재설정
+    public ResponseEntity<?> resetUserPw(String userNo, String userPw) {
+        try {
+            // 저장하기 전에 비밀번호 암호화 하기
+            String encodedPw = passwordEncoder.encode(userPw);
+
+            // 암호화 된 비밀번호 저장
+            userMapper.resetUserPw(userNo, encodedPw);
+
+            return ResponseEntity.ok().body(ResponseDTO.of("1","성공", true));
+        } catch (Exception e) {
+            throw new BusinessException(ExceptionCode.RESET_USER_PW_FAIL);
+        }
+    }
 }

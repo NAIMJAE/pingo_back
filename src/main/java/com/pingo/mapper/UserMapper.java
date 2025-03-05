@@ -43,6 +43,9 @@ public interface UserMapper {
     // 유저 소개 조회
     String selectUserIntroduction(@Param("userNo") String userNo);
 
+    // 유저 이메일 수정
+    void updateUserEmail(@Param("userNo") String userNo, @Param("userEmail") String userEmail);
+    
     // 유저 상세 정보 수정
     void updateUserInfo(UserInfo userInfo);
     
@@ -53,4 +56,13 @@ public interface UserMapper {
 
     // 유저 자기소개 수정
     void updateUserIntro(@Param("userNo") String userNo, @Param("userIntroduction") String userIntroduction);
+
+    // 유저 아이디 찾기
+    String findUserId(@Param("userName") String userName, @Param("userEmail") String userEmail);
+
+    // 유저 비밀번호 재설정으로 이동
+    String findUserPw(@Param("userId") String userId, @Param("userEmail") String userEmail);
+
+    // 유저 비밀번호 재설정
+    void resetUserPw(@Param("userNo") String userNo, @Param("userPw") String encodedPw);
 }

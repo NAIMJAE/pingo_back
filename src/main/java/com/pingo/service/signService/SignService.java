@@ -18,7 +18,6 @@ import com.pingo.security.MyUserDetails;
 import com.pingo.security.jwt.JwtProvider;
 import com.pingo.service.keywordServices.KeywordService;
 import com.pingo.service.mainService.LocationService;
-import com.pingo.service.membershipService.MembershipService;
 import com.pingo.service.userService.EmailService;
 import com.pingo.util.RedisTestService;
 import com.pingo.service.ImageService;
@@ -53,7 +52,6 @@ public class SignService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final LocationService locationService;
-    private final RedisTestService redisTestService;
     private final ImageService imageService;
     private final MembershipMapper membershipMapper;
     private final KeywordService keywordService;
@@ -214,10 +212,5 @@ public class SignService {
         // 이메일 인증코드 발송
         String sessionId = emailService.sendVerificationEmail(userEmail, session);
         return ResponseEntity.ok().body(ResponseDTO.of("1","성공",sessionId));
-    }
-
-    // 이메일 인증코드 확인
-    public ResponseEntity<?> checkCode(String userEmail, String code, String sessionId) {
-        return emailService.checkCode(userEmail, code, sessionId);
     }
 }

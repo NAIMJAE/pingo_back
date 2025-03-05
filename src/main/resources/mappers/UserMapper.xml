@@ -111,6 +111,13 @@
         WHERE "userNo" = #{userNo}
     </select>
 
+    <!-- 유저 이메일 수정 -->
+    <update id="updateUserEmail" parameterType="map">
+        UPDATE "users"
+        SET "userEmail" = #{userEmail}
+        WHERE "userNo" = #{userNo}
+    </update>
+
     <!-- 유저 상세 정보 수정 -->
     <update id="updateUserInfo" parameterType="map">
         UPDATE "userInfo"
@@ -131,6 +138,26 @@
     <update id="updateUserIntro" parameterType="map">
         UPDATE "userIntroduction"
         SET "introduction" = #{userIntroduction}
+        WHERE "userNo" = #{userNo}
+    </update>
+
+    <select id="findUserId" parameterType="map" resultType="String">
+        SELECT "userId"
+        FROM "users"
+        WHERE "userName" = #{userName}
+            AND "userEmail" = #{userEmail}
+    </select>
+
+    <select id="findUserPw" parameterType="map" resultType="String">
+        SELECT "userNo"
+        FROM "users"
+        WHERE "userId" = #{userId}
+        AND "userEmail" = #{userEmail}
+    </select>
+
+    <update id="resetUserPw" parameterType="map">
+        UPDATE "users"
+        SET "userPw" = #{userPw}
         WHERE "userNo" = #{userNo}
     </update>
 

@@ -3,8 +3,11 @@ package com.pingo.controller;
 import com.pingo.entity.users.UserMypageInfo;
 import com.pingo.service.ImageService;
 import com.pingo.service.userService.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -64,4 +67,44 @@ public class UserController {
         return userService.updateUserInfo(userMypageInfo);
     }
 
+    // 이메일 인증코드 발송
+    @PostMapping("/permit/sendemail")
+    public ResponseEntity<?> verifyEmail(@RequestBody String userEmail, HttpSession session) throws MessagingException {
+
+        return userService.verifyEmail(userEmail, session);
+    }
+
+    // 이메일 인증코드 확인
+    @PostMapping("/permit/checkcode")
+    public ResponseEntity<?> checkCode(@RequestBody Map<String, String> requestBody) {
+        String sessionId = requestBody.get("sessionId"); // 클라이언트가 보낸 세션 ID
+        if (sessionId == null || sessionId.isEmpty()) {
+            log.info("세션 ID 없음");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 ID가 없습니다.");
+        }
+
+        String userEmail = requestBody.get("userEmail");
+        String code = requestBody.get("code");
+
+        return userService.checkCode(userEmail, code, sessionId); // sessionId를 전달
+    }
+
+    // ID 찾기
+    @GetMapping("permit/finduserid")
+    public ResponseEntity<?> findUserId(@RequestParam String userName, @RequestParam String userEmail) {
+        return userService.findUserId(userName, userEmail);
+    }
+
+    // 유저 비밀번호 재설정으로 이동
+    @GetMapping("permit/finduserpw")
+    public ResponseEntity<?> findUserPw(@RequestParam String userId, @RequestParam String userEmail) {
+        return userService.findUserPw(userId, userEmail);
+    }
+
+    // 유저 비밀번호 재설정
+    @PutMapping("permit/resetuserpw")
+    public ResponseEntity<?> resetUserPw(@RequestBody Map<String, String> requestDataForResetUserPw) {
+
+        return userService.resetUserPw(requestDataForResetUserPw.get("userNo"), requestDataForResetUserPw.get("userPw"));
+    }
 }
